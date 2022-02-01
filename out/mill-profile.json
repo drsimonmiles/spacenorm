@@ -1,0 +1,197 @@
+[
+    {
+        "label": "sim.mainClass",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "mill.scalalib.ZincWorkerModule.classpath",
+        "millis": 1,
+        "cached": true
+    },
+    {
+        "label": "mill.scalalib.ZincWorkerModule.worker",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.upstreamCompileOutput",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.sources",
+        "millis": 2,
+        "cached": false
+    },
+    {
+        "label": "sim.generatedSources",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.allSources",
+        "millis": 1,
+        "cached": false
+    },
+    {
+        "label": "sim.allSourceFiles",
+        "millis": 3,
+        "cached": false
+    },
+    {
+        "label": "sim.transitiveLocalClasspath",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.resources",
+        "millis": 1,
+        "cached": false
+    },
+    {
+        "label": "sim.unmanagedClasspath",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalaVersion",
+        "millis": 1,
+        "cached": true
+    },
+    {
+        "label": "sim.platformSuffix",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.compileIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.transitiveCompileIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalaOrganization",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalaLibraryIvyDeps",
+        "millis": 1,
+        "cached": true
+    },
+    {
+        "label": "sim.ivyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.transitiveIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.resolvedIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.compileClasspath",
+        "millis": 1,
+        "cached": true
+    },
+    {
+        "label": "sim.javacOptions",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalacOptions",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalaCompilerClasspath",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalacPluginIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.scalacPluginClasspath",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.compile",
+        "millis": 186,
+        "cached": false
+    },
+    {
+        "label": "sim.finalMainClassOpt",
+        "millis": 5,
+        "cached": false
+    },
+    {
+        "label": "sim.finalMainClass",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.localClasspath",
+        "millis": 1,
+        "cached": false
+    },
+    {
+        "label": "sim.runIvyDeps",
+        "millis": 1,
+        "cached": true
+    },
+    {
+        "label": "sim.resolvedRunIvyDeps",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.upstreamAssemblyClasspath",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.runClasspath",
+        "millis": 2,
+        "cached": false
+    },
+    {
+        "label": "sim.forkArgs",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.forkEnv",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.forkWorkingDir",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.runUseArgsFile",
+        "millis": 0,
+        "cached": true
+    },
+    {
+        "label": "sim.run",
+        "millis": 37227,
+        "cached": false
+    }
+]

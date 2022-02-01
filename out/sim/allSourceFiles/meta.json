@@ -1,0 +1,15 @@
+{
+    "value": [
+        "ref:9a1c0ce8:/Users/simon/Code/spacenorm/sim/src/sim/Process.scala",
+        "ref:da0b5304:/Users/simon/Code/spacenorm/sim/src/sim/Positions.scala",
+        "ref:c58e3b7a:/Users/simon/Code/spacenorm/sim/src/sim/Simulation.scala",
+        "ref:798a19be:/Users/simon/Code/spacenorm/sim/src/sim/State.scala",
+        "ref:44844fae:/Users/simon/Code/spacenorm/sim/src/sim/Behaviours.scala",
+        "ref:d23dc335:/Users/simon/Code/spacenorm/sim/src/sim/Instance.scala",
+        "ref:ba4e6a86:/Users/simon/Code/spacenorm/sim/src/sim/Agents.scala",
+        "ref:cfa494a4:/Users/simon/Code/spacenorm/sim/src/sim/Velocity.scala",
+        "ref:524ed016:/Users/simon/Code/spacenorm/sim/src/sim/Configuration.scala"
+    ],
+    "valueHash": -587576356,
+    "inputsHash": 1308580031
+}

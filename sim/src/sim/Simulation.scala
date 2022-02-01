@@ -1,0 +1,18 @@
+package sim
+
+import sim.Process._
+
+@main def runExperiment = {
+  val initial = newState
+
+  (1 to 100).foldLeft(initial) { (state, tick) =>
+    println(tick)
+    val step1 = interact(state)
+    val step2 = reviseBehaviour(step1)
+    val step3 = moveAll(step2)
+    val step4 = leave(step3)
+    val step5 = chooseGoals(step4)
+    val step6 = agentsJoin(step5)
+    recalculateNetwork(step6)
+  }
+}
