@@ -7208,3 +7208,68 @@ WARNING: Unmatched cancel notification for request id 9254
 2022.01.27 18:46:58 INFO  time: compiled sim in 0.78s
 2022.01.27 18:47:49 INFO  compiling sim (1 scala source)
 2022.01.27 18:47:49 INFO  time: compiled sim in 0.41s
+2022.02.03 16:45:50 WARN  no build target for: /Users/simon/Code/spacenorm/build.sc
+Feb 03, 2022 4:45:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9600
+2022.02.03 16:45:52 WARN  no build target for: /Users/simon/Code/spacenorm/build.sc
+2022.02.03 16:45:54 INFO  running '/var/folders/m0/fwrrnc8j48zdp6prgwwxq77h0000gn/T/metals13567666123806856838/millw --mill-version 0.10.0 --import ivy:com.lihaoyi::mill-contrib-bloop: mill.contrib.Bloop/install'
+2022.02.03 16:45:56 INFO  Compiling /Users/simon/Code/spacenorm/build.sc
+2022.02.03 16:46:05 INFO  [1/29] sim.sources 
+2022.02.03 16:46:05 INFO  [2/29] sim.generatedSources 
+2022.02.03 16:46:05 INFO  [3/29] sim.allSources 
+2022.02.03 16:46:05 INFO  [4/29] mill.contrib.bloop.BloopImpl.moduleSourceMap 
+2022.02.03 16:46:05 INFO  [5/29] sim.unmanagedClasspath 
+2022.02.03 16:46:05 INFO  [6/29] sim.scalaVersion 
+2022.02.03 16:46:05 INFO  [7/29] sim.platformSuffix 
+2022.02.03 16:46:05 INFO  [8/29] sim.compileIvyDeps 
+2022.02.03 16:46:05 INFO  [9/29] sim.transitiveCompileIvyDeps 
+2022.02.03 16:46:05 INFO  [10/29] sim.ivyDeps 
+2022.02.03 16:46:05 INFO  [11/29] sim.mandatoryIvyDeps.overridden.mill.scalalib.JavaModule.mandatoryIvyDeps 
+2022.02.03 16:46:05 INFO  [12/29] sim.scalaOrganization 
+2022.02.03 16:46:05 INFO  [13/29] sim.scalaLibraryIvyDeps 
+2022.02.03 16:46:05 INFO  [14/29] sim.mandatoryIvyDeps 
+2022.02.03 16:46:05 INFO  [15/29] sim.transitiveIvyDeps 
+2022.02.03 16:46:05 INFO  [16/29] sim.resolvedIvyDeps 
+2022.02.03 16:46:05 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~0/0 bytes)
+2022.02.03 16:46:05 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~0/3737 bytes)
+2022.02.03 16:46:06 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~1371/3737 bytes)
+2022.02.03 16:46:06 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~2742/3737 bytes)
+2022.02.03 16:46:06 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~3737/3737 bytes)
+2022.02.03 16:46:06 INFO  [16/29] sim.resolvedIvyDeps | Downloading [1/1] artifacts (~3737/3737 bytes)
+2022.02.03 16:46:06 INFO  [17/29] sim.resources 
+2022.02.03 16:46:06 INFO  [18/29] sim.scalacPluginIvyDeps 
+2022.02.03 16:46:06 INFO  [19/29] sim.scalacPluginClasspath 
+2022.02.03 16:46:06 INFO  [20/29] sim.mandatoryScalacOptions 
+2022.02.03 16:46:06 INFO  [21/29] sim.scalacOptions 
+2022.02.03 16:46:06 INFO  [22/29] sim.allScalacOptions 
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath 
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [1/1] artifacts (~0/0 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [1/1] artifacts (~0/4897 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [1/1] artifacts (~4897/4897 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [1/1] artifacts (~4897/4897 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [2/2] artifacts (~4897/4897 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~4897/4897 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~4897/8437 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~8437/8437 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~8437/8437 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~8437/12164 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~9808/12164 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~11179/12164 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~12164/12164 bytes)
+2022.02.03 16:46:06 INFO  [23/29] sim.scalaCompilerClasspath | Downloading [3/3] artifacts (~12164/12164 bytes)
+2022.02.03 16:46:13 INFO  [24/29] sim.javacOptions 
+2022.02.03 16:46:13 INFO  [25/29] sim.forkArgs 
+2022.02.03 16:46:13 INFO  [26/29] sim.mainClass 
+2022.02.03 16:46:13 INFO  [27/29] sim.bloop.config 
+2022.02.03 16:46:13 INFO  [28/29] sim.bloop.writeConfig 
+2022.02.03 16:46:13 INFO  Wrote /Users/simon/Code/spacenorm/.bloop/sim.json
+2022.02.03 16:46:13 INFO  [29/29] mill.contrib.bloop.BloopImpl.install 
+2022.02.03 16:46:14 INFO  time: ran 'mill bloopInstall' in 20s
+2022.02.03 16:46:14 INFO  Disconnecting from Bloop session...
+2022.02.03 16:46:14 INFO  Shut down connection with build server.
+2022.02.03 16:46:14 INFO  Attempting to connect to the build server...
+2022.02.03 16:46:14 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/simon/Code/spacenorm/.metals/bsp.trace.json or /Users/simon/Library/Caches/org.scalameta.metals/bsp.trace.json
+2022.02.03 16:46:14 INFO  time: Connected to build server in 0.19s
+2022.02.03 16:46:14 INFO  Connected to Build server: Bloop v1.4.12
+2022.02.03 16:46:20 INFO  time: indexed workspace in 6.25s
+2022.02.03 16:46:21 WARN  no build target for: /Users/simon/Code/spacenorm/build.sc

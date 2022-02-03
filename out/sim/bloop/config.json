@@ -20,7 +20,7 @@
                 
             ],
             "classpath": [
-                "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.0/scala3-library_3-3.1.0.jar",
+                "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.1/scala3-library_3-3.1.1.jar",
                 "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.6/scala-library-2.13.6.jar"
             ],
             "out": "/Users/simon/Code/spacenorm/.bloop/out/sim",
@@ -34,15 +34,15 @@
                 {
                     "organization": "org.scala-lang",
                     "name": "scala-compiler",
-                    "version": "3.1.0",
+                    "version": "3.1.1",
                     "options": [
                         
                     ],
                     "jars": [
-                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.1.0/scala3-compiler_3-3.1.0.jar",
-                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.0/scala3-library_3-3.1.0.jar",
-                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.1.0/scala3-interfaces-3.1.0.jar",
-                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.1.0/tasty-core_3-3.1.0.jar",
+                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.1.1/scala3-compiler_3-3.1.1.jar",
+                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.1/scala3-library_3-3.1.1.jar",
+                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.1.1/scala3-interfaces-3.1.1.jar",
+                        "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.1.1/tasty-core_3-3.1.1.jar",
                         "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-asm/9.1.0-scala-1/scala-asm-9.1.0-scala-1.jar",
                         "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.3.5/compiler-interface-1.3.5.jar",
                         "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jline/jline-reader/3.19.0/jline-reader-3.19.0.jar",
@@ -108,7 +108,7 @@
                         {
                             "organization": "org.scala-lang",
                             "name": "scala3-library_3",
-                            "version": "3.1.0",
+                            "version": "3.1.1",
                             "configurations": [
                                 
                             ],
@@ -121,7 +121,7 @@
                                     "checksum": [
                                         
                                     ],
-                                    "path": "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.0/scala3-library_3-3.1.0.jar"
+                                    "path": "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.1/scala3-library_3-3.1.1.jar"
                                 },
                                 {
                                     "name": "scala3-library_3",
@@ -131,7 +131,7 @@
                                     "checksum": [
                                         
                                     ],
-                                    "path": "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.0/scala3-library_3-3.1.0-sources.jar"
+                                    "path": "/Users/simon/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.1.1/scala3-library_3-3.1.1-sources.jar"
                                 }
                             ]
                         },
@@ -175,6 +175,6 @@
             ]
         }
     },
-    "valueHash": -1731023589,
-    "inputsHash": 1930789828
+    "valueHash": 833145370,
+    "inputsHash": 1979173936
 }
