@@ -5,7 +5,7 @@ import sim.Process._
 @main def runExperiment = {
   val initial = newState
 
-  (1 to 100).foldLeft(initial) { (state, tick) =>
+  val result = (1 to 100).foldLeft(initial) { (state, tick) =>
     println(tick)
     val step1 = interact(state)
     val step2 = reviseBehaviour(step1)
@@ -15,4 +15,9 @@ import sim.Process._
     val step6 = agentsJoin(step5)
     recalculateNetwork(step6)
   }
+
+  val finalBehaviours = result.behaviour.values
+
+  for (behaviour <- Behaviours.allBehaviours)
+    println(s"Number of agents with behaviour $behaviour: ${finalBehaviours.count(_ == behaviour)}")
 }
