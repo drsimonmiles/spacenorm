@@ -17,14 +17,12 @@ object Encode:
   }
 
   def encodeState(state: State): String =
-    encodeStructure(
-      encodeList(encodeAgent, state.agents),
-      encodeList(encodePair(encodeAgent), state.edges),
-      encodeMap(encodeAgent, encodeBehaviour, state.behaviour),
-      encodeMap(encodeAgent, encodePosition, state.position),
-      encodeMap(encodeAgent, encodePosition, state.goal),
-      encodeMap(encodeAgent, encodeReal, state.recentSuccess)
-    )
+    encodeMap(encodeAgent, encode4Tuple(encodeBehaviour, encodePosition, encodePosition, encodeReal, ';'), collateAgents(state))
+
+  def collateAgents(state: State): Map[Agent, (Behaviour, Position, Position, Double)] =
+    state.agents.map(agent =>
+      (agent, (state.behaviour(agent), state.position(agent), state.goal(agent), state.recentSuccess(agent)))
+    ).toMap
 
   def encodeAll[Item](encodeItem: Item => String, items: Item*): String =
     encodeList(encodeItem, items.toList)
@@ -37,6 +35,11 @@ object Encode:
 
   def encodePair[Item](encodeItem: Item => String)(pair: (Item, Item)): String =
     s"${encodeItem(pair._1)},${encodeItem(pair._2)}"
+
+  def encode4Tuple[Item1, Item2, Item3, Item4]
+    (encode1: Item1 => String, encode2: Item2 => String, encode3: Item3 => String, encode4: Item4 => String, separator: Char)
+    (items: (Item1, Item2, Item3, Item4)): String =
+    s"${encode1(items._1)}$separator${encode2(items._2)}$separator${encode3(items._3)}$separator${encode4(items._4)}"
 
   def encodeStructure(parts: String*): String =
     parts.mkString("\n")

@@ -15,13 +15,15 @@ object Decode:
     })(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
-    decodeStructure(
-      decodeList(decodeAgent), decodeList(decodePair(decodeAgent)), decodeMap(decodeAgent, decodeBehaviour),
-      decodeMap(decodeAgent, decodePosition), decodeMap(decodeAgent, decodePosition), decodeMap(decodeAgent, decodeReal), {
-        case (agents, edges, behaviour, position, goal, recentSuccess) =>
-          State(config, agents, edges, behaviour, position, goal, recentSuccess)
-      }
-    )(code)
+    decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
+      agentStates =>
+        val agents        = agentStates.keys.toList
+        val behaviour     = agents.map(agent => (agent, agentStates(agent)._1)).toMap
+        val position      = agents.map(agent => (agent, agentStates(agent)._2)).toMap
+        val goal          = agents.map(agent => (agent, agentStates(agent)._3)).toMap
+        val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
+        State(config, agents, behaviour, position, goal, recentSuccess)
+    }
 
   def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
     failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
@@ -81,6 +83,13 @@ object Decode:
         yield (item1, item2, item3, item4, item5, item6)
     else None
   }
+
+  def decodeStructure[Item1, Item2, Whole]
+    (decodeItem1: String => Option[Item1],
+     decodeItem2: String => Option[Item2],
+     construct: ((Item1, Item2)) => Whole)
+    (code: String): Option[Whole] =
+    decode2Tuple(decodeItem1, decodeItem2, '\n')(code).map(construct)
 
   def decodeStructure[Item1, Item2, Item3, Item4, Whole]
     (decodeItem1: String => Option[Item1],

@@ -20,8 +20,7 @@ import java.io.FileWriter
     val step3 = moveAll(step2)
     val step4 = leave(step3)
     val step5 = chooseGoals(step4)
-    val step6 = agentsJoin(step5)
-    recalculateNetwork(step6)
+    agentsJoin(step5)
   }
   out.println(encodeState(result))
   out.close
