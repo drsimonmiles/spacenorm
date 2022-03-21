@@ -1,7 +1,6 @@
 package spacenorm
 
 import scala.util.Random
-import spacenorm.Configuration._
 
 object Positions:
   opaque type Position = (Int, Int)
@@ -20,11 +19,20 @@ object Positions:
       (position1._1 - position2._1) * (position1._1 - position2._1) +
       (position1._2 - position2._2) * (position1._2 - position2._2))
 
+  def decodePosition(code: String): Option[Position] =
+    Decode.decodePair(Decode.decodeInt)(code)
+
+  def encodePosition(position: Position): String =
+    Encode.encodePair(Encode.encodeInt)(position)
+
   def move(position: Position, dx: Int, dy: Int): Position =
     (position._1 + dx, position._2 + dy)
 
-  def randomPosition: Position =
-    (Random.nextInt(spaceWidth), Random.nextInt(spaceHeight))
+  def randomPosition(width: Int, height: Int): Position =
+    (Random.nextInt(width), Random.nextInt(height))
 
-  def validPosition(position: Position): Boolean =
-    position._1 >= 0 && position._1 < spaceWidth && position._2 >= 0 && position._2 < spaceHeight
+  def randomPosition(configuration: Configuration): Position =
+    randomPosition(configuration.spaceWidth, configuration.spaceHeight)
+
+  def validPosition(position: Position, configuration: Configuration): Boolean =
+    position._1 >= 0 && position._1 < configuration.spaceWidth && position._2 >= 0 && position._2 < configuration.spaceHeight

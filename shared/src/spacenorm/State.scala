@@ -2,12 +2,12 @@ package spacenorm
 
 import spacenorm.Agents.Agent
 import spacenorm.Behaviours.Behaviour
-import spacenorm.Positions.Position
+import spacenorm.Positions.*
 
 type Goal = Position
 
 final case class State(
-  config: Instance,
+  config: Configuration,
   agents: List[Agent],
   edges: List[(Agent, Agent)],
   behaviour: Map[Agent, Behaviour],
@@ -20,6 +20,12 @@ final case class State(
   def addAgent(agent: Agent, agentBehaviour: Behaviour, agentPosition: Position, agentGoal: Goal): State =
     copy(agents = agent :: agents, behaviour = behaviour + (agent -> agentBehaviour),
          position = position + (agent -> agentPosition), goal = goal + (agent -> agentGoal))
+
+  def distanceBetween(agent1: Agent, agent2: Agent): Double =
+    distance(position(agent1), position(agent2))
+
+  def influenceFactor(distance: Double): Double =
+    config.influenceFactor(distance)
 
   def neighbours(agent: Agent): Set[Agent] =
     edges.filter(_._1 == agent).map(_._2).toSet ++ edges.filter(_._2 == agent).map(_._1)

@@ -12,3 +12,9 @@ object Agents:
 
   def nextAgents(count: Int): List[Agent] =
     List.fill(count)(nextAgent)
+
+  def decodeAgent(code: String): Option[Agent] =
+    Decode.decodeInt(code)
+
+  def encodeAgent(agent: Agent): String =
+    Encode.encodeInt(agent)

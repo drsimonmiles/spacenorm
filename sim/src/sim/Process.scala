@@ -4,16 +4,16 @@ import scala.util.Random
 import spacenorm.*
 import spacenorm.Agents.*
 import spacenorm.Behaviours.*
-import spacenorm.Configuration.*
+import spacenorm.Configuration.configuration1
 import spacenorm.Positions.*
 
 object Process:
   def newState: State = {
-    val config    = new Instance
-    val agents    = nextAgents(numberAgents)
-    val behaviour = agents.map { agent => (agent, randomBehaviour) }.toMap
-    val position  = agents.map { agent => (agent, randomPosition) }.toMap
-    val goal      = agents.map { agent => (agent, randomPosition) }.toMap
+    val config    = configuration1
+    val agents    = nextAgents(config.numberAgents)
+    val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
+    val position  = agents.map { agent => (agent, randomPosition(config)) }.toMap
+    val goal      = agents.map { agent => (agent, randomPosition(config)) }.toMap
     val successes = agents.map { agent => (agent, 0.0) }.toMap
 
     recalculateNetwork(State(config, agents, Nil, behaviour, position, goal, successes))
@@ -25,7 +25,7 @@ object Process:
       state.agents.map{ agent =>
         val outcomes: List[Double] =
           state.neighbours(agent).toList.flatMap{ neighbour =>
-            if (Random.nextDouble < influenceFactor(distanceBetween(agent, neighbour, state)))
+            if (Random.nextDouble < state.influenceFactor(state.distanceBetween(agent, neighbour)))
               if (state.behaviour(agent) == state.behaviour(neighbour))
                 Some(1.0)
               else
@@ -85,15 +85,20 @@ object Process:
 
   // 6. New agents join
   def agentsJoin(state: State): State =
-    if (state.agents.size < numberAgents)
-      agentsJoin(state.addAgent(nextAgent, randomBehaviour, state.config.randomExit, randomPosition))
+    if (state.agents.size < state.config.numberAgents)
+      agentsJoin(state.addAgent(
+        nextAgent,
+        randomBehaviour(state.config),
+        state.config.randomExit, 
+        randomPosition(state.config)
+      ))
     else
       state      
 
   // 7. Recalculate network
   def recalculateNetwork(state: State): State = {
     val newEdges = state.agents.flatMap { agent1 =>
-      state.agents.filter { agent2 => distanceBetween(agent1, agent2, state) <= threshold }
+      state.agents.filter { agent2 => state.distanceBetween(agent1, agent2) <= state.config.threshold }
                   .map { agent2 => (agent1, agent2) }
     }
     state.copy(edges = newEdges)

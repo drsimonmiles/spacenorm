@@ -1,13 +1,18 @@
 package spacenorm
 
 import scala.util.Random
-import spacenorm.Configuration.numberBehaviours
 
 object Behaviours:
   opaque type Behaviour = Int
 
-  val allBehaviours: Set[Behaviour] =
-    (0 until numberBehaviours).toSet
+  def allBehaviours(configuration: Configuration): Set[Behaviour] =
+    (0 until configuration.numberBehaviours).toSet
 
-  def randomBehaviour: Behaviour =
-    Random.nextInt(numberBehaviours)
+  def randomBehaviour(configuration: Configuration): Behaviour =
+    Random.nextInt(configuration.numberBehaviours)
+
+  def decodeBehaviour(code: String): Option[Behaviour] =
+    Decode.decodeInt(code)
+
+  def encodeBehaviour(behaviour: Behaviour): String =
+    Encode.encodeInt(behaviour)
