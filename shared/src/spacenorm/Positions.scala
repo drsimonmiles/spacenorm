@@ -1,7 +1,7 @@
-package sim
+package spacenorm
 
 import scala.util.Random
-import sim.Configuration._
+import spacenorm.Configuration._
 
 object Positions:
   opaque type Position = (Int, Int)

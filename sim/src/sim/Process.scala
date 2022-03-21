@@ -1,10 +1,11 @@
 package sim
 
 import scala.util.Random
-import sim.Agents._
-import sim.Behaviours._
-import sim.Configuration._
-import sim.Positions._
+import spacenorm.*
+import spacenorm.Agents.*
+import spacenorm.Behaviours.*
+import spacenorm.Configuration.*
+import spacenorm.Positions.*
 
 object Process:
   def newState: State = {

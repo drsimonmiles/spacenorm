@@ -1,6 +1,7 @@
 package sim
 
-import sim.Process._
+import sim.Process.*
+import spacenorm.*
 
 @main def runExperiment = {
   val initial = newState

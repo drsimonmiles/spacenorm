@@ -1,7 +1,7 @@
-package sim
+package spacenorm
 
 import scala.util.Random
-import sim.Configuration.numberBehaviours
+import spacenorm.Configuration.numberBehaviours
 
 object Behaviours:
   opaque type Behaviour = Int

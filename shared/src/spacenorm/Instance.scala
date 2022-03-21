@@ -1,9 +1,9 @@
-package sim
+package spacenorm
 
 import scala.util.Random
-import sim.Behaviours.Behaviour
-import sim.Configuration._
-import sim.Positions._
+import spacenorm.Behaviours.Behaviour
+import spacenorm.Configuration.*
+import spacenorm.Positions.*
 
 class Instance:
   val obstacleTopLefts: List[Position] =

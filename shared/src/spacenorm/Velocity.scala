@@ -1,6 +1,6 @@
-package sim
+package spacenorm
 
-import sim.Positions._
+import spacenorm.Positions.*
 
 case class Velocity(dx: Int, dy: Int):
   def moveFrom(from: Position): Position =

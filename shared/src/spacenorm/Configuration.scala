@@ -1,9 +1,9 @@
-package sim
+package spacenorm
 
 import scala.util.Random
-import sim.Agents._
-import sim.Positions._
-import sim.Velocity._
+import spacenorm.Agents.*
+import spacenorm.Positions.*
+import spacenorm.Velocity.*
 
 object Configuration:
   val spaceWidth       = 100

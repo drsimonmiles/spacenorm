@@ -1,8 +1,8 @@
-package sim
+package spacenorm
 
-import Agents.Agent
-import Behaviours.Behaviour
-import Positions.Position
+import spacenorm.Agents.Agent
+import spacenorm.Behaviours.Behaviour
+import spacenorm.Positions.Position
 
 type Goal = Position
 

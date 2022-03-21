@@ -1,4 +1,4 @@
-package sim
+package spacenorm
 
 object Agents:
   opaque type Agent = Int
