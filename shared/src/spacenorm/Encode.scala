@@ -3,7 +3,7 @@ package spacenorm
 import spacenorm.Agents.*
 import spacenorm.Behaviours.*
 import spacenorm.Configuration.*
-import spacenorm.Positions.*
+import spacenorm.Position.*
 
 object Encode:
   def encodeConfiguration(config: Configuration): String = {

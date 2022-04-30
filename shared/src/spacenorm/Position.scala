@@ -2,12 +2,9 @@ package spacenorm
 
 import scala.util.Random
 
-object Positions:
-  opaque type Position = (Int, Int)
+final case class Position(x: Int, y: Int)
 
-  def at(x: Int, y: Int): Position =
-    (x, y)
-
+object Position:
   def direction(from: Position, to: Position): Velocity = {
     val dx = if (from._1 == to._1) 0 else (from._1 - to._1) / (from._1 - to._1).abs
     val dy = if (from._2 == to._2) 0 else (from._2 - to._2) / (from._2 - to._2).abs
@@ -20,16 +17,16 @@ object Positions:
       (position1._2 - position2._2) * (position1._2 - position2._2))
 
   def decodePosition(code: String): Option[Position] =
-    Decode.decodePair(Decode.decodeInt)(code)
+    (Decode.decodePair(Decode.decodeInt)(code)).map(xy => Position(xy._1, xy._2))
 
   def encodePosition(position: Position): String =
-    Encode.encodePair(Encode.encodeInt)(position)
+    Encode.encodePair(Encode.encodeInt)((position._1, position._2))
 
   def move(position: Position, dx: Int, dy: Int): Position =
-    (position._1 + dx, position._2 + dy)
+    Position(position.x + dx, position.y + dy)
 
   def randomPosition(width: Int, height: Int): Position =
-    (Random.nextInt(width), Random.nextInt(height))
+    Position(Random.nextInt(width), Random.nextInt(height))
 
   def randomPosition(configuration: Configuration): Position =
     randomPosition(configuration.spaceWidth, configuration.spaceHeight)

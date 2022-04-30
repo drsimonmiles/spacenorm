@@ -3,7 +3,7 @@ package spacenorm
 import spacenorm.Agents.*
 import spacenorm.Behaviours.*
 import spacenorm.Configuration.*
-import spacenorm.Positions.*
+import spacenorm.Position.*
 
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =

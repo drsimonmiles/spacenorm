@@ -5,7 +5,7 @@ import spacenorm.*
 import spacenorm.Agents.*
 import spacenorm.Behaviours.*
 import spacenorm.Configuration.configuration1
-import spacenorm.Positions.*
+import spacenorm.Position.*
 
 object Process:
   def newState: State = {

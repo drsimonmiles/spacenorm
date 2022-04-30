@@ -1,7 +1,8 @@
 package spacenorm
 
 import spacenorm.Behaviours.*
-import spacenorm.Positions.*
+import spacenorm.Position
+import spacenorm.Position.*
 import scala.util.Random
 
 case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
@@ -40,8 +41,8 @@ object Configuration:
       List.fill(numberObstacles)(randomPosition(spaceWidth, spaceHeight))
 
     val possibleExits: List[Position] = {
-      val xSides = for (x <- 0 until spaceWidth) yield List(at(x, 0), at(x, spaceHeight - 1))
-      val ySides = for (y <- 0 until spaceHeight) yield List(at(0, y), at(spaceWidth - 1, y))
+      val xSides = for (x <- 0 until spaceWidth) yield List(Position(x, 0), Position(x, spaceHeight - 1))
+      val ySides = for (y <- 0 until spaceHeight) yield List(Position(0, y), Position(spaceWidth - 1, y))
       val oSides =
         obstacleTopLefts.flatMap(pos =>
           (for (d <- 0 until obstacleSide)
