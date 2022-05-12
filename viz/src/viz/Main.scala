@@ -7,37 +7,42 @@ import org.scalajs.dom.raw.*
 import scala.scalajs.js.annotation.JSExportTopLevel
 import spacenorm.State
 import spacenorm.Configuration
+import viz.AgentView.showAgent
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
 
 object Main {
+  val cellSize = 10
+
   val reader: LogReader = new LogReader
   var config: Option[Configuration] = None
   var playing: Boolean = false
 
   def main(args: Array[String]): Unit = {
-    val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas]
-    val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-    val trace: List[State] = Nil
-
-    canvas.width = 300
-    canvas.height = 200
-
     dom.window.setInterval(() => stepIfPlaying(), 1000)
   }
 
   @JSExportTopLevel("load")
   def loadFromFile(): Unit = {
-    config  = openNewRun(reader)
-    // *** SET CANVAS TO RIGHT SIZE FOR THIS RUN ***
-    playing = false
-    step()
+    config = openNewRun(reader)
+    config.foreach { loaded =>
+      val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas]
+      canvas.width  = loaded.spaceWidth  * cellSize
+      canvas.height = loaded.spaceHeight * cellSize
+      playing = false
+      step()
+    }
   }
 
   @JSExportTopLevel("step")
   def step(): Unit = {
     config.foreach { loaded =>
-      val state = loadNextState(reader, loaded)
-      // *** SHOW STATE ON SCREEN ***
+      loadNextState(reader, loaded).map { state =>
+        val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas] 
+        val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+        state.agents.foreach { agent =>
+          showAgent(state.position(agent), draw)
+        }
+      }
     }
   }
 
