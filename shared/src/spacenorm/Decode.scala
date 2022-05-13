@@ -6,11 +6,6 @@ import spacenorm.Configuration.*
 import spacenorm.Position.*
 
 object Decode:
-  def checkDefined[T](name: String, value: Option[T]): Option[T] = {
-    println(s"$name: ${value.isDefined}")
-    value
-  }
-
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
       decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeList(decodePosition), decodeList(decodePosition), {
@@ -59,18 +54,11 @@ object Decode:
                                                (code: String): Option[(Item1, Item2, Item3, Item4)] = {
     val parts = code.split(separator)
     if (parts.size == 4)
-      for (item1 <- checkDefined("I4.1", decodeItem1(parts(0)));
-           item2 <- checkDefined("I4.2", decodeItem2(parts(1)));
-           item3 <- checkDefined("I4.3", decodeItem3(parts(2)));
-           item4 <- checkDefined("I4.4", decodeItem4(parts(3))))
-        yield (item1, item2, item3, item4)
-/*
       for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1));
            item3 <- decodeItem3(parts(2));
            item4 <- decodeItem4(parts(3)))
         yield (item1, item2, item3, item4)
-*/
     else None
   }
 

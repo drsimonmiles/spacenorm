@@ -5,37 +5,18 @@ import spacenorm.Decode.{decodeConfiguration, decodeState}
 import viz.Main.{newRunLoaded, nextStepLoaded}
 
 object LogDecode:
+  val configConsumer = LogConsumer.oneShot(4) { lines =>
+    decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
+  }
+  def stepConsumer(config: Configuration) = LogConsumer.oneShot(1) { lines =>
+    decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
+  }
+
   def openNewRun(reader: LogReader): Unit =
-    reader.openAndRead {
-      new LogConsumer {
-        val initialLines = 4
-        def processLines(lines: Array[String]): Int = {
-          println("Processing new run lines")
-          println(decodeConfiguration(lines.mkString("\n")).isDefined)
-          decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
-          0
-        }
-      }
-    }
+    reader.openAndRead(configConsumer)
 
   def loadNextState(reader: LogReader, config: Configuration): Unit =
-    reader.openAndRead {
-      new LogConsumer {
-        val initialLines = 1
-        def processLines(lines: Array[String]): Int = {
-          decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
-          0
-        }
-      }
-    }
+    reader.readMore(stepConsumer(config))
 
   def restartRun(reader: LogReader): Unit =
-    reader.readFromStart {
-      new LogConsumer {
-        val initialLines = 4
-        def processLines(lines: Array[String]): Int = {
-          decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
-          0
-        }
-      }
-    }
+    reader.readFromStart(configConsumer)

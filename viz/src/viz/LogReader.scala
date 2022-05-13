@@ -4,10 +4,6 @@ import org.scalajs.dom
 import org.scalajs.dom.html.Input
 import org.scalajs.dom.raw.{Event, File, FileReader}
 
-trait LogConsumer:
-  def initialLines: Int
-  def processLines(lines: Array[String]): Int
-
 class LogReader:
   val readChunkSize = 256
   private var currentFile: Option[File] = None

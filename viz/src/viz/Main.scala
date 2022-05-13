@@ -22,9 +22,8 @@ object Main {
   }
 
   @JSExportTopLevel("load")
-  def loadFromFile(): Unit = {
+  def loadFromFile(): Unit =
     openNewRun(reader)
-  }
 
   def newRunLoaded(newConfig: Configuration): Unit = {
     println("New run loaded")
