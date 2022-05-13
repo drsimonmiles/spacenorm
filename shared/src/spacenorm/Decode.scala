@@ -5,6 +5,8 @@ import spacenorm.Behaviours.*
 import spacenorm.Configuration.*
 import spacenorm.Position.*
 
+import Debug.checkDefined
+
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
@@ -14,7 +16,8 @@ object Decode:
           Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, maxMove, obstacleTopLefts, exits)
     })(code)
 
-  def decodeState(code: String, config: Configuration): Option[State] =
+  def decodeState(code: String, config: Configuration): Option[State] = {
+    println(s"To decode: $code")
     decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
       agentStates =>
         val agents        = agentStates.keys.toList
@@ -24,9 +27,18 @@ object Decode:
         val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
         State(config, agents, behaviour, position, goal, recentSuccess)
     }
+  }
 
-  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
-    failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
+  //def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
+    //failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
+
+  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] = {
+    val x = failOnAnyFail(code.split(" ").toList.map(decodeItem))
+    println(s"L1: ${x.isDefined}")
+    println(s"L2: ${x.map(_.size).mkString}")
+    println(s"L3: ${required}")
+    x.filterNot(list => required.exists(_ != list.size))
+  }
 
   def decodeMap[Key, Value](decodeKey: String => Option[Key], decodeValue: String => Option[Value])(code: String): Option[Map[Key, Value]] =
     decodeList(decode2Tuple(decodeKey, decodeValue, ':'))(code).map(_.toMap)
@@ -40,8 +52,12 @@ object Decode:
                                  (code: String): Option[(Item1, Item2)] = {
     val parts = code.split(separator)
     if (parts.size == 2)
-      for (item1 <- decodeItem1(parts(0));
+      for (item1 <- checkDefined("2.1", decodeItem1(parts(0)));
+           item2 <- checkDefined("2.2", decodeItem2(parts(1))))
+           /*
+           for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1)))
+           */
         yield (item1, item2)
     else None
   }
@@ -54,10 +70,16 @@ object Decode:
                                                (code: String): Option[(Item1, Item2, Item3, Item4)] = {
     val parts = code.split(separator)
     if (parts.size == 4)
-      for (item1 <- decodeItem1(parts(0));
+      for (item1 <- checkDefined("4.1", decodeItem1(parts(0)));
+           item2 <- checkDefined("4.2", decodeItem2(parts(1)));
+           item3 <- checkDefined("4.3", decodeItem3(parts(2)));
+           item4 <- checkDefined("4.4", decodeItem4(parts(3))))
+           /*
+           for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1));
            item3 <- decodeItem3(parts(2));
            item4 <- decodeItem4(parts(3)))
+           */
         yield (item1, item2, item3, item4)
     else None
   }

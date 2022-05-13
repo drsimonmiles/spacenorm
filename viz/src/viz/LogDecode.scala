@@ -5,12 +5,15 @@ import spacenorm.Decode.{decodeConfiguration, decodeState}
 import viz.Main.{newRunLoaded, nextStepLoaded}
 
 object LogDecode:
-  val configConsumer = LogConsumer.oneShot(4) { lines =>
+  val configConsumer = LogConsumer(4, { lines =>
     decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
-  }
-  def stepConsumer(config: Configuration) = LogConsumer.oneShot(1) { lines =>
-    decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
-  }
+  })
+  def stepConsumer(config: Configuration) = LogConsumer(1, { lines =>
+    println("decode state")
+    val x = decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
+    println(x.isDefined)
+    x
+  })
 
   def openNewRun(reader: LogReader): Unit =
     reader.openAndRead(configConsumer)

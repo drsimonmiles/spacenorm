@@ -26,8 +26,8 @@ object Main {
     openNewRun(reader)
 
   def newRunLoaded(newConfig: Configuration): Unit = {
-    println("New run loaded")
     config = Some(newConfig)
+    println(newConfig.toString)
     val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas]
     canvas.width  = newConfig.spaceWidth  * cellSize
     canvas.height = newConfig.spaceHeight * cellSize
@@ -36,8 +36,10 @@ object Main {
   }
 
   @JSExportTopLevel("step")
-  def step(): Unit =
-    config.foreach { loadNextState(reader, _) }
+  def step(): Unit = {
+    println ("step() called")
+    config.foreach { println ("now load next state"); loadNextState(reader, _) }
+  }
 
   def nextStepLoaded(state: State): Unit = {
     println ("Next step loaded")
@@ -45,7 +47,7 @@ object Main {
       println ("Drawing next step")
       val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas] 
       val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-      draw.fillStyle = "hsl(0.0, 100%, 50%)"//"hsl(0.0, 0.0, 0.0)"
+      draw.fillStyle = "hsl(0.0, 0.0, 0.0)"
       draw.fillRect(0, 0, loaded.spaceWidth  * cellSize, loaded.spaceHeight * cellSize)
       state.agents.foreach { agent =>
         showAgent(state.position(agent), draw)
