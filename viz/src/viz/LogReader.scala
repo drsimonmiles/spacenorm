@@ -38,6 +38,8 @@ class LogReader:
     val reader = new FileReader()
     reader.onload = readerEvent => {
       readUnprocessed = readUnprocessed + reader.result.toString
+      //println(s"${currentFile.map(_.size).getOrElse(0)} $nextStart ${readUnprocessed.length} ${readUnprocessed.count(_ == '\n')}")
+      println(readUnprocessed.take(300))
       processAndReadToCompletion(reader, consumer)
     }
     reader
@@ -48,7 +50,7 @@ class LogReader:
       if (nextStart < file.size) {
         val slice = file.slice(nextStart, (nextStart + readChunkSize).min(file.size.toInt))
         nextStart += readChunkSize
-        reader.readAsArrayBuffer(slice)
+        reader.readAsText(slice, "UTF-8")
       } else
         reader.abort
     }

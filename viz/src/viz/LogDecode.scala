@@ -2,46 +2,40 @@ package viz
 
 import spacenorm.{Configuration, State}
 import spacenorm.Decode.{decodeConfiguration, decodeState}
+import viz.Main.{newRunLoaded, nextStepLoaded}
 
 object LogDecode:
-  def openNewRun(reader: LogReader): Option[Configuration] = {
-    var config: Option[Configuration] = None
+  def openNewRun(reader: LogReader): Unit =
     reader.openAndRead {
       new LogConsumer {
         val initialLines = 4
         def processLines(lines: Array[String]): Int = {
-          config = decodeConfiguration(lines.mkString("\n"))
+          println("Processing new run lines")
+          println(decodeConfiguration(lines.mkString("\n")).isDefined)
+          decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
           0
         }
       }
     }
-    config
-  }
 
-  def loadNextState(reader: LogReader, config: Configuration): Option[State] = {
-    var state: Option[State] = None
+  def loadNextState(reader: LogReader, config: Configuration): Unit =
     reader.openAndRead {
       new LogConsumer {
         val initialLines = 1
         def processLines(lines: Array[String]): Int = {
-          state = decodeState(lines.mkString("\n"), config)
+          decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
           0
         }
       }
     }
-    state
-  }
 
-  def restartRun(reader: LogReader): Option[Configuration] = {
-    var config: Option[Configuration] = None
+  def restartRun(reader: LogReader): Unit =
     reader.readFromStart {
       new LogConsumer {
         val initialLines = 4
         def processLines(lines: Array[String]): Int = {
-          config = decodeConfiguration(lines.mkString("\n"))
+          decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
           0
         }
       }
     }
-    config
-  }

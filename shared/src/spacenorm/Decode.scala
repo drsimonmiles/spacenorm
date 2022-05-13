@@ -6,6 +6,11 @@ import spacenorm.Configuration.*
 import spacenorm.Position.*
 
 object Decode:
+  def checkDefined[T](name: String, value: Option[T]): Option[T] = {
+    println(s"$name: ${value.isDefined}")
+    value
+  }
+
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
       decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeList(decodePosition), decodeList(decodePosition), {
@@ -54,11 +59,18 @@ object Decode:
                                                (code: String): Option[(Item1, Item2, Item3, Item4)] = {
     val parts = code.split(separator)
     if (parts.size == 4)
+      for (item1 <- checkDefined("I4.1", decodeItem1(parts(0)));
+           item2 <- checkDefined("I4.2", decodeItem2(parts(1)));
+           item3 <- checkDefined("I4.3", decodeItem3(parts(2)));
+           item4 <- checkDefined("I4.4", decodeItem4(parts(3))))
+        yield (item1, item2, item3, item4)
+/*
       for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1));
            item3 <- decodeItem3(parts(2));
            item4 <- decodeItem4(parts(3)))
         yield (item1, item2, item3, item4)
+*/
     else None
   }
 
@@ -100,6 +112,7 @@ object Decode:
     (code: String): Option[Whole] =
     decode4Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, '\n')(code).map(construct)
 
+
   def decodeStructure[Item1, Item2, Item3, Item4, Item5, Item6, Whole]
     (decodeItem1: String => Option[Item1],
      decodeItem2: String => Option[Item2],
@@ -112,7 +125,7 @@ object Decode:
     decode6Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, decodeItem5, decodeItem6, '\n')(code).map(construct)
 
   def decodeList2Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item)] =
-    decodeList(decodeItem, Some(5))(code).map(list => (list(0), list(1)))
+    decodeList(decodeItem, Some(2))(code).map(list => (list(0), list(1)))
 
   def decodeList5Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item, Item, Item, Item)] =
     decodeList(decodeItem, Some(5))(code).map(list => (list(0), list(1), list(2), list(3), list(4)))
