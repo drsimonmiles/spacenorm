@@ -39,6 +39,8 @@ object Main {
       loadNextState(reader, loaded).map { state =>
         val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas] 
         val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+        draw.fillStyle = "hsl(0.0, 0.0, 0.0)"
+        draw.fillRect(0, 0, loaded.spaceWidth  * cellSize, loaded.spaceHeight * cellSize)
         state.agents.foreach { agent =>
           showAgent(state.position(agent), draw)
         }
