@@ -18,7 +18,7 @@ object Main {
   var playing: Boolean = false
 
   def main(args: Array[String]): Unit = {
-    dom.window.setInterval(() => stepIfPlaying(), 1000)
+    dom.window.setInterval(() => stepIfPlaying(), 10)
   }
 
   @JSExportTopLevel("load")

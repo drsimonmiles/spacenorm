@@ -15,7 +15,6 @@ object Decode:
     })(code)
 
   def decodeState(code: String, config: Configuration): Option[State] = {
-    println(s"To decode: $code")
     decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
       agentStates =>
         val agents        = agentStates.keys.toList
@@ -27,16 +26,8 @@ object Decode:
     }
   }
 
-  //def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
-    //failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
-
-  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] = {
-    val x = failOnAnyFail(code.split(" ").toList.map(decodeItem))
-    println(s"L1: ${x.isDefined}")
-    println(s"L2: ${x.map(_.size).mkString}")
-    println(s"L3: ${required}")
-    x.filterNot(list => required.exists(_ != list.size))
-  }
+  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
+    failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
 
   def decodeMap[Key, Value](decodeKey: String => Option[Key], decodeValue: String => Option[Value])(code: String): Option[Map[Key, Value]] =
     decodeList(decode2Tuple(decodeKey, decodeValue, ':'))(code).map(_.toMap)
