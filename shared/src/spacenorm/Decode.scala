@@ -5,8 +5,6 @@ import spacenorm.Behaviours.*
 import spacenorm.Configuration.*
 import spacenorm.Position.*
 
-import Debug.checkDefined
-
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
@@ -52,12 +50,8 @@ object Decode:
                                  (code: String): Option[(Item1, Item2)] = {
     val parts = code.split(separator)
     if (parts.size == 2)
-      for (item1 <- checkDefined("2.1", decodeItem1(parts(0)));
-           item2 <- checkDefined("2.2", decodeItem2(parts(1))))
-           /*
-           for (item1 <- decodeItem1(parts(0));
+      for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1)))
-           */
         yield (item1, item2)
     else None
   }
@@ -70,16 +64,10 @@ object Decode:
                                                (code: String): Option[(Item1, Item2, Item3, Item4)] = {
     val parts = code.split(separator)
     if (parts.size == 4)
-      for (item1 <- checkDefined("4.1", decodeItem1(parts(0)));
-           item2 <- checkDefined("4.2", decodeItem2(parts(1)));
-           item3 <- checkDefined("4.3", decodeItem3(parts(2)));
-           item4 <- checkDefined("4.4", decodeItem4(parts(3))))
-           /*
-           for (item1 <- decodeItem1(parts(0));
+      for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1));
            item3 <- decodeItem3(parts(2));
            item4 <- decodeItem4(parts(3)))
-           */
         yield (item1, item2, item3, item4)
     else None
   }

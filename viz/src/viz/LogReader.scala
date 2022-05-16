@@ -31,10 +31,8 @@ class LogReader:
 
   private def createReader(consumer: LogConsumer): FileReader = {
     neededLines = consumer.initialLines
-    println(s"neededLines set to $neededLines")
     val reader = new FileReader()
     reader.onload = readerEvent => {
-      println(s"neededLines on load $neededLines")
       readUnprocessed = readUnprocessed + reader.result.toString
       processAndReadToCompletion(reader, consumer)
     }
@@ -51,17 +49,12 @@ class LogReader:
         reader.abort
     }
 
-  private def processAndReadToCompletion(reader: FileReader, consumer: LogConsumer): Unit = {
-    println(s"Read so far: $readUnprocessed")
-    println(s"Newline count: ${readUnprocessed.count(_ == '\n')}")
-    println(s"Needed lines: $neededLines")
+  private def processAndReadToCompletion(reader: FileReader, consumer: LogConsumer): Unit =
     if (readUnprocessed.count(_ == '\n') < neededLines)
       readNextSlice(reader)
     else {
       reader.abort
       val lines = readUnprocessed.split("\n")
       readUnprocessed = lines.slice(neededLines, lines.length).mkString("\n")
-      println(s"Processing: ${lines.slice(0, neededLines).mkString("\n")}")
       consumer.processLines(lines.slice(0, neededLines))      
     }
-  }

@@ -8,6 +8,7 @@ object LogDecode:
   val configConsumer = LogConsumer(4, { lines =>
     decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
   })
+  
   def stepConsumer(config: Configuration) = LogConsumer(1, { lines =>
     println("decode state")
     val x = decodeState(lines.mkString("\n"), config).foreach(nextStepLoaded)
