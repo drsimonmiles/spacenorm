@@ -28,8 +28,15 @@ object Position:
   def randomPosition(width: Int, height: Int): Position =
     Position(Random.nextInt(width), Random.nextInt(height))
 
-  def randomPosition(configuration: Configuration): Position =
-    randomPosition(configuration.spaceWidth, configuration.spaceHeight)
+  def randomValidPosition(configuration: Configuration): Position = {
+    val position = randomPosition(configuration.spaceWidth, configuration.spaceHeight)
+    if (validAgentPosition(position, configuration))
+      position
+    else
+      randomValidPosition(configuration)
+  }
 
-  def validPosition(position: Position, configuration: Configuration): Boolean =
-    position.x >= 0 && position.x < configuration.spaceWidth && position.y >= 0 && position.y < configuration.spaceHeight
+  def validAgentPosition(position: Position, configuration: Configuration): Boolean =
+    position.x >= 0 && position.x < configuration.spaceWidth &&
+      position.y >= 0 && position.y < configuration.spaceHeight &&
+      !configuration.obstructed.contains(position)

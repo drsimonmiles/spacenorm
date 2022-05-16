@@ -24,12 +24,12 @@ case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, n
                      agents: List[Position], obstructed: List[Position]): Velocity =
     direction(position, goal).rotations.find { velocity =>
       var moved = velocity.moveFrom(position)
-      validPosition(moved, this) && !agents.contains(moved) || !obstructed.contains(moved)
+      validAgentPosition(moved, this) && !agents.contains(moved)
     }.getOrElse(Velocity(0, 0))
 
   def goalChoice(current: Goal, position: Position): Goal =
     if (current == position)
-      randomPosition(this)
+      randomValidPosition(this)
     else
       current
 

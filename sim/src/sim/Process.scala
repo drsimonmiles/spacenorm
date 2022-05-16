@@ -12,8 +12,8 @@ object Process:
     val config    = configuration1
     val agents    = nextAgents(config.numberAgents)
     val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
-    val position  = agents.map { agent => (agent, randomPosition(config)) }.toMap
-    val goal      = agents.map { agent => (agent, randomPosition(config)) }.toMap
+    val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
+    val goal      = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
     val successes = agents.map { agent => (agent, 0.0) }.toMap
 
     State(config, agents, behaviour, position, goal, successes)
@@ -90,7 +90,7 @@ object Process:
         nextAgent,
         randomBehaviour(state.config),
         state.config.randomExit, 
-        randomPosition(state.config)
+        randomValidPosition(state.config)
       ))
     else
       state
