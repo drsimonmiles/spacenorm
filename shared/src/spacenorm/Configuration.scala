@@ -7,18 +7,19 @@ import scala.util.Random
 
 case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
                          threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
-
-  def influenceFactor(distance: Double): Double =
-    1 - distance / threshold
-
   val obstructed: List[Position] =
     obstacleTopLefts.flatMap{ topLeft =>
       for (x <- 0 until obstacleSide; y <- 0 until obstacleSide)
         yield (move(topLeft, x, y))
     }
 
+  val validExits = exits.filter(validAgentPosition(_, this))
+
+  def influenceFactor(distance: Double): Double =
+    1 - distance / threshold
+
   def randomExit: Position =
-    exits(Random.nextInt(exits.size))
+    validExits(Random.nextInt(validExits.size))
 
   def chooseVelocity(position: Position, goal: Goal, behaviour: Behaviour,
                      agents: List[Position], obstructed: List[Position]): Velocity =

@@ -14,6 +14,9 @@ object View:
     config.obstacleTopLefts.foreach { topLeft =>
       showObstacle(topLeft, config, draw)
     }
+    config.validExits.foreach { topLeft =>
+      showExit(topLeft, config, draw)
+    }
     state.agents.foreach { agent =>
       showAgent(state.position(agent), state.behaviour(agent), draw)
     }
@@ -40,4 +43,10 @@ object View:
     val point = Projection.project(position)
     draw.fillStyle = "white"
     draw.fillRect(point.x, point.y, Projection.project(config.obstacleSide), Projection.project(config.obstacleSide))
+  }
+
+  def showExit(position: Position, config: Configuration, draw: CanvasRenderingContext2D): Unit = {
+    val point = Projection.project(position)
+    draw.fillStyle = "green"
+    draw.fillRect(point.x, point.y, cellSize, cellSize)
   }
