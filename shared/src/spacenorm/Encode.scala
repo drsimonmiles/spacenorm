@@ -1,7 +1,7 @@
 package spacenorm
 
 import spacenorm.Agents.*
-import spacenorm.Behaviours.*
+import spacenorm.Behaviour.encodeBehaviour
 import spacenorm.Configuration.*
 import spacenorm.Position.*
 

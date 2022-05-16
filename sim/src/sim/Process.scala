@@ -3,7 +3,7 @@ package sim
 import scala.util.Random
 import spacenorm.*
 import spacenorm.Agents.*
-import spacenorm.Behaviours.*
+import spacenorm.Behaviour.randomBehaviour
 import spacenorm.Configuration.configuration1
 import spacenorm.Position.*
 

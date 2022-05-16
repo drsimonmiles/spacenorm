@@ -1,6 +1,6 @@
 package spacenorm
 
-import spacenorm.Behaviours.*
+import spacenorm.Behaviour
 import spacenorm.Position
 import spacenorm.Position.*
 import scala.util.Random

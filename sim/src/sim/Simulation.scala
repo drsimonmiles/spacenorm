@@ -2,7 +2,7 @@ package sim
 
 import sim.Process.*
 import spacenorm.Encode.{encodeConfiguration, encodeState}
-import spacenorm.Behaviours
+import spacenorm.Behaviour.allBehaviours
 import java.io.PrintWriter
 import java.io.FileWriter
 
@@ -26,6 +26,6 @@ import java.io.FileWriter
   out.close
 
   val finalBehaviours = result.behaviour.values
-  for (behaviour <- Behaviours.allBehaviours(result.config))
+  for (behaviour <- allBehaviours(result.config))
     println(s"Number of agents with behaviour $behaviour: ${finalBehaviours.count(_ == behaviour)}")
 }

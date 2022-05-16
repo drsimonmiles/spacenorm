@@ -18,7 +18,7 @@ object Main {
   var playing: Boolean = false
 
   def main(args: Array[String]): Unit = {
-    dom.window.setInterval(() => stepIfPlaying(), 10)
+    dom.window.setInterval(() => stepIfPlaying(), 100)
   }
 
   @JSExportTopLevel("load")
@@ -46,7 +46,7 @@ object Main {
       draw.fillStyle = "black"
       draw.fillRect(0, 0, loaded.spaceWidth  * cellSize, loaded.spaceHeight * cellSize)
       state.agents.foreach { agent =>
-        showAgent(state.position(agent), draw)
+        showAgent(state.position(agent), state.behaviour(agent), draw)
       }
     }
 

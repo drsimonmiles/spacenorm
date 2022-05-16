@@ -1,7 +1,7 @@
 package spacenorm
 
 import spacenorm.Agents.Agent
-import spacenorm.Behaviours.Behaviour
+import spacenorm.Behaviour
 import spacenorm.Position.*
 
 type Goal = Position
