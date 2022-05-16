@@ -7,12 +7,10 @@ import org.scalajs.dom.raw.*
 import scala.scalajs.js.annotation.JSExportTopLevel
 import spacenorm.State
 import spacenorm.Configuration
-import viz.AgentView.showAgent
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
+import viz.View.{cellSize, showAgent, showBackground, showObstacle, showState}
 
 object Main {
-  val cellSize = 10
-
   val reader: LogReader = new LogReader
   var config: Option[Configuration] = None
   var playing: Boolean = false
@@ -43,11 +41,7 @@ object Main {
     config.foreach { loaded =>
       val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas] 
       val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-      draw.fillStyle = "black"
-      draw.fillRect(0, 0, loaded.spaceWidth  * cellSize, loaded.spaceHeight * cellSize)
-      state.agents.foreach { agent =>
-        showAgent(state.position(agent), state.behaviour(agent), draw)
-      }
+      showState(state, loaded, draw)
     }
 
   def stepIfPlaying(): Unit =
