@@ -71,3 +71,16 @@ object Configuration:
       threshold        = 10.0,
       maxMove          = Math.sqrt(2)
     )
+
+  def configuration2 =
+    createRandom(
+      spaceWidth       = 100,
+      spaceHeight      = 100,
+      numberAgents     = 1000,
+      numberBehaviours = 10,
+      numberObstacles  = 20,
+      obstacleSide     = 5,
+      numberExits      = 50,
+      threshold        = 10.0,
+      maxMove          = Math.sqrt(2)
+    )

@@ -32,9 +32,16 @@ object View:
     draw.beginPath
     draw.arc(point.x + cellSize / 2, point.y + cellSize / 2, cellSize / 2, 0, Math.PI * 2)
     behaviour.choice match {
-      case 0 => draw.fillStyle = "red"
-      case 1 => draw.fillStyle = "blue"
-      case _ => draw.fillStyle = "green"
+      case 0 => draw.fillStyle = "rgb(255,50,50)"
+      case 1 => draw.fillStyle = "rgb(200,50,50)"
+      case 2 => draw.fillStyle = "rgb(150,50,50)"
+      case 3 => draw.fillStyle = "rgb(100,50,50)"
+      case 4 => draw.fillStyle = "rgb(50,50,50)"
+      case 5 => draw.fillStyle = "rgb(255,100,50)"
+      case 6 => draw.fillStyle = "rgb(200,50,150)"
+      case 7 => draw.fillStyle = "rgb(150,150,150)"
+      case 8 => draw.fillStyle = "rgb(255,200,50)"
+      case _ => draw.fillStyle = "rgb(200,50,200)"
     }
     draw.fill
   }

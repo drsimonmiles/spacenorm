@@ -4,12 +4,12 @@ import scala.util.Random
 import spacenorm.*
 import spacenorm.Agents.*
 import spacenorm.Behaviour.randomBehaviour
-import spacenorm.Configuration.configuration1
+import spacenorm.Configuration.{configuration1, configuration2}
 import spacenorm.Position.*
 
 object Process:
   def newState: State = {
-    val config    = configuration1
+    val config    = configuration2
     val agents    = nextAgents(config.numberAgents)
     val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
     val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
