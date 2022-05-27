@@ -8,8 +8,7 @@ import spacenorm.Configuration.{configuration1, configuration2}
 import spacenorm.Position.*
 
 object Process:
-  def newState: State = {
-    val config    = configuration2
+  def newState(config: Configuration): State = {
     val agents    = nextAgents(config.numberAgents)
     val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
     val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap

@@ -4,8 +4,10 @@ import spacenorm.Behaviour
 import spacenorm.Position
 import spacenorm.Position.*
 import scala.util.Random
+import scala.io.Source
+import java.io.File
 
-case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
+final case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
                          threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
   val obstructed: List[Position] =
     obstacleTopLefts.flatMap{ topLeft =>
@@ -35,9 +37,8 @@ case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, n
       current
 
 object Configuration:
-  def createRandom(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int,
-                   numberObstacles: Int, obstacleSide: Int, numberExits: Int, threshold: Double, maxMove: Double) = {
-
+  def newFromSettings(settings: Settings): Configuration = {
+    import settings.*
     val obstacleTopLefts: List[Position] =
       List.fill(numberObstacles)(randomPosition(spaceWidth, spaceHeight))
 
@@ -59,8 +60,43 @@ object Configuration:
     Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, maxMove, obstacleTopLefts, exits)
   }
 
+  def newFromSettings(file: File): Configuration = {
+    val source = Source.fromFile(file)
+    val lines = source.getLines.toList
+    source.close
+    val attributes: Map[String, String] =
+      lines.map(_.trim).filter(_.nonEmpty).map(_.split("=")).map { parts =>
+        val key   = parts(0).trim
+        val value = parts(1).trim
+        (key, value)
+      }.toMap
+    val spaceWidth        = attributes("spaceWidth").toInt;
+    val spaceHeight       = attributes("spaceHeight").toInt
+    val numberAgents      = attributes("numberAgents").toInt
+    val numberBehaviours  = attributes("numberBehaviours").toInt
+    val numberObstacles   = attributes("numberObstacles").toInt
+    val obstacleSide      = attributes("obstacleSide").toInt
+    val numberExits       = attributes("numberExits").toInt
+    val threshold         = attributes("threshold").toDouble
+    val maxMove           = attributes("maxMove").toDouble
+ 
+    val settings =
+      Settings(
+        spaceWidth       = spaceWidth,
+        spaceHeight      = spaceHeight,
+        numberAgents     = numberAgents,
+        numberBehaviours = numberBehaviours,
+        numberObstacles  = numberObstacles,
+        obstacleSide     = obstacleSide,
+        numberExits      = numberExits,
+        threshold        = threshold,
+        maxMove          = maxMove
+      )
+    newFromSettings(settings)
+  }
+
   def configuration1 =
-    createRandom(
+    newFromSettings(Settings(
       spaceWidth       = 100,
       spaceHeight      = 100,
       numberAgents     = 1000,
@@ -70,10 +106,10 @@ object Configuration:
       numberExits      = 50,
       threshold        = 10.0,
       maxMove          = Math.sqrt(2)
-    )
+    ))
 
   def configuration2 =
-    createRandom(
+    newFromSettings(Settings(
       spaceWidth       = 100,
       spaceHeight      = 100,
       numberAgents     = 1000,
@@ -83,4 +119,4 @@ object Configuration:
       numberExits      = 50,
       threshold        = 10.0,
       maxMove          = Math.sqrt(2)
-    )
+    ))

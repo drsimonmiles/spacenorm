@@ -1,0 +1,9 @@
+spaceWidth       = 100
+spaceHeight      = 100
+numberAgents     = 1000
+numberBehaviours = 2
+numberObstacles  = 20
+obstacleSide     = 5
+numberExits      = 50
+threshold        = 10.0
+maxMove          = 1.41421

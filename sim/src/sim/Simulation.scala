@@ -5,14 +5,15 @@ import spacenorm.Encode.{encodeConfiguration, encodeState}
 import spacenorm.Behaviour.allBehaviours
 import java.io.PrintWriter
 import java.io.FileWriter
+import java.io.File
 
 @main def runExperiment = {
   val out = PrintWriter(FileWriter("experiment1.txt"))
+  val config = spacenorm.Configuration.newFromSettings(File("config.toml"))
+  val initial = newState(config)
+  out.println(encodeConfiguration(config))
 
-  val initial = newState
-  out.println(encodeConfiguration(initial.config))
-
-  val result = (1 to 100).foldLeft(initial) { (state, tick) =>
+  val result = (1 to 10).foldLeft(initial) { (state, tick) =>
     println(tick)
     out.println(encodeState(state))
     val step1 = interact(state)

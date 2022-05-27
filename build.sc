@@ -23,6 +23,5 @@ object viz extends ScalaJSModule {
 
   def ivyDeps: Target[Loose.Agg[Dep]] = super.ivyDeps() ++ Agg(
     ivy"org.scala-js::scalajs-dom::1.1.0".withDottyCompat(projectScalaVersion),
-    //ivy"com.lihaoyi::scalatags:0.11.1".withDottyCompat(projectScalaVersion),
   )
 }
