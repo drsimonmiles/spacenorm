@@ -9,7 +9,7 @@ import spacenorm.State
 object View:
   val cellSize = 10
 
-  def showState(state: State, config: Configuration, draw: CanvasRenderingContext2D): Unit = {
+  def showState(state: State, config: Configuration, agentColours: List[String], draw: CanvasRenderingContext2D): Unit = {
     showBackground(config, draw)
     config.obstacleTopLefts.foreach { topLeft =>
       showObstacle(topLeft, config, draw)
@@ -18,7 +18,7 @@ object View:
       showExit(topLeft, config, draw)
     }
     state.agents.foreach { agent =>
-      showAgent(state.position(agent), state.behaviour(agent), draw)
+      showAgent(state.position(agent), state.behaviour(agent), agentColours, draw)
     }
   }
 
@@ -27,11 +27,18 @@ object View:
     draw.fillRect(0, 0, config.spaceWidth * cellSize, config.spaceHeight * cellSize)
   }
 
-  def showAgent(position: Position, behaviour: Behaviour, draw: CanvasRenderingContext2D): Unit = {
+  def distinctColours(required: Int): List[String] =
+    (0 until required)
+      .map(point => (point.toDouble / required))
+      .map(hue => s"hsl(${(hue * 360).toInt},100%,50%)")
+      .toList
+
+  def showAgent(position: Position, behaviour: Behaviour, colours: List[String], draw: CanvasRenderingContext2D): Unit = {
     val point = Projection.project(position)
     draw.beginPath
     draw.arc(point.x + cellSize / 2, point.y + cellSize / 2, cellSize / 2, 0, Math.PI * 2)
-    behaviour.choice match {
+    draw.fillStyle = colours(behaviour.choice)
+/*    behaviour.choice match {
       case 0 => draw.fillStyle = "rgb(255,50,50)"
       case 1 => draw.fillStyle = "rgb(200,50,50)"
       case 2 => draw.fillStyle = "rgb(150,50,50)"
@@ -42,7 +49,7 @@ object View:
       case 7 => draw.fillStyle = "rgb(150,150,150)"
       case 8 => draw.fillStyle = "rgb(255,200,50)"
       case _ => draw.fillStyle = "rgb(200,50,200)"
-    }
+    }*/
     draw.fill
   }
 

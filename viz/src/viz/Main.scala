@@ -8,12 +8,13 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 import spacenorm.State
 import spacenorm.Configuration
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
-import viz.View.{cellSize, showAgent, showBackground, showObstacle, showState}
+import viz.View.{cellSize, distinctColours, showAgent, showBackground, showObstacle, showState}
 
 object Main {
   val reader: LogReader = new LogReader
   var config: Option[Configuration] = None
   var playing: Boolean = false
+  var agentColours: List[String] = Nil
 
   def main(args: Array[String]): Unit = {
     dom.window.setInterval(() => stepIfPlaying(), 100)
@@ -25,10 +26,10 @@ object Main {
 
   def newRunLoaded(newConfig: Configuration): Unit = {
     config = Some(newConfig)
-    println(newConfig.toString)
     val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas]
     canvas.width  = newConfig.spaceWidth  * cellSize
     canvas.height = newConfig.spaceHeight * cellSize
+    agentColours = distinctColours(newConfig.numberBehaviours)
     playing = false
     step()
   }
@@ -41,7 +42,7 @@ object Main {
     config.foreach { loaded =>
       val canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[Canvas] 
       val draw: CanvasRenderingContext2D = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-      showState(state, loaded, draw)
+      showState(state, loaded, agentColours, draw)
     }
 
   def stepIfPlaying(): Unit =
