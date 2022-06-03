@@ -5,3 +5,6 @@ object Debug:
     println(s"$name: ${value.isDefined}")
     value
   }
+
+  def checkDecoded[T](name: String, wrapped: String => Option[T]): String => Option[T] =
+    string => checkDefined(name, wrapped(string))

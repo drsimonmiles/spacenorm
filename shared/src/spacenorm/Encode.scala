@@ -6,6 +6,7 @@ object Encode:
     encodeStructure(
       encodeAll(encodeInt, spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
       encodeAll(encodeReal, threshold, maxMove),
+      encodeInfluence(distanceInfluence),
       encodeList(encodePosition, obstacleTopLefts),
       encodeList(encodePosition, exits)
     )
@@ -24,6 +25,9 @@ object Encode:
 
   def encodeBehaviour(behaviour: Behaviour): String =
     Encode.encodeInt(behaviour.choice)
+
+  def encodeInfluence(influence: Influence): String =
+    influence.toString
 
   def encodePosition(position: Position): String =
     Encode.encodePair(Encode.encodeInt)((position.x, position.y))

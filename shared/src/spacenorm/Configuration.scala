@@ -3,8 +3,17 @@ package spacenorm
 /**
  * Instances of this class hold the static configuration for a single run of the simulation.
  */
-final case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
-                               threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
+final case class Configuration(spaceWidth: Int,
+                               spaceHeight: Int,
+                               numberAgents: Int,
+                               numberBehaviours: Int,
+                               obstacleSide: Int, 
+                               threshold: Double,
+                               distanceInfluence: Influence,
+                               maxMove: Double,
+                               obstacleTopLefts: List[Position],
+                               exits: List[Position]):
+
   /** The set of possible behaviours in this configuration. */
   val allBehaviours: List[Behaviour] = (0 until numberBehaviours).map(Behaviour.apply).toList
   
@@ -27,4 +36,4 @@ final case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: 
 
   /** The influence factor at a given distance. */
   def influenceFactor(distance: Double): Double =
-    1 - distance / threshold
+    distanceInfluence.influenceFactor(distance, threshold)

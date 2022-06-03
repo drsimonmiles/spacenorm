@@ -32,7 +32,7 @@ object Generate:
       possibleExits(Random.nextInt(possibleExits.size))
     }
 
-    Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, maxMove, obstacleTopLefts, exits)
+    Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, maxMove, obstacleTopLefts, exits)
   }
 
   private var nextID: Int = 0

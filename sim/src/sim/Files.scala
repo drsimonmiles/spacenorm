@@ -2,6 +2,7 @@ package sim
 
 import java.io.File
 import scala.io.Source
+import spacenorm.Influence
 import spacenorm.Settings
 import java.io.PrintWriter
 import java.io.FileWriter
@@ -12,9 +13,9 @@ object Files:
     val lines = source.getLines.toList
     source.close
     lines
-      .map(_.trim)
-      .filter(_.contains("="))
       .map(_.takeWhile(_ != '#'))         // Remove comments
+      .filter(_.contains("="))
+      .map(_.trim)
       .map(_.split("="))
       .map { parts =>
         val key   = parts(0).trim
@@ -40,6 +41,7 @@ object Files:
       obstacleSide      = attributes("obstacleSide").toInt,
       numberExits       = attributes("numberExits").toInt,
       threshold         = attributes("threshold").toDouble,
+      distanceInfluence = Influence.valueOf(attributes("distanceInfluence")),
       maxMove           = attributes("maxMove").toDouble
     )
   }

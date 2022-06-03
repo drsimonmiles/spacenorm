@@ -1,15 +1,17 @@
 package spacenorm
 
+import Debug.checkDecoded
+
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
-      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeList(decodePosition), decodeList(decodePosition), {
+      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeList(decodePosition), decodeList(decodePosition), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-              (threshold, maxMove), obstacleTopLefts, exits) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, maxMove, obstacleTopLefts, exits)
+              (threshold, maxMove), distanceInfluence, obstacleTopLefts, exits) =>
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, maxMove, obstacleTopLefts, exits)
     })(code)
 
-  def decodeState(code: String, config: Configuration): Option[State] = {
+  def decodeState(code: String, config: Configuration): Option[State] =
     decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
       agentStates =>
         val agents        = agentStates.keys.toList
@@ -19,13 +21,15 @@ object Decode:
         val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
         State(config, agents, behaviour, position, goal, recentSuccess)
     }
-  }
 
   def decodeAgent(code: String): Option[Agent] =
     Decode.decodeInt(code).map(Agent.apply)
 
   def decodeBehaviour(code: String): Option[Behaviour] =
     Decode.decodeInt(code).map(Behaviour.apply)
+
+  def decodeInfluence(code: String): Option[Influence] = 
+    Some(Influence.valueOf(code))
 
   def decodePosition(code: String): Option[Position] =
     (Decode.decodePair(Decode.decodeInt)(code)).map(xy => Position(xy._1, xy._2))
@@ -67,6 +71,26 @@ object Decode:
     else None
   }
 
+  def decode5Tuple[Item1, Item2, Item3, Item4, Item5]
+    (decodeItem1: String => Option[Item1],
+     decodeItem2: String => Option[Item2],
+     decodeItem3: String => Option[Item3],
+     decodeItem4: String => Option[Item4],
+     decodeItem5: String => Option[Item5],
+     separator: Char)
+    (code: String): Option[(Item1, Item2, Item3, Item4, Item5)] = {
+
+    val parts = code.split(separator)
+    if (parts.size == 5)
+      for (item1 <- decodeItem1(parts(0));
+           item2 <- decodeItem2(parts(1));
+           item3 <- decodeItem3(parts(2));
+           item4 <- decodeItem4(parts(3));
+           item5 <- decodeItem5(parts(4)))
+        yield (item1, item2, item3, item4, item5)
+    else None
+  }
+
   def decode6Tuple[Item1, Item2, Item3, Item4, Item5, Item6]
     (decodeItem1: String => Option[Item1],
      decodeItem2: String => Option[Item2],
@@ -105,6 +129,15 @@ object Decode:
     (code: String): Option[Whole] =
     decode4Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, '\n')(code).map(construct)
 
+  def decodeStructure[Item1, Item2, Item3, Item4, Item5, Whole]
+    (decodeItem1: String => Option[Item1],
+     decodeItem2: String => Option[Item2],
+     decodeItem3: String => Option[Item3],
+     decodeItem4: String => Option[Item4],
+     decodeItem5: String => Option[Item5],
+     construct: ((Item1, Item2, Item3, Item4, Item5)) => Whole)
+    (code: String): Option[Whole] =
+    decode5Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, decodeItem5, '\n')(code).map(construct)
 
   def decodeStructure[Item1, Item2, Item3, Item4, Item5, Item6, Whole]
     (decodeItem1: String => Option[Item1],
