@@ -22,8 +22,9 @@ import sim.Process.runSimulation
           None
       runSimulation(settings, traceFile)
     }).toList
-  Future.sequence(runs).onComplete {
-    case Success(results) => System.exit(0)
-    case Failure(error) => error.printStackTrace
-  }
+  while (true)
+    Future.sequence(runs).onComplete {
+      case Success(results) => System.exit(0)
+      case Failure(error) => error.printStackTrace
+    }
 }
