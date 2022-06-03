@@ -50,7 +50,7 @@ object Generate:
     }
 
     Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
-                  distanceInfluence, maxMove, obstacleTopLefts, exits)
+                  distanceInfluence, netConstruction, maxMove, obstacleTopLefts, exits)
   }
 
   private var nextID: Int = 0
@@ -71,12 +71,19 @@ object Generate:
     val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
     val goal      = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
     val successes = agents.map { agent => (agent, 0.0) }.toMap
+    val distanced = State(config, agents, behaviour, position, goal, None, successes)
 
-    State(config, agents, behaviour, position, goal, successes)
+    config.netConstruction match {
+      case Networker.Distance => distanced
+      case Networker.Random   => randomMatchingNetwork(distanced)
+    }
   }
 
-  def randomBehaviour(configuration: Configuration): Behaviour =
-    Behaviour(Random.nextInt(configuration.numberBehaviours))
+  def randomAgent(state: State): Agent =
+    state.agents(Random.nextInt(state.agents.size))
+
+  def randomBehaviour(config: Configuration): Behaviour =
+    Behaviour(Random.nextInt(config.numberBehaviours))
 
   def randomExit(config: Configuration): Position =
     config.validExits(Random.nextInt(config.validExits.size))
@@ -90,4 +97,30 @@ object Generate:
       position
     else
       randomValidPosition(config)
+  }
+
+  /** 
+   * Generate a random network with the same number of edges as in the given simulation state.
+  */
+  def randomMatchingNetwork(state: State): State = {
+    val numberEdges = state.agents.flatMap {
+      agent1 => state.neighbours(agent1).map(agent2 => Set(agent1, agent2))
+    }.toSet.size
+    
+    def generateEdges(soFar: Set[Set[Agent]]): Set[Set[Agent]] =
+      if (soFar.size == numberEdges)
+        soFar
+      else {
+        val agent1 = randomAgent(state)
+        val agent2 = randomAgent(state)
+        generateEdges(if (agent1 == agent2) soFar else soFar + Set(agent1, agent2))
+      }
+
+    val edges = generateEdges(Set.empty)
+    val network =
+      state.agents.map { agent1 =>
+        (agent1, state.agents.filter(agent2 => edges.contains(Set(agent1, agent2))))
+      }.toMap
+    
+    state.copy(network = Some(network))
   }

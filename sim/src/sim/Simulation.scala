@@ -11,13 +11,6 @@ import sim.Process.runSimulation
   The main method to run the simulation. The command line takes an argument: the settings file.
 */
 @main def runExperiment(settingsFile: String) = {
-  /*val source = scala.io.Source.fromFile("experiment1.txt")
-  val lines = source.getLines.take(5)
-  val config = spacenorm.Decode.decodeConfiguration(lines.mkString("\n"))
-  println(config.map(_.distanceInfluence.toString).getOrElse("none"))
-  source.close
-  System.exit(0)*/
-
   val settings = loadSettings(File(settingsFile))
   val results = (1 to settings.numberRuns).map(run => {
     print(s"Run $run: ")
@@ -32,4 +25,13 @@ import sim.Process.runSimulation
   }).toList
 
   saveStats(results, File(settings.statsOutput))
+}
+
+def checkTrace: Unit = {
+  val source = scala.io.Source.fromFile("experiment1.txt")
+  val lines = source.getLines.take(6)
+  val config = spacenorm.Decode.decodeConfiguration(lines.mkString("\n"))
+  println(config.map(_.netConstruction.toString).getOrElse("none"))
+  source.close
+  System.exit(0)
 }

@@ -5,7 +5,7 @@ import spacenorm.Decode.{decodeConfiguration, decodeState}
 import viz.Main.{newRunLoaded, nextStepLoaded}
 
 object LogDecode:
-  val configConsumer = LogConsumer(5, { lines =>
+  val configConsumer = LogConsumer(6, { lines =>
     decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
   })
   

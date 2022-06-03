@@ -3,7 +3,7 @@ package sim
 import java.io.{File, FileWriter, PrintWriter}
 import scala.util.Random
 import sim.Generate.*
-import spacenorm.{Agent, Position, Settings, State, Velocity}
+import spacenorm.{Agent, Networker, Position, Settings, State, Velocity}
 import spacenorm.Encode.{encodeConfiguration, encodeState}
 import spacenorm.Position.direction
 
@@ -21,10 +21,13 @@ object Process:
           trace.foreach(_.println(encodeState(state)))
           val step1 = interact(state)
           val step2 = reviseBehaviour(step1)
-          val step3 = moveAll(step2)
-          val step4 = leave(step3)
-          val step5 = chooseGoals(step4)
-          val nextState = agentsJoin(step5)
+          val nextState =
+            if (settings.netConstruction == Networker.Distance && settings.maxMove > 0.0) {
+              val step3 = moveAll(step2)
+              val step4 = leave(step3)
+              val step5 = chooseGoals(step4)
+              agentsJoin(step5)
+            } else step2
           (nextState, result.addTick(tick, nextState))
         }
     trace.foreach(_.println(encodeState(finalState)))

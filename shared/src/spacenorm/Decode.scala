@@ -5,10 +5,10 @@ import Debug.checkDecoded
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
-      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeList(decodePosition), decodeList(decodePosition), {
+      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeNetworker, decodeList(decodePosition), decodeList(decodePosition), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-              (threshold, maxMove), distanceInfluence, obstacleTopLefts, exits) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, maxMove, obstacleTopLefts, exits)
+              (threshold, maxMove), distanceInfluence, netConstruction, obstacleTopLefts, exits) =>
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, maxMove, obstacleTopLefts, exits)
     })(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
@@ -19,7 +19,7 @@ object Decode:
         val position      = agents.map(agent => (agent, agentStates(agent)._2)).toMap
         val goal          = agents.map(agent => (agent, agentStates(agent)._3)).toMap
         val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
-        State(config, agents, behaviour, position, goal, recentSuccess)
+        State(config, agents, behaviour, position, goal, None, recentSuccess)
     }
 
   def decodeAgent(code: String): Option[Agent] =
@@ -30,6 +30,9 @@ object Decode:
 
   def decodeInfluence(code: String): Option[Influence] = 
     Some(Influence.valueOf(code))
+
+  def decodeNetworker(code: String): Option[Networker] = 
+    Some(Networker.valueOf(code))
 
   def decodePosition(code: String): Option[Position] =
     (Decode.decodePair(Decode.decodeInt)(code)).map(xy => Position(xy._1, xy._2))

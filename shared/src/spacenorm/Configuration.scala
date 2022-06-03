@@ -10,6 +10,7 @@ final case class Configuration(spaceWidth: Int,
                                obstacleSide: Int, 
                                threshold: Double,
                                distanceInfluence: Influence,
+                               netConstruction: Networker, 
                                maxMove: Double,
                                obstacleTopLefts: List[Position],
                                exits: List[Position]):

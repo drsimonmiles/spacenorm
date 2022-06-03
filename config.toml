@@ -1,7 +1,8 @@
 # For simulation without exit/entry, set numberExits = 0
 # For simulation without obstacles, set numberObstacles = 0
 # For simulation without movement, set maxMove = 0.0
-# For simulation without distance influencing interaction chance, set distanceInfluence to "Uniform"
+# For simulation without distance influencing interaction chance, set distanceInfluence to "Uniform" instead of "Linear"
+# For simulation without space (threshold distance) affecting network construction or anything else, set netConstruction to "Random" instead of "DIstance"
 
 [data]                               # Options for what data to output from simulations and where to
 statsOutput       = "stats.csv"      # CSV file to output stats from runs to
@@ -20,4 +21,5 @@ obstacleSide      = 5                 # The length of each side of a square obst
 numberExits       = 50                # The number of exit/entry points around the space
 threshold         = 10.0              # Threshold distance beyond which agents do not interact
 distanceInfluence = "Linear"          # How distance influences interaction: either "Linear" for influence decreasing linearly by distance or "Uniform" for no effect of distance
+netConstruction   = "Distance"        # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
 maxMove           = 1.5               # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal
