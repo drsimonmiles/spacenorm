@@ -1,10 +1,5 @@
 package spacenorm
 
-import spacenorm.Agents.*
-import spacenorm.Behaviour.encodeBehaviour
-import spacenorm.Configuration.*
-import spacenorm.Position.*
-
 object Encode:
   def encodeConfiguration(config: Configuration): String = {
     import config.*
@@ -23,6 +18,15 @@ object Encode:
     state.agents.map(agent =>
       (agent, (state.behaviour(agent), state.position(agent), state.goal(agent), state.recentSuccess(agent)))
     ).toMap
+
+  def encodeAgent(agent: Agent): String =
+    Encode.encodeInt(agent.id)
+
+  def encodeBehaviour(behaviour: Behaviour): String =
+    Encode.encodeInt(behaviour.choice)
+
+  def encodePosition(position: Position): String =
+    Encode.encodePair(Encode.encodeInt)((position.x, position.y))
 
   def encodeAll[Item](encodeItem: Item => String, items: Item*): String =
     encodeList(encodeItem, items.toList)

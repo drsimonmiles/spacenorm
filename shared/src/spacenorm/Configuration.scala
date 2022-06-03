@@ -1,122 +1,30 @@
 package spacenorm
 
-import spacenorm.Behaviour
-import spacenorm.Position
-import spacenorm.Position.*
-import scala.util.Random
-import scala.io.Source
-import java.io.File
-
+/**
+ * Instances of this class hold the static configuration for a single run of the simulation.
+ */
 final case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
-                         threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
+                               threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
+  /** The set of possible behaviours in this configuration. */
+  val allBehaviours: Set[Behaviour] = (0 until numberBehaviours).map(Behaviour.apply).toSet
+  
+  /** A convenience variable giving the positions that are blocked by an obstactle. */
   val obstructed: List[Position] =
     obstacleTopLefts.flatMap{ topLeft =>
       for (x <- 0 until obstacleSide; y <- 0 until obstacleSide)
-        yield (move(topLeft, x, y))
+        yield (topLeft.move(x, y))
     }
 
-  val validExits = exits.filter(validAgentPosition(_, this))
+  /** Determines whether the given position is one that an agent could occupy in the simulated space, i.e. within
+      the space bounds and not obstructed. */
+  def validAgentPosition(position: Position): Boolean =
+    position.x >= 0 && position.x < spaceWidth &&
+      position.y >= 0 && position.y < spaceHeight &&
+      !obstructed.contains(position)
 
+  /** The exits that are not obstructed and so can actually be used to enter or exit the space. */
+  val validExits = exits.filter(validAgentPosition)
+
+  /** The influence factor at a given distance. */
   def influenceFactor(distance: Double): Double =
     1 - distance / threshold
-
-  def randomExit: Position =
-    validExits(Random.nextInt(validExits.size))
-
-  def chooseVelocity(position: Position, goal: Goal, behaviour: Behaviour,
-                     agents: List[Position], obstructed: List[Position]): Velocity =
-    direction(position, goal).rotations.find { velocity =>
-      var moved = velocity.moveFrom(position)
-      validAgentPosition(moved, this) && !agents.contains(moved)
-    }.getOrElse(Velocity(0, 0))
-
-  def goalChoice(current: Goal, position: Position): Goal =
-    if (current == position)
-      randomValidPosition(this)
-    else
-      current
-
-object Configuration:
-  def newFromSettings(settings: Settings): Configuration = {
-    import settings.*
-    val obstacleTopLefts: List[Position] =
-      List.fill(numberObstacles)(randomPosition(spaceWidth, spaceHeight))
-
-    val possibleExits: List[Position] = {
-      val xSides = for (x <- 0 until spaceWidth) yield List(Position(x, 0), Position(x, spaceHeight - 1))
-      val ySides = for (y <- 0 until spaceHeight) yield List(Position(0, y), Position(spaceWidth - 1, y))
-      val oSides =
-        obstacleTopLefts.flatMap(pos =>
-          (for (d <- 0 until obstacleSide)
-            yield List(move(pos, d, -1), move(pos, d, obstacleSide), move(pos, -1, d), move(pos, obstacleSide, d)))
-        ) 
-      (xSides ++ ySides ++ oSides).flatten.toList
-    }
-
-    val exits: List[Position] = List.fill(numberExits) {
-      possibleExits(Random.nextInt(possibleExits.size))
-    }
-
-    Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, maxMove, obstacleTopLefts, exits)
-  }
-
-  def newFromSettings(file: File): Configuration = {
-    val source = Source.fromFile(file)
-    val lines = source.getLines.toList
-    source.close
-    val attributes: Map[String, String] =
-      lines.map(_.trim).filter(_.nonEmpty).map(_.split("=")).map { parts =>
-        val key   = parts(0).trim
-        val value = parts(1).trim
-        (key, value)
-      }.toMap
-    val spaceWidth        = attributes("spaceWidth").toInt;
-    val spaceHeight       = attributes("spaceHeight").toInt
-    val numberAgents      = attributes("numberAgents").toInt
-    val numberBehaviours  = attributes("numberBehaviours").toInt
-    val numberObstacles   = attributes("numberObstacles").toInt
-    val obstacleSide      = attributes("obstacleSide").toInt
-    val numberExits       = attributes("numberExits").toInt
-    val threshold         = attributes("threshold").toDouble
-    val maxMove           = attributes("maxMove").toDouble
- 
-    val settings =
-      Settings(
-        spaceWidth       = spaceWidth,
-        spaceHeight      = spaceHeight,
-        numberAgents     = numberAgents,
-        numberBehaviours = numberBehaviours,
-        numberObstacles  = numberObstacles,
-        obstacleSide     = obstacleSide,
-        numberExits      = numberExits,
-        threshold        = threshold,
-        maxMove          = maxMove
-      )
-    newFromSettings(settings)
-  }
-
-  def configuration1 =
-    newFromSettings(Settings(
-      spaceWidth       = 100,
-      spaceHeight      = 100,
-      numberAgents     = 1000,
-      numberBehaviours = 2,
-      numberObstacles  = 20,
-      obstacleSide     = 5,
-      numberExits      = 50,
-      threshold        = 10.0,
-      maxMove          = Math.sqrt(2)
-    ))
-
-  def configuration2 =
-    newFromSettings(Settings(
-      spaceWidth       = 100,
-      spaceHeight      = 100,
-      numberAgents     = 1000,
-      numberBehaviours = 10,
-      numberObstacles  = 20,
-      obstacleSide     = 5,
-      numberExits      = 50,
-      threshold        = 10.0,
-      maxMove          = Math.sqrt(2)
-    ))

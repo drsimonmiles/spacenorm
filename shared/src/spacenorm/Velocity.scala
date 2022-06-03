@@ -1,10 +1,8 @@
 package spacenorm
 
-import spacenorm.Position.*
-
-case class Velocity(dx: Int, dy: Int):
+final case class Velocity(dx: Int, dy: Int):
   def moveFrom(from: Position): Position =
-    move(from, dx, dy)
+    from.move(dx, dy)
 
   /** Rotate the velocity clockwise */
   def rotate: Velocity =

@@ -1,3 +1,11 @@
+[data]
+statsOutput       = "stats.csv"
+traceOutputPrefix = "experiment"
+numberRuns        = 5
+numberTraces      = 2
+
+[run]
+numberTicks      = 50
 spaceWidth       = 100
 spaceHeight      = 100
 numberAgents     = 1000

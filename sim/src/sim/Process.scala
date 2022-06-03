@@ -1,21 +1,31 @@
 package sim
 
+import java.io.{File, FileWriter, PrintWriter}
 import scala.util.Random
-import spacenorm.*
-import spacenorm.Agents.*
-import spacenorm.Behaviour.randomBehaviour
-import spacenorm.Configuration.{configuration1, configuration2}
-import spacenorm.Position.*
+import sim.Generate.*
+import spacenorm.{Agent, Settings, State, Velocity}
+import spacenorm.Encode.{encodeConfiguration, encodeState}
+import spacenorm.Position.direction
 
+/** Implements the process for enacting a single run of a simulation. */
 object Process:
-  def newState(config: Configuration): State = {
-    val agents    = nextAgents(config.numberAgents)
-    val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
-    val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
-    val goal      = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
-    val successes = agents.map { agent => (agent, 0.0) }.toMap
+  def runSimulation(settings: Settings, traceFile: Option[File]): Unit = {
+    val initialState = newState(newRunConfiguration(settings))
+    val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
 
-    State(config, agents, behaviour, position, goal, successes)
+    trace.foreach(_.println(encodeConfiguration(initialState.config)))
+    val result = (1 to settings.numberTicks).foldLeft(initialState) { (state, tick) =>
+      print(".")
+      trace.foreach(_.println(encodeState(state)))
+      val step1 = interact(state)
+      val step2 = reviseBehaviour(step1)
+      val step3 = moveAll(step2)
+      val step4 = leave(step3)
+      val step5 = chooseGoals(step4)
+      agentsJoin(step5)
+    }
+    trace.foreach(_.println(encodeState(result)))
+    trace.foreach(_.close)
   }
 
   // 1. Each agent interacts with its neighbours
@@ -24,7 +34,7 @@ object Process:
       state.agents.map{ agent =>
         val outcomes: List[Double] =
           state.neighbours(agent).toList.flatMap{ neighbour =>
-            if (Random.nextDouble < state.influenceFactor(state.distanceBetween(agent, neighbour)))
+            if (Random.nextDouble < state.config.influenceFactor(state.distanceBetween(agent, neighbour)))
               if (state.behaviour(agent) == state.behaviour(neighbour))
                 Some(1.0)
               else
@@ -53,10 +63,11 @@ object Process:
   def moveAll(state: State): State = {
     val newPositions =
       state.agents.map{ agent =>
-        val velocity: Velocity = state.config.chooseVelocity(
-          state.position(agent), state.goal(agent), state.behaviour(agent),
-          state.position.values.toList, state.config.obstructed
-        )
+        val velocity: Velocity = 
+          direction(state.position(agent), state.goal(agent)).rotations.find { velocity =>
+            var moved = velocity.moveFrom(state.position(agent))
+            state.config.validAgentPosition(moved) && !state.position.values.toList.contains(moved)
+          }.getOrElse(Velocity(0, 0))
         val oldPosition = state.position(agent)
         val newPosition = velocity.moveFrom(oldPosition)
         (agent, newPosition)
@@ -64,7 +75,7 @@ object Process:
     state.copy(position = newPositions)
   }
 
-    // 4. Leaving agents exit
+  // 4. Leaving agents exit
   def leave(state: State): State =
     state.agents
       .filter(agent => state.config.exits.contains(state.position(agent)))
@@ -76,7 +87,7 @@ object Process:
   def chooseGoals(state: State): State = {
     val newGoals =
       state.agents.map{ agent =>
-        val newGoal = state.config.goalChoice(state.goal(agent), state.position(agent))
+        val newGoal = chooseGoal(state.goal(agent), state.position(agent), state.config)
         (agent, newGoal)
       }.toMap
     state.copy(goal = newGoals)
@@ -88,7 +99,7 @@ object Process:
       agentsJoin(state.addAgent(
         nextAgent,
         randomBehaviour(state.config),
-        state.config.randomExit, 
+        randomExit(state.config),  // Randomly chosen valid entrance
         randomValidPosition(state.config)
       ))
     else

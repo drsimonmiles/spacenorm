@@ -1,10 +1,5 @@
 package spacenorm
 
-import spacenorm.Agents.*
-import spacenorm.Behaviour.decodeBehaviour
-import spacenorm.Configuration.*
-import spacenorm.Position.*
-
 object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
@@ -25,6 +20,15 @@ object Decode:
         State(config, agents, behaviour, position, goal, recentSuccess)
     }
   }
+
+  def decodeAgent(code: String): Option[Agent] =
+    Decode.decodeInt(code).map(Agent.apply)
+
+  def decodeBehaviour(code: String): Option[Behaviour] =
+    Decode.decodeInt(code).map(Behaviour.apply)
+
+  def decodePosition(code: String): Option[Position] =
+    (Decode.decodePair(Decode.decodeInt)(code)).map(xy => Position(xy._1, xy._2))
 
   def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
     failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))

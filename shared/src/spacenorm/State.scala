@@ -1,11 +1,10 @@
 package spacenorm
 
-import spacenorm.Agents.Agent
-import spacenorm.Behaviour
-import spacenorm.Position.*
+import spacenorm.Position.distance
 
 type Goal = Position
 
+/** The state of a simulation run at a given instant. */
 final case class State(
   config: Configuration,
   agents: List[Agent],
@@ -32,9 +31,6 @@ final case class State(
 
   def distanceBetween(agent1: Agent, agent2: Agent): Double =
     distance(position(agent1), position(agent2))
-
-  def influenceFactor(distance: Double): Double =
-    config.influenceFactor(distance)
 
   def neighbours(agent: Agent): Set[Agent] =
     edges.filter(_._1 == agent).map(_._2).toSet ++ edges.filter(_._2 == agent).map(_._1)
