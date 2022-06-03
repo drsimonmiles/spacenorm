@@ -3,7 +3,7 @@ package sim
 import java.io.{File, FileWriter, PrintWriter}
 import scala.util.Random
 import sim.Generate.*
-import spacenorm.{Agent, Settings, State, Velocity}
+import spacenorm.{Agent, Position, Settings, State, Velocity}
 import spacenorm.Encode.{encodeConfiguration, encodeState}
 import spacenorm.Position.direction
 
@@ -63,18 +63,21 @@ object Process:
 
   // 3. Move
   def moveAll(state: State): State = {
-    val newPositions =
-      state.agents.map{ agent =>
-        val velocity: Velocity = 
-          direction(state.position(agent), state.goal(agent)).rotations.find { velocity =>
-            var moved = velocity.moveFrom(state.position(agent))
-            state.config.validAgentPosition(moved) && !state.position.values.toList.contains(moved)
-          }.getOrElse(Velocity(0, 0))
-        val oldPosition = state.position(agent)
-        val newPosition = velocity.moveFrom(oldPosition)
-        (agent, newPosition)
-      }.toMap
-    state.copy(position = newPositions)
+    // Note we need each agent to be acting on the updated state to avoid two moving to the same position
+    val agents: List[Agent]       = state.agents
+    var positions: List[Position] = agents.map(state.position)
+    val newPosition = state.agents.zipWithIndex.map { (agent, index) =>
+      val velocity: Velocity = 
+        direction(state.position(agent), state.goal(agent)).rotations.find { velocity =>
+          var moved = velocity.moveFrom(state.position(agent))
+          state.config.validAgentPosition(moved) && !positions.contains(moved)
+        }.getOrElse(Velocity(0, 0))
+      val oldPosition = state.position(agent)
+      val newPosition = velocity.moveFrom(oldPosition)
+      positions = positions.updated(index, newPosition)
+      (agent, newPosition)
+    }.toMap
+    state.copy(position = newPosition)
   }
 
   // 4. Leaving agents exit
@@ -101,7 +104,7 @@ object Process:
       agentsJoin(state.addAgent(
         nextAgent,
         randomBehaviour(state.config),
-        randomExit(state.config),  // Randomly chosen valid entrance
+        randomExit(state.config),
         randomValidPosition(state.config)
       ))
     else

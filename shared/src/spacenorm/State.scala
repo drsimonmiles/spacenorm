@@ -43,3 +43,6 @@ final case class State(
       goal = goal.filter(_._1 != agent),
       recentSuccess = recentSuccess.filter(_._1 != agent)
     )
+
+  def setPosition(agent: Agent, newPosition: Position): State =
+    copy(position = position.filter(_._1 != agent) + (agent -> newPosition))

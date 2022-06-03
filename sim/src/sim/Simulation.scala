@@ -13,7 +13,7 @@ import sim.Process.runSimulation
 */
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
-  val runs: List[Future[Result]] =
+  /*val runs: List[Future[Result]] =
     (1 to settings.numberRuns).map(run => Future {
       val traceFile =
         if (run <= settings.numberTraces)
@@ -26,5 +26,13 @@ import sim.Process.runSimulation
     Future.sequence(runs).onComplete {
       case Success(results) => System.exit(0)
       case Failure(error) => error.printStackTrace
-    }
+    }*/
+  (1 to settings.numberRuns).map(run => {
+    val traceFile =
+      if (run <= settings.numberTraces)
+        Some(File(s"${settings.traceOutputPrefix}$run.txt"))
+      else
+        None
+    runSimulation(settings, traceFile)
+  }).toList
 }
