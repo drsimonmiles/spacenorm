@@ -14,4 +14,4 @@ numberObstacles  = 20                # Number of square obstacles placed in the 
 obstacleSide     = 5                 # The length of each side of a square obstacle
 numberExits      = 50                # The number of exit/entry points around the space
 threshold        = 10.0              # Threshold distance beyond which agents do not interact
-maxMove          = 1.41421           # Maximum distance an agent can move per time step
+maxMove          = 1.5               # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal

@@ -70,13 +70,15 @@ object Process:
     val agents: List[Agent]       = state.agents
     var positions: List[Position] = agents.map(state.position)
     val newPositions = state.agents.zipWithIndex.map { (agent, index) =>
-      val velocity: Velocity = 
-        direction(state.position(agent), state.goal(agent)).rotations.find { velocity =>
-          var moved = velocity.moveFrom(state.position(agent))
-          state.config.validAgentPosition(moved) && !positions.contains(moved)
-        }.getOrElse(Velocity(0, 0))
-      val oldPosition = state.position(agent)
-      val newPosition = velocity.moveFrom(oldPosition)
+      val newPosition =  
+        direction(state.position(agent), state.goal(agent)) // Most direct direction from agent to its goal
+          .rotations                                        // All possible rotations clockwise from most direct
+          .filter(_.distance <= state.config.maxMove)       // Only allow movement up to maximum distance in settings
+          .map(_.moveFrom(state.position(agent)))           // Position where agent would end if moving each direction
+          .filter(state.config.validAgentPosition)          // Exclude positions outside space or on obstacle
+          .filterNot(positions.contains)                    // Exclude positions containing other agents
+          .headOption                                       // Get the first direction still valid, if any
+          .getOrElse(state.position(agent))                 // If no direction is valid, agent stays where it is
       positions = positions.updated(index, newPosition)
       (agent, newPosition)
     }.toMap
