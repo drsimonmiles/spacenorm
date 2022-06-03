@@ -13,3 +13,10 @@ object Metrics:
 
   def highestPrevalence(state: State): Double =
     behaviourCounts(state).max.toDouble / state.config.numberAgents
+
+  def neighbourhoodCorrelation(state: State): Double =
+    val fractions = state.agents.map { agent =>
+      val neighbours = state.neighbours(agent)
+      neighbours.count(neighbour => state.behaviour(agent) == state.behaviour(neighbour)).toDouble / neighbours.size
+    }
+    fractions.sum / fractions.size
