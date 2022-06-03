@@ -15,7 +15,7 @@ object Process:
 
     trace.foreach(_.println(encodeConfiguration(initialState.config)))
     val (finalState, result) =
-      (1 to settings.numberTicks).foldLeft((initialState, Result(run))) { 
+      (1 to settings.numberTicks).foldLeft((initialState, Result(run, initialState))) { 
         case ((state, result), tick) =>
           print(".")
           trace.foreach(_.println(encodeState(state)))

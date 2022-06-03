@@ -10,5 +10,5 @@ final case class Result(run: Int, ticks: List[TickResult]):
     copy(ticks = TickResult(tick, behaviourCounts(state), neighbourhoodCorrelation(state)) :: ticks)
 
 object Result:
-  def apply(run: Int): Result =
-    Result(run, Nil)
+  def apply(run: Int, initialState: State): Result =
+    Result(run, Nil).addTick(0, initialState)
