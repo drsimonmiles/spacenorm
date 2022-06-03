@@ -13,12 +13,15 @@ import sim.Process.runSimulation
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
   val results = (1 to settings.numberRuns).map(run => {
+    print(s"Run $run: ")
     val traceFile =
       if (run <= settings.numberTraces)
         Some(File(s"${settings.traceOutputPrefix}$run.txt"))
       else
         None
-    runSimulation(run, settings, traceFile)
+    val result = runSimulation(run, settings, traceFile)
+    println
+    result
   }).toList
 
   saveStats(results, File(settings.statsOutput))

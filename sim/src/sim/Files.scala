@@ -11,9 +11,14 @@ object Files:
     val source = Source.fromFile(file)
     val lines = source.getLines.toList
     source.close
-    lines.map(_.trim).filter(_.contains("=")).map(_.split("=")).map { parts =>
+    lines
+      .map(_.trim)
+      .filter(_.contains("="))
+      .map(_.takeWhile(_ != '#'))         // Remove comments
+      .map(_.split("="))
+      .map { parts =>
         val key   = parts(0).trim
-        val value = parts(1).trim.replaceAll("^\"|\"$", "")
+        val value = parts(1).trim.replaceAll("^\"|\"$", "")    // Remove surrounding quotes from value if any
         (key, value)
     }.toMap
   }
