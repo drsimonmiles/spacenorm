@@ -1,14 +1,12 @@
 package viz
 
 import org.scalajs.dom
-import org.scalajs.dom.*
-import org.scalajs.dom.html.{Canvas, Input}
-import org.scalajs.dom.raw.*
+import org.scalajs.dom.html.Canvas
+import org.scalajs.dom.raw.CanvasRenderingContext2D
 import scala.scalajs.js.annotation.JSExportTopLevel
-import spacenorm.State
-import spacenorm.Configuration
+import spacenorm.{Configuration, State}
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
-import viz.View.{cellSize, distinctColours, showAgent, showBackground, showObstacle, showState}
+import viz.View.{cellSize, distinctColours, showState}
 
 object Main {
   val reader: LogReader = new LogReader

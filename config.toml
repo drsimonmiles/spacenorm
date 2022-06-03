@@ -5,7 +5,7 @@ numberRuns        = 1
 numberTraces      = 1
 
 [run]
-numberTicks      = 50
+numberTicks      = 1000
 spaceWidth       = 100
 spaceHeight      = 100
 numberAgents     = 1000

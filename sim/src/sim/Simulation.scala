@@ -1,6 +1,9 @@
 package sim
 
 import java.io.File
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 import sim.Files.loadSettings
 import sim.Process.runSimulation
 
@@ -10,20 +13,17 @@ import sim.Process.runSimulation
 */
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
-  (1 to settings.numberRuns).foreach { run =>
-    val traceFile =
-      if (run <= settings.numberTraces)
-        Some(File(s"${settings.traceOutputPrefix}$run.txt"))
-      else
-        None
-    print(s"Run $run: ")
-    runSimulation(settings, traceFile)
-    println
+  val runs: List[Future[Result]] =
+    (1 to settings.numberRuns).map(run => Future {
+      val traceFile =
+        if (run <= settings.numberTraces)
+          Some(File(s"${settings.traceOutputPrefix}$run.txt"))
+        else
+          None
+      runSimulation(settings, traceFile)
+    }).toList
+  Future.sequence(runs).onComplete {
+    case Success(results) => System.exit(0)
+    case Failure(error) => error.printStackTrace
   }
-
-/*
-
-  val finalBehaviours = result.behaviour.values
-  for (behaviour <- allBehaviours(result.config))
-    println(s"Number of agents with behaviour $behaviour: ${finalBehaviours.count(_ == behaviour)}")*/
 }

@@ -9,7 +9,7 @@ import spacenorm.Position.direction
 
 /** Implements the process for enacting a single run of a simulation. */
 object Process:
-  def runSimulation(settings: Settings, traceFile: Option[File]): Unit = {
+  def runSimulation(settings: Settings, traceFile: Option[File]): Result = {
     val initialState = newState(newRunConfiguration(settings))
     val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
 
@@ -26,6 +26,8 @@ object Process:
     }
     trace.foreach(_.println(encodeState(result)))
     trace.foreach(_.close)
+
+    Result()
   }
 
   // 1. Each agent interacts with its neighbours
