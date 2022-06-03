@@ -6,7 +6,7 @@ package spacenorm
 final case class Configuration(spaceWidth: Int, spaceHeight: Int, numberAgents: Int, numberBehaviours: Int, obstacleSide: Int, 
                                threshold: Double, maxMove: Double, obstacleTopLefts: List[Position], exits: List[Position]):
   /** The set of possible behaviours in this configuration. */
-  val allBehaviours: Set[Behaviour] = (0 until numberBehaviours).map(Behaviour.apply).toSet
+  val allBehaviours: List[Behaviour] = (0 until numberBehaviours).map(Behaviour.apply).toList
   
   /** A convenience variable giving the positions that are blocked by an obstactle. */
   val obstructed: List[Position] =

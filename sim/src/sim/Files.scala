@@ -3,6 +3,8 @@ package sim
 import java.io.File
 import scala.io.Source
 import spacenorm.Settings
+import java.io.PrintWriter
+import java.io.FileWriter
 
 object Files:
   def loadTOML(file: File): Map[String, String] = {
@@ -35,4 +37,14 @@ object Files:
       threshold         = attributes("threshold").toDouble,
       maxMove           = attributes("maxMove").toDouble
     )
+  }
+
+  def saveStats(results: List[Result], statsFile: File): Unit = {
+    val out = PrintWriter(FileWriter(statsFile))
+    results.foreach { result =>
+      result.ticks.foreach { tick =>
+        out.println(s"${result.run},${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood}")
+      }
+    }
+    out.close
   }

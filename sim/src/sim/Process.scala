@@ -9,25 +9,28 @@ import spacenorm.Position.direction
 
 /** Implements the process for enacting a single run of a simulation. */
 object Process:
-  def runSimulation(settings: Settings, traceFile: Option[File]): Result = {
+  def runSimulation(run: Int, settings: Settings, traceFile: Option[File]): Result = {
     val initialState = newState(newRunConfiguration(settings))
     val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
 
     trace.foreach(_.println(encodeConfiguration(initialState.config)))
-    val result = (1 to settings.numberTicks).foldLeft(initialState) { (state, tick) =>
-      print(".")
-      trace.foreach(_.println(encodeState(state)))
-      val step1 = interact(state)
-      val step2 = reviseBehaviour(step1)
-      val step3 = moveAll(step2)
-      val step4 = leave(step3)
-      val step5 = chooseGoals(step4)
-      agentsJoin(step5)
-    }
-    trace.foreach(_.println(encodeState(result)))
+    val (finalState, result) =
+      (1 to settings.numberTicks).foldLeft((initialState, Result(run))) { 
+        case ((state, result), tick) =>
+          print(".")
+          trace.foreach(_.println(encodeState(state)))
+          val step1 = interact(state)
+          val step2 = reviseBehaviour(step1)
+          val step3 = moveAll(step2)
+          val step4 = leave(step3)
+          val step5 = chooseGoals(step4)
+          val nextState = agentsJoin(step5)
+          (nextState, result.addTick(tick, nextState))
+        }
+    trace.foreach(_.println(encodeState(finalState)))
     trace.foreach(_.close)
 
-    Result()
+    result
   }
 
   // 1. Each agent interacts with its neighbours
@@ -66,7 +69,7 @@ object Process:
     // Note we need each agent to be acting on the updated state to avoid two moving to the same position
     val agents: List[Agent]       = state.agents
     var positions: List[Position] = agents.map(state.position)
-    val newPosition = state.agents.zipWithIndex.map { (agent, index) =>
+    val newPositions = state.agents.zipWithIndex.map { (agent, index) =>
       val velocity: Velocity = 
         direction(state.position(agent), state.goal(agent)).rotations.find { velocity =>
           var moved = velocity.moveFrom(state.position(agent))
@@ -77,7 +80,7 @@ object Process:
       positions = positions.updated(index, newPosition)
       (agent, newPosition)
     }.toMap
-    state.copy(position = newPosition)
+    state.copy(position = newPositions)
   }
 
   // 4. Leaving agents exit

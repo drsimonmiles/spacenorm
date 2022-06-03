@@ -5,7 +5,7 @@ import spacenorm.State
 object Metrics:
   val convergenceRatio = 0.95
 
-  def behaviourCounts(state: State): Set[Int] =
+  def behaviourCounts(state: State): List[Int] =
     state.config.allBehaviours.map(behaviour => state.behaviour.values.count(_ == behaviour))
 
   def converged(state: State): Boolean =
