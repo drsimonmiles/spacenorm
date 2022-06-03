@@ -15,10 +15,10 @@ final case class State(
   // Specific to coordination game diffusion
   recentSuccess: Map[Agent, Double]
 ):
-  lazy val edges = 
-    agents.flatMap { agent1 =>
-      agents.filter { agent2 => distanceBetween(agent1, agent2) <= config.threshold }.map { agent2 => (agent1, agent2) }
-    }
+  lazy val neighbours: Map[Agent, List[Agent]] =
+    agents.map { agent1 =>
+      (agent1, agents.filter { agent2 => agent2 != agent1 && distanceBetween(agent1, agent2) <= config.threshold })
+    }.toMap
 
   def addAgent(agent: Agent, agentBehaviour: Behaviour, agentPosition: Position, agentGoal: Goal): State =
     copy(
@@ -31,9 +31,6 @@ final case class State(
 
   def distanceBetween(agent1: Agent, agent2: Agent): Double =
     distance(position(agent1), position(agent2))
-
-  def neighbours(agent: Agent): Set[Agent] =
-    edges.filter(_._1 == agent).map(_._2).toSet ++ edges.filter(_._2 == agent).map(_._1)
 
   def removeAgent(agent: Agent): State =
     copy(

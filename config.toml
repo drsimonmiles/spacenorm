@@ -1,11 +1,11 @@
 [data]                               # Options for what data to output from simulations and where to
 statsOutput       = "stats.csv"      # CSV file to output stats from runs to
 traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered
-numberRuns        = 2                # Number of simulation runs to perform
-numberTraces      = 0                # Number of of those simulation runs to trace for visualisation
+numberRuns        = 1                # Number of simulation runs to perform
+numberTraces      = 1                # Number of of those simulation runs to trace for visualisation
 
 [run]                                # Options for the simulation model
-numberTicks      = 20                # Number of simulation ticks/time steps
+numberTicks      = 1000              # Number of simulation ticks/time steps
 spaceWidth       = 100               # Spatial width of the area in which agents interact
 spaceHeight      = 100               # Spatial height of the area in which agents interact
 numberAgents     = 1000              # Number of agents in initial state

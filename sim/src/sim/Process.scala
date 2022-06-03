@@ -56,8 +56,8 @@ object Process:
   // 2. Revise behaviour
   def reviseBehaviour(state: State): State = {
     val newBehaviour = state.agents.map { agent =>
-      // Find the neighbour who has recently been most successful
-      val bestNeighbour: Agent = state.neighbours (agent).maxBy(neighbour => state.recentSuccess(neighbour))
+      // Find the neighbour who has recently been most successful, or itself if it has no neighbours
+      val bestNeighbour: Agent = state.neighbours(agent).maxByOption(neighbour => state.recentSuccess(neighbour)).getOrElse(agent)
       // Return the behaviour of that most successful neighbour
       (agent, state.behaviour(bestNeighbour))
     }.toMap
