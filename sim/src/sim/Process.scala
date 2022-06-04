@@ -19,21 +19,24 @@ object Process:
         case ((state, result), tick) =>
           print(".")
           trace.foreach(_.println(encodeState(state)))
-          val step1 = interact(state)
-          val step2 = reviseBehaviour(step1)
-          val nextState =
-            if (settings.netConstruction == Networker.Distance && settings.maxMove > 0.0) {
-              val step3 = moveAll(step2)
-              val step4 = leave(step3)
-              val step5 = chooseGoals(step4)
-              agentsJoin(step5)
-            } else step2
+          val nextState = runTick(state)
           (nextState, result.addTick(tick, nextState))
         }
     trace.foreach(_.println(encodeState(finalState)))
     trace.foreach(_.close)
 
     result
+  }
+
+  def runTick(state: State): State = {
+    val step1 = interact(state)
+    val step2 = reviseBehaviour(step1)
+    if (state.config.netConstruction == Networker.Distance && state.config.maxMove > 0.0) {
+      val step3 = moveAll(step2)
+      val step4 = leave(step3)
+      val step5 = chooseGoals(step4)
+      agentsJoin(step5)
+    } else step2
   }
 
   // 1. Each agent interacts with its neighbours
