@@ -1,6 +1,8 @@
 package spacenorm
 
 object Encode:
+  def encodeSchemaVersion = "1"
+
   def encodeConfiguration(config: Configuration): String = {
     import config.*
     encodeStructure(

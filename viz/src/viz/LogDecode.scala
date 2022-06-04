@@ -1,12 +1,13 @@
 package viz
 
 import spacenorm.{Configuration, State}
-import spacenorm.Decode.{decodeConfiguration, decodeState}
+import spacenorm.Decode.{decodeConfiguration, decodeSchemaVersion, decodeState}
 import viz.Main.{newRunLoaded, nextStepLoaded}
 
 object LogDecode:
-  val configConsumer = LogConsumer(6, { lines =>
-    decodeConfiguration(lines.mkString("\n")).foreach(newRunLoaded)
+  val configConsumer = LogConsumer(7, { lines =>
+    decodeSchemaVersion(lines.head)
+    decodeConfiguration(lines.tail.mkString("\n")).foreach(newRunLoaded)
   })
   
   def stepConsumer(config: Configuration) = LogConsumer(1, { lines =>

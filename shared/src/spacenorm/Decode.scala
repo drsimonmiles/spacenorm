@@ -3,6 +3,9 @@ package spacenorm
 import Debug.checkDecoded
 
 object Decode:
+  def decodeSchemaVersion(code: String): Option[String] =
+    Some(code)
+
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
       decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeNetworker, decodeList(decodePosition), decodeList(decodePosition), {

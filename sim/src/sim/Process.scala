@@ -4,7 +4,7 @@ import java.io.{File, FileWriter, PrintWriter}
 import scala.util.Random
 import sim.Generate.*
 import spacenorm.{Agent, Networker, Position, Settings, State, Velocity}
-import spacenorm.Encode.{encodeConfiguration, encodeState}
+import spacenorm.Encode.{encodeConfiguration, encodeSchemaVersion, encodeState}
 import spacenorm.Position.direction
 
 /** Implements the process for enacting a single run of a simulation. */
@@ -13,6 +13,7 @@ object Process:
     val initialState = newState(newRunConfiguration(settings))
     val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
 
+    trace.foreach(_.println(encodeSchemaVersion))
     trace.foreach(_.println(encodeConfiguration(initialState.config)))
     val (finalState, result) =
       (1 to settings.numberTicks).foldLeft((initialState, Result(run, initialState))) { 
