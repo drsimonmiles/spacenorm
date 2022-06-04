@@ -11,6 +11,7 @@ final case class Configuration(spaceWidth: Int,
                                threshold: Double,
                                distanceInfluence: Influence,
                                netConstruction: Networker, 
+                               transmission: Transmission,
                                maxMove: Double,
                                obstacleTopLefts: List[Position],
                                exits: List[Position]):
@@ -34,6 +35,10 @@ final case class Configuration(spaceWidth: Int,
 
   /** The exits that are not obstructed and so can actually be used to enter or exit the space. */
   val validExits = exits.filter(validAgentPosition)
+
+  /** Pre-computed blocked transmission lines between position. */
+  val accessible: (Position, Position) => Boolean =
+    transmission.accessible(spaceWidth, spaceHeight, threshold, obstructed.contains)
 
   /** The influence factor at a given distance. */
   def influenceFactor(distance: Double): Double =

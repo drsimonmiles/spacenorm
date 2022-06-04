@@ -12,6 +12,7 @@ import sim.Process.runSimulation
   val settings = loadSettings(File(settingsFile))
   var seed     = settings.randomSeed
   val results = (1 to settings.numberRuns).map(run => {
+    val start = System.currentTimeMillis
     print(s"Run $run: ")
     val traceFile =
       if (run <= settings.numberTraces)
@@ -21,6 +22,7 @@ import sim.Process.runSimulation
     val random = if (seed >= 0) Random(seed) else Random()
     val result = runSimulation(run, settings, traceFile, random)
     if (seed >= 0) seed += 1
+    print(s" ${System.currentTimeMillis - start}ms")
     println
     result
   }).toList

@@ -10,6 +10,7 @@ object Encode:
       encodeAll(encodeReal, threshold, maxMove),
       encodeInfluence(distanceInfluence),
       encodeNetworker(netConstruction),
+      encodeTransmission(transmission),
       encodeList(encodePosition, obstacleTopLefts),
       encodeList(encodePosition, exits)
     )
@@ -34,6 +35,9 @@ object Encode:
 
   def encodeNetworker(netConstruction: Networker): String =
     netConstruction.toString
+
+  def encodeTransmission(transmission: Transmission): String =
+    transmission.toString
 
   def encodePosition(position: Position): String =
     Encode.encodePair(Encode.encodeInt)((position.x, position.y))

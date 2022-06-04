@@ -16,8 +16,12 @@ final case class State(
 ):
   lazy val neighbours: Map[Agent, List[Agent]] =
     network.getOrElse {
-      agents.map { agent1 =>
-        (agent1, agents.filter { agent2 => agent2 != agent1 && distanceBetween(agent1, agent2) <= config.threshold })
+      agents.map { agent1 => (
+        agent1,
+        agents
+          .filterNot(_ == agent1)
+          .filter(agent2 => config.accessible(position(agent1), position(agent2)))
+        )
       }.toMap
     }
 

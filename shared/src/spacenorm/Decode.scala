@@ -8,10 +8,10 @@ object Decode:
 
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
-      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeNetworker, decodeList(decodePosition), decodeList(decodePosition), {
+      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeNetworker, decodeTransmission, decodeList(decodePosition), decodeList(decodePosition), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-              (threshold, maxMove), distanceInfluence, netConstruction, obstacleTopLefts, exits) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, maxMove, obstacleTopLefts, exits)
+              (threshold, maxMove), distanceInfluence, netConstruction, transmission, obstacleTopLefts, exits) =>
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits)
     })(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
@@ -39,6 +39,9 @@ object Decode:
 
   def decodePosition(code: String): Option[Position] =
     (Decode.decodePair(Decode.decodeInt)(code)).map(xy => Position(xy._1, xy._2))
+
+  def decodeTransmission(code: String): Option[Transmission] = 
+    Some(Transmission.valueOf(code))
 
   def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
     failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
@@ -119,6 +122,30 @@ object Decode:
     else None
   }
 
+  def decode7Tuple[Item1, Item2, Item3, Item4, Item5, Item6, Item7]
+    (decodeItem1: String => Option[Item1],
+     decodeItem2: String => Option[Item2],
+     decodeItem3: String => Option[Item3],
+     decodeItem4: String => Option[Item4],
+     decodeItem5: String => Option[Item5],
+     decodeItem6: String => Option[Item6],
+     decodeItem7: String => Option[Item7],
+     separator: Char)
+    (code: String): Option[(Item1, Item2, Item3, Item4, Item5, Item6, Item7)] = {
+
+    val parts = code.split(separator)
+    if (parts.size == 7)
+      for (item1 <- decodeItem1(parts(0));
+           item2 <- decodeItem2(parts(1));
+           item3 <- decodeItem3(parts(2));
+           item4 <- decodeItem4(parts(3));
+           item5 <- decodeItem5(parts(4));
+           item6 <- decodeItem6(parts(5));
+           item7 <- decodeItem7(parts(6)))
+        yield (item1, item2, item3, item4, item5, item6, item7)
+    else None
+  }
+
   def decodeStructure[Item1, Item2, Whole]
     (decodeItem1: String => Option[Item1],
      decodeItem2: String => Option[Item2],
@@ -155,6 +182,18 @@ object Decode:
      construct: ((Item1, Item2, Item3, Item4, Item5, Item6)) => Whole)
     (code: String): Option[Whole] =
     decode6Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, decodeItem5, decodeItem6, '\n')(code).map(construct)
+
+  def decodeStructure[Item1, Item2, Item3, Item4, Item5, Item6, Item7, Whole]
+    (decodeItem1: String => Option[Item1],
+     decodeItem2: String => Option[Item2],
+     decodeItem3: String => Option[Item3],
+     decodeItem4: String => Option[Item4],
+     decodeItem5: String => Option[Item5],
+     decodeItem6: String => Option[Item6],
+     decodeItem7: String => Option[Item7],
+     construct: ((Item1, Item2, Item3, Item4, Item5, Item6, Item7)) => Whole)
+    (code: String): Option[Whole] =
+    decode7Tuple(decodeItem1, decodeItem2, decodeItem3, decodeItem4, decodeItem5, decodeItem6, decodeItem7, '\n')(code).map(construct)
 
   def decodeList2Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item)] =
     decodeList(decodeItem, Some(2))(code).map(list => (list(0), list(1)))

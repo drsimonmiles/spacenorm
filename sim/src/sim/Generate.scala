@@ -49,7 +49,7 @@ object Generate:
     }
 
     Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
-                  distanceInfluence, netConstruction, maxMove, obstacleTopLefts, exits)
+                  distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits)
   }
 
   private var nextID: Int = 0

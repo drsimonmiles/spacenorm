@@ -7,6 +7,21 @@ final case class Velocity(dx: Int, dy: Int):
   def moveFrom(from: Position): Position =
     from.move(dx, dy)
 
+  def pointsAlong(from: Position): Set[Position] = {
+    val maxLength   = dx.abs.max(dy.abs)
+    val dxPerLength = dx.toDouble / maxLength
+    val dyPerLength = dy.toDouble / maxLength
+
+    (0 to maxLength).map { step => 
+      val x = Math.round(from.x + dxPerLength * step).toInt
+      val y = Math.round(from.y + dyPerLength * step).toInt
+      Position(x, y)
+    }.toSet
+  }
+
+  def unitStep: Velocity =
+    Velocity (if (dx == 0) 0 else dx / dx.abs, if (dy == 0) 0 else dy / dy.abs)
+
   /** Rotate the velocity clockwise */
   def rotate: Velocity =
     Velocity(

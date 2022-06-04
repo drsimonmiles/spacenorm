@@ -7,8 +7,8 @@
 [data]                               # Options for what data to output from simulations and where to
 statsOutput       = "stats.csv"      # CSV file to output stats from runs to, NOTE: appends to existing content
 traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered
-numberRuns        = 2                # Number of simulation runs to perform
-numberTraces      = 2                # Number of of those simulation runs to trace for visualisation
+numberRuns        = 1                # Number of simulation runs to perform
+numberTraces      = 1                # Number of of those simulation runs to trace for visualisation
 randomSeed        = 0                # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
 
 [run]                                # Options for the simulation model
@@ -23,4 +23,5 @@ numberExits       = 50               # The number of exit/entry points around th
 threshold         = 10.0             # Threshold distance beyond which agents do not interact
 distanceInfluence = "Linear"         # How distance influences interaction: either "Linear" for influence decreasing linearly by distance or "Uniform" for no effect of distance
 netConstruction   = "Distance"       # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
+transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight, "Air" does not
 maxMove           = 1.5              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal
