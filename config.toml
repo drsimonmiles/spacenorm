@@ -23,5 +23,5 @@ numberExits       = 50               # The number of exit/entry points around th
 threshold         = 10.0             # Threshold distance beyond which agents do not interact
 distanceInfluence = "Linear"         # How distance influences interaction: either "Linear" for influence decreasing linearly by distance or "Uniform" for no effect of distance
 netConstruction   = "Distance"       # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
-transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight, "Air" does not
+transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight while "Air" does not
 maxMove           = 1.5              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal
