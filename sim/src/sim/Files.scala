@@ -42,7 +42,8 @@ object Files:
       threshold         = attributes("threshold").toDouble,
       distanceInfluence = Influence.valueOf(attributes("distanceInfluence")),
       netConstruction   = Networker.valueOf(attributes("netConstruction")),
-      maxMove           = attributes("maxMove").toDouble
+      maxMove           = attributes("maxMove").toDouble,
+      randomSeed        = attributes("randomSeed").toLong
     )
   }
 

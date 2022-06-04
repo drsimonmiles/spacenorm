@@ -9,8 +9,8 @@ import spacenorm.Position.direction
 
 /** Implements the process for enacting a single run of a simulation. */
 object Process:
-  def runSimulation(run: Int, settings: Settings, traceFile: Option[File]): Result = {
-    val initialState = newState(newRunConfiguration(settings))
+  def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random: Random): Result = {
+    val initialState = newState(newRunConfiguration(settings, random), random)
     val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
 
     trace.foreach(_.println(encodeSchemaVersion))
@@ -20,7 +20,7 @@ object Process:
         case ((state, result), tick) =>
           print(".")
           trace.foreach(_.println(encodeState(state)))
-          val nextState = runTick(state)
+          val nextState = runTick(state, random)
           (nextState, result.addTick(tick, nextState))
         }
     trace.foreach(_.println(encodeState(finalState)))
@@ -29,24 +29,24 @@ object Process:
     result
   }
 
-  def runTick(state: State): State = {
-    val step1 = interact(state)
+  def runTick(state: State, random: Random): State = {
+    val step1 = interact(state, random)
     val step2 = reviseBehaviour(step1)
     if (state.config.netConstruction == Networker.Distance && state.config.maxMove > 0.0) {
       val step3 = moveAll(step2)
       val step4 = leave(step3)
-      val step5 = chooseGoals(step4)
-      agentsJoin(step5)
+      val step5 = chooseGoals(step4, random)
+      agentsJoin(step5, random)
     } else step2
   }
 
   // 1. Each agent interacts with its neighbours
-  def interact(state: State): State = {
+  def interact(state: State, random: Random): State = {
     val thisRoundSuccesses = 
       state.agents.map{ agent =>
         val outcomes: List[Double] =
           state.neighbours(agent).toList.flatMap{ neighbour =>
-            if (Random.nextDouble < state.config.influenceFactor(state.distanceBetween(agent, neighbour)))
+            if (random.nextDouble < state.config.influenceFactor(state.distanceBetween(agent, neighbour)))
               if (state.behaviour(agent) == state.behaviour(neighbour))
                 Some(1.0)
               else
@@ -101,23 +101,23 @@ object Process:
       }
 
   // 5. Choose new goal
-  def chooseGoals(state: State): State = {
+  def chooseGoals(state: State, random: Random): State = {
     val newGoals =
       state.agents.map{ agent =>
-        val newGoal = chooseGoal(state.goal(agent), state.position(agent), state.config)
+        val newGoal = chooseGoal(state.goal(agent), state.position(agent), state.config, random)
         (agent, newGoal)
       }.toMap
     state.copy(goal = newGoals)
   }
 
   // 6. New agents join
-  def agentsJoin(state: State): State =
+  def agentsJoin(state: State, random: Random): State =
     if (state.agents.size < state.config.numberAgents)
       agentsJoin(state.addAgent(
         nextAgent,
-        randomBehaviour(state.config),
-        randomExit(state.config),
-        randomValidPosition(state.config)
-      ))
+        randomBehaviour(state.config, random),
+        randomExit(state.config, random),
+        randomValidPosition(state.config, random)
+      ), random)
     else
       state

@@ -4,15 +4,15 @@ import scala.util.Random
 import spacenorm.*
 
 object Generate:
-  def chooseGoal(current: Goal, position: Position, config: Configuration): Goal =
+  def chooseGoal(current: Goal, position: Position, config: Configuration, random: Random): Goal =
     if (current == position)
-      randomValidPosition(config)
+      randomValidPosition(config, random)
     else
       current
 
   /** Generate a single run's configuration from the settings fixed across all runs by
   randomly choosing obstacle and exit positions . */
-  def newRunConfiguration(settings: Settings): Configuration = {
+  def newRunConfiguration(settings: Settings, random: Random): Configuration = {
     import settings.*
 
     def withinObstacle(obstacle: Position, point: Position): Boolean =
@@ -31,12 +31,11 @@ object Generate:
       if (soFar.size == numberObstacles)
         soFar
       else {
-        val next = randomPosition(spaceWidth - obstacleSide - 1, spaceHeight - obstacleSide - 1).move(1, 1)
+        val next = randomPosition(spaceWidth - obstacleSide - 1, spaceHeight - obstacleSide - 1, random).move(1, 1)
         generateObstacles(if (overlaps(soFar, next)) soFar else next :: soFar)
       }
 
     val obstacleTopLefts: List[Position] = generateObstacles(Nil)
-      //List.fill(numberObstacles)(randomPosition(spaceWidth, spaceHeight))
 
     val possibleExits: List[Position] = {
       val xSides = for (x <- 0 until spaceWidth) yield List(Position(x, 0), Position(x, spaceHeight - 1))
@@ -46,7 +45,7 @@ object Generate:
     }
 
     val exits: List[Position] = List.fill(numberExits) {
-      possibleExits(Random.nextInt(possibleExits.size))
+      possibleExits(random.nextInt(possibleExits.size))
     }
 
     Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
@@ -65,44 +64,44 @@ object Generate:
   /**
    * Generate the initial state of a simulation run, given the static configuration.
    */
-  def newState(config: Configuration): State = {
+  def newState(config: Configuration, random: Random): State = {
     val agents    = nextAgents(config.numberAgents)
-    val behaviour = agents.map { agent => (agent, randomBehaviour(config)) }.toMap
-    val position  = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
-    val goal      = agents.map { agent => (agent, randomValidPosition(config)) }.toMap
+    val behaviour = agents.map { agent => (agent, randomBehaviour(config, random)) }.toMap
+    val position  = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
+    val goal      = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
     val successes = agents.map { agent => (agent, 0.0) }.toMap
     val distanced = State(config, agents, behaviour, position, goal, None, successes)
 
     config.netConstruction match {
       case Networker.Distance => distanced
-      case Networker.Random   => randomMatchingNetwork(distanced)
+      case Networker.Random   => randomMatchingNetwork(distanced, random)
     }
   }
 
-  def randomAgent(state: State): Agent =
-    state.agents(Random.nextInt(state.agents.size))
+  def randomAgent(state: State, random: Random): Agent =
+    state.agents(random.nextInt(state.agents.size))
 
-  def randomBehaviour(config: Configuration): Behaviour =
-    Behaviour(Random.nextInt(config.numberBehaviours))
+  def randomBehaviour(config: Configuration, random: Random): Behaviour =
+    Behaviour(random.nextInt(config.numberBehaviours))
 
-  def randomExit(config: Configuration): Position =
-    config.validExits(Random.nextInt(config.validExits.size))
+  def randomExit(config: Configuration, random: Random): Position =
+    config.validExits(random.nextInt(config.validExits.size))
 
-  def randomPosition(width: Int, height: Int): Position =
-    Position(Random.nextInt(width), Random.nextInt(height))
+  def randomPosition(width: Int, height: Int, random: Random): Position =
+    Position(random.nextInt(width), random.nextInt(height))
 
-  def randomValidPosition(config: Configuration): Position = {
-    val position = randomPosition(config.spaceWidth, config.spaceHeight)
+  def randomValidPosition(config: Configuration, random: Random): Position = {
+    val position = randomPosition(config.spaceWidth, config.spaceHeight, random)
     if (config.validAgentPosition(position))
       position
     else
-      randomValidPosition(config)
+      randomValidPosition(config, random)
   }
 
   /** 
    * Generate a random network with the same number of edges as in the given simulation state.
   */
-  def randomMatchingNetwork(state: State): State = {
+  def randomMatchingNetwork(state: State, random: Random): State = {
     val numberEdges = state.agents.flatMap {
       agent1 => state.neighbours(agent1).map(agent2 => Set(agent1, agent2))
     }.toSet.size
@@ -111,8 +110,8 @@ object Generate:
       if (soFar.size == numberEdges)
         soFar
       else {
-        val agent1 = randomAgent(state)
-        val agent2 = randomAgent(state)
+        val agent1 = randomAgent(state, random)
+        val agent2 = randomAgent(state, random)
         generateEdges(if (agent1 == agent2) soFar else soFar + Set(agent1, agent2))
       }
 

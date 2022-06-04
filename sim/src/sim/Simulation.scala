@@ -1,9 +1,7 @@
 package sim
 
 import java.io.File
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.Random
 import sim.Files.{loadSettings, saveStats}
 import sim.Process.runSimulation
 
@@ -12,6 +10,7 @@ import sim.Process.runSimulation
 */
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
+  var seed     = settings.randomSeed
   val results = (1 to settings.numberRuns).map(run => {
     print(s"Run $run: ")
     val traceFile =
@@ -19,7 +18,9 @@ import sim.Process.runSimulation
         Some(File(s"${settings.traceOutputPrefix}$run.txt"))
       else
         None
-    val result = runSimulation(run, settings, traceFile)
+    val random = if (seed >= 0) Random(seed) else Random()
+    val result = runSimulation(run, settings, traceFile, random)
+    if (seed >= 0) seed += 1
     println
     result
   }).toList
