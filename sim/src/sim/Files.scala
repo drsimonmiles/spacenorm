@@ -47,10 +47,24 @@ object Files:
   }
 
   def saveStats(results: List[Result], statsFile: File): Unit = {
-    val out = PrintWriter(FileWriter(statsFile))
+    val runOffset: Int = 
+      if (statsFile.exists) {
+        val source = Source.fromFile(statsFile)
+        val maxRun = source.getLines.map {
+          line =>
+            if (line.contains(","))
+              line.split(",").head.toInt
+            else
+              0
+        }.max
+        source.close
+        maxRun
+      } else 0
+
+    val out = PrintWriter(FileWriter(statsFile, true))
     results.foreach { result =>
       result.ticks.foreach { tick =>
-        out.println(s"${result.run},${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood}")
+        out.println(s"${result.run + runOffset},${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood}")
       }
     }
     out.close
