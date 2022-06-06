@@ -22,7 +22,7 @@ import spacenorm.Settings
     print(s"Run $run: ")
     val traceFile =
       if (run <= settings.numberTraces)
-        Some(File(s"${settings.traceOutputPrefix}$run.txt"))
+        Some(File(s"${settings.traceOutputPrefix}$run.trace"))
       else
         None
     val random = if (seed >= 0) Random(seed) else Random()

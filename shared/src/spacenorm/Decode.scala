@@ -1,7 +1,5 @@
 package spacenorm
 
-import Debug.checkDecoded
-
 object Decode:
   def decodeSchemaVersion(code: String): Option[String] =
     Some(code)

@@ -51,22 +51,20 @@ object Process:
 
   // 3. Move
   def moveAll(state: State): State = {
-    // Note we need each agent to be acting on the updated state to avoid two moving to the same position
-    val agents: List[Agent]       = state.agents
-    var positions: List[Position] = agents.map(state.position)
-    val newPositions = state.agents.zipWithIndex.map { (agent, index) =>
-      val newPosition =  
-        direction(state.position(agent), state.goal(agent)) // Most direct direction from agent to its goal
-          .rotations                                        // All possible rotations clockwise from most direct
-          .filter(_.distance <= state.config.maxMove)       // Only allow movement up to maximum distance in settings
-          .map(_.moveFrom(state.position(agent)))           // Position where agent would end if moving each direction
-          .filter(state.config.validAgentPosition)          // Exclude positions outside space or on obstacle
-          .filterNot(positions.contains)                    // Exclude positions containing other agents
-          .headOption                                       // Get the first direction still valid, if any
-          .getOrElse(state.position(agent))                 // If no direction is valid, agent stays where it is
-      positions = positions.updated(index, newPosition)
-      (agent, newPosition)
-    }.toMap
+    // Note we need each agent to be acting on the running updated state to avoid two moving to the same position
+    val newPositions = 
+      state.agents.foldLeft(state.position) { (positions, agent) =>
+        val newPosition =
+          direction(positions(agent), state.goal(agent))         // Most direct direction from agent to its goal
+            .rotations                                           // All possible rotations clockwise from most direct
+            .filter(_.distance <= state.config.maxMove)          // Only allow movement up to maximum distance in settings
+            .map(_.moveFrom(state.position(agent)))              // Position where agent would end if moving each direction
+            .filter(state.config.validAgentPosition)             // Exclude positions outside space or on obstacle
+            .filterNot(pos => positions.values.exists(_ == pos)) // Exclude positions containing other agents
+            .headOption                                          // Get the first direction still valid, if any
+            .getOrElse(state.position(agent))                    // If no direction is valid, agent stays where it is
+        positions + (agent -> newPosition)
+      }
     state.copy(position = newPositions)
   }
 

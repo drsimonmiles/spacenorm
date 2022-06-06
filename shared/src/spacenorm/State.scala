@@ -5,15 +5,14 @@ import spacenorm.Position.distance
 type Goal = Position
 
 /** The state of a simulation run at a given instant. */
-final case class State(
-  config: Configuration,
-  agents: List[Agent],
-  behaviour: Map[Agent, Behaviour],
-  position: Map[Agent, Position],
-  goal: Map[Agent, Goal],
-  network: Option[Map[Agent, List[Agent]]],
-  recentSuccess: Map[Agent, Double]
-):
+final case class State(config: Configuration,
+                       agents: List[Agent],
+                       behaviour: Map[Agent, Behaviour],
+                       position: Map[Agent, Position],
+                       goal: Map[Agent, Goal],
+                       network: Option[Map[Agent, List[Agent]]],
+                       recentSuccess: Map[Agent, Double]):
+
   lazy val neighbours: Map[Agent, List[Agent]] =
     network.getOrElse {
       agents.map { agent1 => (

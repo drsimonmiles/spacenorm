@@ -36,9 +36,8 @@ final case class Configuration(spaceWidth: Int,
   /** The exits that are not obstructed and so can actually be used to enter or exit the space. */
   val validExits = exits.filter(validAgentPosition)
 
-  /** Pre-computed blocked transmission lines between position. */
-  val accessible: (Position, Position) => Boolean =
-    transmission.accessible(spaceWidth, spaceHeight, threshold, obstructed.contains)
+  def accessible(from: Position, to: Position): Boolean =
+    transmission.accessible(from, to, threshold, obstructed.contains)
 
   /** The influence factor at a given distance. */
   def influenceFactor(distance: Double): Double =

@@ -16,5 +16,5 @@ object Position:
   def lineJoining(from: Position, to: Position): Velocity = {
     val dx = to.x - from.x
     val dy = to.y - from.y
-    Velocity (dx, dy)
+    Velocity(dx, dy)
   }
