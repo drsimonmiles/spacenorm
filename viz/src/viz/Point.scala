@@ -1,4 +1,4 @@
 package viz
 
 /** Position on the canvas */
-case class Point (x: Double, y: Double)
+final case class Point(x: Double, y: Double)

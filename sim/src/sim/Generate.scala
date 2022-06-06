@@ -48,8 +48,14 @@ object Generate:
       possibleExits(random.nextInt(possibleExits.size))
     }
 
-    Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
-                  distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits)
+    val distanced =
+      Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
+                    distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, None)
+
+    netConstruction match {
+      case Networker.Distance => distanced
+      case Networker.Random   => randomMatchingNetwork(newState(distanced, random), random)
+    }    
   }
 
   private var nextID: Int = 0
@@ -65,17 +71,13 @@ object Generate:
    * Generate the initial state of a simulation run, given the static configuration.
    */
   def newState(config: Configuration, random: Random): State = {
-    val agents    = nextAgents(config.numberAgents)
+    val agents    = config.agentsInNetwork.getOrElse(nextAgents(config.numberAgents))
     val behaviour = agents.map { agent => (agent, randomBehaviour(config, random)) }.toMap
     val position  = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
     val goal      = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
     val successes = agents.map { agent => (agent, 0.0) }.toMap
-    val distanced = State(config, agents, behaviour, position, goal, None, successes)
-
-    config.netConstruction match {
-      case Networker.Distance => distanced
-      case Networker.Random   => randomMatchingNetwork(distanced, random)
-    }
+    
+    State(config, agents, behaviour, position, goal, successes)
   }
 
   def randomAgent(state: State, random: Random): Agent =
@@ -101,7 +103,7 @@ object Generate:
   /** 
    * Generate a random network with the same number of edges as in the given simulation state.
   */
-  def randomMatchingNetwork(state: State, random: Random): State = {
+  def randomMatchingNetwork(state: State, random: Random): Configuration = {
     val numberEdges = state.agents.flatMap {
       agent1 => state.neighbours(agent1).map(agent2 => Set(agent1, agent2))
     }.toSet.size
@@ -121,5 +123,5 @@ object Generate:
         (agent1, state.agents.filter(agent2 => edges.contains(Set(agent1, agent2))))
       }.toMap
     
-    state.copy(network = Some(network))
+    state.config.copy(network = Some(network))
   }

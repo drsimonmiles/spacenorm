@@ -8,15 +8,14 @@ import spacenorm.{Configuration, State}
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
 import viz.View.{cellSize, distinctColours, showState}
 
-object Main {
+object Main:
   val reader: LogReader = new LogReader
   var config: Option[Configuration] = None
   var playing: Boolean = false
   var agentColours: List[String] = Nil
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     dom.window.setInterval(() => stepIfPlaying(), 100)
-  }
 
   @JSExportTopLevel("load")
   def loadFromFile(): Unit =
@@ -53,4 +52,3 @@ object Main {
   @JSExportTopLevel("restart")
   def restart(): Unit =
     restartRun(reader)
-}

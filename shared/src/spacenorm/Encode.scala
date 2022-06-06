@@ -1,18 +1,17 @@
 package spacenorm
 
 object Encode:
-  def encodeSchemaVersion = "1"
+  def encodeSchemaVersion = "1.1"
 
   def encodeConfiguration(config: Configuration): String = {
     import config.*
     encodeStructure(
       encodeAll(encodeInt, spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
       encodeAll(encodeReal, threshold, maxMove),
-      encodeInfluence(distanceInfluence),
-      encodeNetworker(netConstruction),
-      encodeTransmission(transmission),
+      encode3Tuple(encodeInfluence, encodeNetworker, encodeTransmission, ' ')(distanceInfluence, netConstruction, transmission),
       encodeList(encodePosition, obstacleTopLefts),
-      encodeList(encodePosition, exits)
+      encodeList(encodePosition, exits),
+      encodeOption(encodeMapToList[Agent, Agent](encodeAgent, encodeAgent, _), network)
     )
   }
 
@@ -45,14 +44,25 @@ object Encode:
   def encodeAll[Item](encodeItem: Item => String, items: Item*): String =
     encodeList(encodeItem, items.toList)
 
-  def encodeList[Item](encodeItem: Item => String, list: List[Item]): String =
-    list.map(encodeItem).mkString(" ")
+  def encodeList[Item](encodeItem: Item => String, list: List[Item], separator: String = " "): String =
+    list.map(encodeItem).mkString(separator)
 
   def encodeMap[Key, Value](encodeKey: Key => String, encodeValue: Value => String, map: Map[Key, Value]): String =
-    encodeList[(Key, Value)](entry => s"${encodeKey(entry._1)}:${encodeValue(entry._2)}", map.toList)
+    encodeList[(Key, Value)](entry => s"${encodeKey(entry._1)}:${encodeValue(entry._2)}", map.toList, "~")
+
+  def encodeMapToList[Key, Item](encodeKey: Key => String, encodeItem: Item => String, map: Map[Key, List[Item]]): String =
+    encodeMap(encodeKey, encodeList[Item](encodeItem, _), map)
+
+  def encodeOption[Item](encodeItem: Item => String, item: Option[Item]): String =
+    item.map(encodeItem).getOrElse("X")
 
   def encodePair[Item](encodeItem: Item => String)(pair: (Item, Item)): String =
     s"${encodeItem(pair._1)},${encodeItem(pair._2)}"
+
+  def encode3Tuple[Item1, Item2, Item3]
+    (encode1: Item1 => String, encode2: Item2 => String, encode3: Item3 => String, separator: Char)
+    (items: (Item1, Item2, Item3)): String =
+    s"${encode1(items._1)}$separator${encode2(items._2)}$separator${encode3(items._3)}"
 
   def encode4Tuple[Item1, Item2, Item3, Item4]
     (encode1: Item1 => String, encode2: Item2 => String, encode3: Item3 => String, encode4: Item4 => String, separator: Char)

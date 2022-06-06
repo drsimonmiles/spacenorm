@@ -9,7 +9,6 @@ class LogReader:
   private var currentFile: Option[File] = None
   private var nextStart: Int = 0
   private var readUnprocessed: String = ""
-  private var neededLines: Int = 0
 
   def openAndRead(consumer: LogConsumer): Unit = {
     val input = dom.document.getElementById("file-input").asInstanceOf[Input]
@@ -30,7 +29,7 @@ class LogReader:
     readNextSlice(createReader(consumer))    
 
   private def createReader(consumer: LogConsumer): FileReader = {
-    neededLines = consumer.initialLines
+    //neededLines = consumer.lines
     val reader = new FileReader()
     reader.onload = readerEvent => {
       readUnprocessed = readUnprocessed + reader.result.toString
@@ -50,11 +49,11 @@ class LogReader:
     }
 
   private def processAndReadToCompletion(reader: FileReader, consumer: LogConsumer): Unit =
-    if (readUnprocessed.count(_ == '\n') < neededLines)
+    if (readUnprocessed.count(_ == '\n') < consumer.lines)
       readNextSlice(reader)
     else {
       reader.abort
       val lines = readUnprocessed.split("\n")
-      readUnprocessed = lines.slice(neededLines, lines.length).mkString("\n")
-      consumer.processLines(lines.slice(0, neededLines))      
+      readUnprocessed = lines.slice(consumer.lines, lines.length).mkString("\n")
+      consumer.processLines(lines.slice(0, consumer.lines))
     }

@@ -11,7 +11,7 @@ object Projection:
     worldDistance * cellSize
 
   def projectLine(line: (Position, Position)): (Point, Point) =
-    (project (line._1), project (line._2))
+    (project(line._1), project(line._2))
 
   def unproject(point: Point): Position =
     Position(point.x.toInt / cellSize, point.y.toInt / cellSize)
@@ -20,4 +20,4 @@ object Projection:
     screenDistance / cellSize
 
   def unprojectLine(line: (Point, Point)): (Position, Position) =
-    (unproject (line._1), unproject (line._2))
+    (unproject(line._1), unproject(line._2))

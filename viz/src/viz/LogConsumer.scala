@@ -1,3 +1,3 @@
 package viz
 
-final case class LogConsumer(initialLines: Int, processLines: Array[String] => Unit)
+final case class LogConsumer(lines: Int, processLines: Array[String] => Unit)

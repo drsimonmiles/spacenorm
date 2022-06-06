@@ -14,11 +14,16 @@ final case class Configuration(spaceWidth: Int,
                                transmission: Transmission,
                                maxMove: Double,
                                obstacleTopLefts: List[Position],
-                               exits: List[Position]):
+                               exits: List[Position],
+                               network: Option[Map[Agent, List[Agent]]]):
 
   /** The set of possible behaviours in this configuration. */
   val allBehaviours: List[Behaviour] = (0 until numberBehaviours).map(Behaviour.apply).toList
   
+  /** If there is a fixed network, this gives the list of agents in it. */
+  val agentsInNetwork: Option[List[Agent]] =
+    network.map(neighbours => neighbours.toList.flatMap(a => a._1 :: a._2).distinct)
+
   /** A convenience variable giving the positions that are blocked by an obstactle. */
   val obstructed: List[Position] =
     obstacleTopLefts.flatMap{ topLeft =>

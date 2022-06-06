@@ -10,11 +10,10 @@ final case class State(config: Configuration,
                        behaviour: Map[Agent, Behaviour],
                        position: Map[Agent, Position],
                        goal: Map[Agent, Goal],
-                       network: Option[Map[Agent, List[Agent]]],
                        recentSuccess: Map[Agent, Double]):
 
   lazy val neighbours: Map[Agent, List[Agent]] =
-    network.getOrElse {
+    config.network.getOrElse {
       agents.map { agent1 => (
         agent1,
         agents

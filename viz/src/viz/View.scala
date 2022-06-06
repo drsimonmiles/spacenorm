@@ -1,10 +1,8 @@
 package viz
 
 import org.scalajs.dom.CanvasRenderingContext2D
-import spacenorm.Behaviour
-import spacenorm.Position
-import spacenorm.Configuration
-import spacenorm.State
+import spacenorm.{Behaviour, Configuration, Position, State}
+import viz.Projection.project
 
 object View:
   val cellSize = 10
@@ -15,7 +13,14 @@ object View:
       showObstacle(topLeft, config, draw)
     }
     config.validExits.foreach { topLeft =>
-      showExit(topLeft, config, draw)
+      showExit(topLeft, draw)
+    }
+    config.network.foreach { neighbours =>
+      neighbours.toList.foreach { list =>
+        val position1 = state.position(list._1)
+        println(list._2.size)
+        list._2.foreach { agent2 => showEdge(position1, state.position(agent2), draw) }
+      }
     }
     state.agents.foreach { agent =>
       showAgent(state.position(agent), state.behaviour(agent), agentColours, draw)
@@ -34,7 +39,7 @@ object View:
       .toList
 
   def showAgent(position: Position, behaviour: Behaviour, colours: List[String], draw: CanvasRenderingContext2D): Unit = {
-    val point = Projection.project(position)
+    val point = project(position)
     draw.beginPath
     draw.arc(point.x + cellSize / 2, point.y + cellSize / 2, cellSize / 2, 0, Math.PI * 2)
     draw.fillStyle = colours(behaviour.choice)
@@ -42,13 +47,23 @@ object View:
   }
 
   def showObstacle(position: Position, config: Configuration, draw: CanvasRenderingContext2D): Unit = {
-    val point = Projection.project(position)
+    val point = project(position)
     draw.fillStyle = "white"
-    draw.fillRect(point.x, point.y, Projection.project(config.obstacleSide), Projection.project(config.obstacleSide))
+    draw.fillRect(point.x, point.y, project(config.obstacleSide), project(config.obstacleSide))
   }
 
-  def showExit(position: Position, config: Configuration, draw: CanvasRenderingContext2D): Unit = {
-    val point = Projection.project(position)
+  def showExit(position: Position, draw: CanvasRenderingContext2D): Unit = {
+    val point = project(position)
     draw.fillStyle = "green"
     draw.fillRect(point.x, point.y, cellSize, cellSize)
+  }
+
+  def showEdge(position1: Position, position2: Position, draw: CanvasRenderingContext2D): Unit = {
+    val point1 = project(position1)
+    val point2 = project(position2)
+    draw.beginPath
+    draw.moveTo(point1.x + cellSize / 2, point1.y + cellSize / 2)
+    draw.strokeStyle = "darkgrey"
+    draw.lineTo(point2.x + cellSize / 2, point2.y + cellSize / 2)
+    draw.stroke
   }

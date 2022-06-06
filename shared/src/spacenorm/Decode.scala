@@ -6,11 +6,19 @@ object Decode:
 
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
-      decodeList5Tuple(decodeInt), decodeList2Tuple(decodeReal), decodeInfluence, decodeNetworker, decodeTransmission, decodeList(decodePosition), decodeList(decodePosition), {
+      decodeList5Tuple(decodeInt),
+      decodeList2Tuple(decodeReal),
+      decode3Tuple(decodeInfluence, decodeNetworker, decodeTransmission, ' '),
+      decodeList(decodePosition),
+      decodeList(decodePosition), 
+      decodeOption(decodeMap(decodeAgent, decodeList(decodeAgent))), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-              (threshold, maxMove), distanceInfluence, netConstruction, transmission, obstacleTopLefts, exits) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits)
-    })(code)
+              (threshold, maxMove),
+              (distanceInfluence, netConstruction, transmission),
+              obstacleTopLefts, exits, network) =>
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, network)
+      }
+    )(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
     decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
@@ -20,7 +28,7 @@ object Decode:
         val position      = agents.map(agent => (agent, agentStates(agent)._2)).toMap
         val goal          = agents.map(agent => (agent, agentStates(agent)._3)).toMap
         val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
-        State(config, agents, behaviour, position, goal, None, recentSuccess)
+        State(config, agents, behaviour, position, goal, recentSuccess)
     }
 
   def decodeAgent(code: String): Option[Agent] =
@@ -41,11 +49,18 @@ object Decode:
   def decodeTransmission(code: String): Option[Transmission] = 
     Some(Transmission.valueOf(code))
 
-  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None)(code: String): Option[List[Item]] =
-    failOnAnyFail(code.split(" ").toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
+  def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None, separator: String = " ")(code: String): Option[List[Item]] =
+    failOnAnyFail(code.split(separator).toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
 
   def decodeMap[Key, Value](decodeKey: String => Option[Key], decodeValue: String => Option[Value])(code: String): Option[Map[Key, Value]] =
-    decodeList(decode2Tuple(decodeKey, decodeValue, ':'))(code).map(_.toMap)
+    decodeList(decode2Tuple(decodeKey, decodeValue, ':'), None, "~")(code).map(_.toMap)
+
+  def decodeOption[Item](decodePresent: String => Option[Item])(code: String): Option[Option[Item]] =
+    code.headOption match {
+      case Some('X') => Some(None)
+      case Some(_) => decodePresent(code).map(item => Some(item))
+      case None => None
+    }
 
   def decodePair[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item)] =
     decode2Tuple(decodeItem, decodeItem, ',')(code)
@@ -59,6 +74,20 @@ object Decode:
       for (item1 <- decodeItem1(parts(0));
            item2 <- decodeItem2(parts(1)))
         yield (item1, item2)
+    else None
+  }
+
+  def decode3Tuple[Item1, Item2, Item3](decodeItem1: String => Option[Item1],
+                                        decodeItem2: String => Option[Item2],
+                                        decodeItem3: String => Option[Item3],
+                                        separator: Char)
+                                        (code: String): Option[(Item1, Item2, Item3)] = {
+    val parts = code.split(separator)
+    if (parts.size == 3)
+      for (item1 <- decodeItem1(parts(0));
+           item2 <- decodeItem2(parts(1));
+           item3 <- decodeItem3(parts(2)))
+        yield (item1, item2, item3)
     else None
   }
 
