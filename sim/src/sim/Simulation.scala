@@ -8,8 +8,11 @@ import sim.Process.runTick
 import spacenorm.Encode.{encodeConfiguration, encodeSchemaVersion, encodeState}
 import spacenorm.Settings
 
-/*
-  The main method to run the simulation. The command line takes an argument: the settings file.
+// This file contains the model-independent logic that initiates the simulation.
+
+/**
+  The main method to run the simulation.
+  The command line takes an argument: the settings file.
 */
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
@@ -33,6 +36,9 @@ import spacenorm.Settings
   saveStats(results, File(settings.statsOutput))
 }
 
+/**
+ * Performs one run of the simulation iterating, updating the state each tick.
+ */
 def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random: Random): Result = {
   val initialState = newState(newRunConfiguration(settings, random), random)
   val trace = traceFile.map(file => PrintWriter(FileWriter(file)))

@@ -5,7 +5,7 @@ import sim.Generate.{chooseGoal, nextAgent, randomBehaviour, randomExit, randomV
 import spacenorm.{Agent, Networker, Position, Settings, State, Velocity}
 import spacenorm.Position.direction
 
-/** Implements the process for enacting a single run of a simulation. */
+/** Implements the model-specific process for enacting a single run of a simulation. */
 object Process:
   def runTick(state: State, random: Random): State = {
     val step1 = interact(state, random)
