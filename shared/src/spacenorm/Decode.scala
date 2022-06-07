@@ -1,5 +1,8 @@
 package spacenorm
 
+/** Functionality to decode from Strings simulation traces recorded for visulisation, specifically the static configuration and
+ * each tick's state.
+ */
 object Decode:
   def decodeSchemaVersion(code: String): Option[String] =
     Some(code)

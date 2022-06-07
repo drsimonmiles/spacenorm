@@ -4,6 +4,7 @@ import spacenorm.{Configuration, State}
 import spacenorm.Decode.{decodeConfiguration, decodeSchemaVersion, decodeState}
 import viz.Main.{newRunLoaded, nextStepLoaded}
 
+/** Functionality to consume lines of a simulation trace and decode it to a representation of simulation states to visualise. */
 object LogDecode:
   val configConsumer = LogConsumer(7, { lines =>
     decodeSchemaVersion(lines.head)

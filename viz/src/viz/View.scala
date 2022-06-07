@@ -4,6 +4,9 @@ import org.scalajs.dom.CanvasRenderingContext2D
 import spacenorm.{Behaviour, Configuration, Position, State}
 import viz.Projection.project
 
+/** Functionality to show model-specific elements of the simulation state, constructing the visualisation display on
+ * the webpage canvas.
+ */
 object View:
   val cellSize = 10
 

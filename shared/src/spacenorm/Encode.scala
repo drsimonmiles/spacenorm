@@ -1,5 +1,8 @@
 package spacenorm
 
+/** Functionality to encode to Strings simulation traces for visulisation, specifically the static configuration and
+ * each tick's state.
+ */
 object Encode:
   def encodeSchemaVersion = "1.1"
 

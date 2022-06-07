@@ -8,6 +8,7 @@ import spacenorm.{Configuration, State}
 import viz.LogDecode.{openNewRun, loadNextState, restartRun}
 import viz.View.{cellSize, distinctColours, showState}
 
+/** Controls the trace visualisation, providing a link between the webpage, the trace file reading, and the drawing of simulation states. */
 object Main:
   val reader: LogReader = new LogReader
   var config: Option[Configuration] = None

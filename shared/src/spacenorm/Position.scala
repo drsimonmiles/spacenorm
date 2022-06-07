@@ -1,5 +1,6 @@
 package spacenorm
 
+/** A position in the grid space in which agents can move and interact. */
 final case class Position(x: Int, y: Int):
   def move(dx: Int, dy: Int): Position =
     Position(x + dx, y + dy)

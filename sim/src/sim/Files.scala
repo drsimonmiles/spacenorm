@@ -6,6 +6,7 @@ import spacenorm.{Influence, Networker, Settings, Transmission}
 import java.io.PrintWriter
 import java.io.FileWriter
 
+/** Functionality to load and save simulation-related data, such as configuration settings and stats output. */
 object Files:
   def loadTOML(file: File): Map[String, String] = {
     val source = Source.fromFile(file)

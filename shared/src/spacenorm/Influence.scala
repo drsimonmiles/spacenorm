@@ -1,5 +1,6 @@
 package spacenorm
 
+/** Denotes the way in which distance influences agents' probability of interaction. */
 enum Influence:
   case Linear, Uniform
 

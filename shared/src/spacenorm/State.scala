@@ -2,6 +2,7 @@ package spacenorm
 
 import spacenorm.Position.distance
 
+/** The goal that an agent is currently aiming for in its movement. */
 type Goal = Position
 
 /** The state of a simulation run at a given instant. */

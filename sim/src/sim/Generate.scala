@@ -3,6 +3,7 @@ package sim
 import scala.util.Random
 import spacenorm.*
 
+/** Functionality to randomly generate or select elements of the model as required. */
 object Generate:
   def chooseGoal(current: Goal, position: Position, config: Configuration, random: Random): Goal =
     if (current == position)

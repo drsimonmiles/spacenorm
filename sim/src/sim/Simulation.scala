@@ -58,12 +58,3 @@ def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random:
 
   result
 }
-
-def checkTrace: Unit = {
-  val source = scala.io.Source.fromFile("experiment1.txt")
-  val lines = source.getLines.take(6)
-  val config = spacenorm.Decode.decodeConfiguration(lines.mkString("\n"))
-  println(config.map(_.netConstruction.toString).getOrElse("none"))
-  source.close
-  System.exit(0)
-}

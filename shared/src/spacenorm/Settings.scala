@@ -1,6 +1,6 @@
 package spacenorm
 
-/** Settings loaded from model configuration file. */
+/** Settings loaded from the model configuration file. */
 final case class Settings(statsOutput: String,
                           traceOutputPrefix: String,
                           numberRuns: Int,

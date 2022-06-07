@@ -2,6 +2,7 @@ package spacenorm
 
 import Position.{distance, lineJoining}
 
+/** Denotes by what means agents interact and therefore what can obstruct that interaction. */
 enum Transmission:
   case Light, Air
 

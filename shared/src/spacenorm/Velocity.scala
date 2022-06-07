@@ -1,5 +1,6 @@
 package spacenorm
 
+/** The velocity that an agent will move or, equivalently, a vector between an agent's position and another position. */
 final case class Velocity(dx: Int, dy: Int):
   lazy val distance: Double =
     Math.sqrt((dx * dx) + (dy * dy))

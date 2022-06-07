@@ -2,6 +2,7 @@ package sim
 
 import spacenorm.State
 
+/** Functionality to analyse simulation states to determine key aggregate metrics. */
 object Metrics:
   val convergenceRatio = 0.95
 

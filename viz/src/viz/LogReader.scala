@@ -4,6 +4,7 @@ import org.scalajs.dom
 import org.scalajs.dom.html.Input
 import org.scalajs.dom.raw.{Event, File, FileReader}
 
+/** Controls reading of simulation trace files by loading blocks ready for decoding and visualising. */
 class LogReader:
   val readChunkSize = 256
   private var currentFile: Option[File] = None

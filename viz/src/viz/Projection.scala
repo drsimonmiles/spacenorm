@@ -3,6 +3,7 @@ package viz
 import spacenorm.Position
 import viz.View.cellSize
 
+/** Methods to translate from the simulation coordinates to canvas drawing coordinates and back. */
 object Projection:
   def project(coordinate: Position): Point =
     Point(coordinate.x * cellSize, coordinate.y * cellSize)
