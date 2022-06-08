@@ -1,6 +1,6 @@
 package sim
 
-import sim.Metrics.{behaviourCounts, meanUtility, neighbourhoodCorrelation}
+import spacenorm.Metrics.{behaviourCounts, meanUtility, neighbourhoodCorrelation}
 import spacenorm.State
 
 /** A summary of key data about the state at the end of a given simulation tick. */

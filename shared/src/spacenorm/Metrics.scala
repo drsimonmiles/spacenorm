@@ -1,4 +1,4 @@
-package sim
+package spacenorm
 
 import java.lang.Math.log
 import spacenorm.State
