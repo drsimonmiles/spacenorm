@@ -28,11 +28,11 @@ object Process:
               if (state.behaviour(agent) == state.behaviour(neighbour))
                 Some(1.0)
               else
-                Some(0.0)
+                Some(-1.0)
             else
               None
         }
-        val successRate = if (outcomes.size == 0) 0 else outcomes.sum / outcomes.size
+        val successRate = if (outcomes.size == 0) 0.0 else outcomes.sum / outcomes.size
         (agent, successRate)
       }.toMap
     state.copy(recentSuccess = thisRoundSuccesses)

@@ -7,9 +7,9 @@
 [data]                               # Options for what data to output from simulations and where to
 statsOutput       = "stats.csv"      # CSV file to output stats from runs to, NOTE: appends to existing content
 traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered
-numberRuns        = 2                # Number of simulation runs to perform
+numberRuns        = 10               # Number of simulation runs to perform
 numberTraces      = 0                # Number of of those simulation runs to trace for visualisation
-randomSeed        = 0                # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
+randomSeed        = -1               # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
 
 [run]                                # Options for the simulation model
 numberTicks       = 200              # Number of simulation ticks/time steps

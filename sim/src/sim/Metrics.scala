@@ -31,8 +31,11 @@ object Metrics:
   }
 
   def neighbourhoodCorrelation(state: State): Double =
-    val fractions = state.agents.map { agent =>
+    val fractions = state.agents.flatMap { agent =>
       val neighbours = state.neighbours(agent)
-      neighbours.count(neighbour => state.behaviour(agent) == state.behaviour(neighbour)).toDouble / neighbours.size
+      if (neighbours.size == 0)   // Exclude any agent with no neighbours from the calculation
+        None
+      else
+        Some(neighbours.count(neighbour => state.behaviour(agent) == state.behaviour(neighbour)).toDouble / neighbours.size)
     }
     fractions.sum / fractions.size
