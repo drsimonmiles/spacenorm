@@ -18,7 +18,7 @@ object Metrics:
     val frequencies = behaviourCounts.map(_ / total)                              // p(a)
     def log2(x: Double): Double = log(x) /log(2)                                  // log_2
     val entropy = -frequencies.map(frequency => frequency * log2(frequency)).sum  // H(a)
-    
+
     entropy / log2(behaviourCounts.size)
   }
 

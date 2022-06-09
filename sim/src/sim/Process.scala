@@ -32,7 +32,7 @@ object Process:
             else
               None
         }
-        val successRate = outcomes.sum / outcomes.size
+        val successRate = if (outcomes.size == 0) 0 else outcomes.sum / outcomes.size
         (agent, successRate)
       }.toMap
     state.copy(recentSuccess = thisRoundSuccesses)
