@@ -30,10 +30,8 @@ def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStat
   //val render     = ChartRenderingInfo()
 
   stats.zipWithIndex.foreach { si =>
-    print(s" ${field(si._1)}")
     series.add(si._2.toDouble, field(si._1))
   }
-  println
   val chart = createScatterPlot(plotTitle, "time", name, collection, PlotOrientation.VERTICAL, true, true, false)
   val plot  = chart.getPlot.asInstanceOf[XYPlot]
   val xAxis = plot.getDomainAxis.asInstanceOf[NumberAxis]
