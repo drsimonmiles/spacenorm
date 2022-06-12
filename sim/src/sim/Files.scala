@@ -33,7 +33,7 @@ object Files:
       convert(attributes.get(name).getOrElse {
         throw new SettingException(s"Settings file ${file.getName} is missing $name attribute")
       }).getOrElse {
-        throw new SettingException(s"Attribute $name in settings file ${file.getName} has the wrong type of value")
+        throw new SettingException(s"Attribute $name in settings file ${file.getName} has an invalid value")
       }
     def enumValue[EnumType](valueOf: String => EnumType): String => Option[EnumType] = {
       name => try { Some(valueOf(name)) } catch { 
