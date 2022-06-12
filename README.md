@@ -77,7 +77,7 @@ with another depends on the distance between them, with interaction being less l
 threshold distance. If interaction is based on sight (a choice by a model parameter), it is also only possible to interact if there
 is no obstruction to the line of sight between the agents. Agent interaction represents observation of each others’ behaviours or
 coordination between agents based on their behaviour within the space. We model this interaction as a coordination game, meaning
-that when two agents interact they both `win’ if they had the same behaviour on interacting and both `lose’ if they had different behaviours.
+that when two agents interact they both 'win' if they had the same behaviour on interacting and both 'lose' if they had different behaviours.
 
 **Diffusion**.
 After everyone has interacted, agents will look at those neighbours they can observe (i.e. those they could potentially
