@@ -6,6 +6,8 @@ import spacenorm.{Influence, Networker, Settings, Transmission}
 import java.io.PrintWriter
 import java.io.FileWriter
 
+final class SettingException(message: String) extends Exception(message)
+
 /** Functionality to load and save simulation-related data, such as configuration settings and stats output. */
 object Files:
   def loadTOML(file: File): Map[String, String] = {
@@ -27,25 +29,37 @@ object Files:
   def loadSettings(file: File): Settings = {
     val attributes: Map[String, String] = loadTOML(file)
  
+    def attribute[ItemType](name: String, convert: String => Option[ItemType] = s => Some(s)): ItemType =
+      convert(attributes.get(name).getOrElse {
+        throw new SettingException(s"Settings file ${file.getName} is missing $name attribute")
+      }).getOrElse {
+        throw new SettingException(s"Attribute $name in settings file ${file.getName} has the wrong type of value")
+      }
+    def enumValue[EnumType](valueOf: String => EnumType): String => Option[EnumType] = {
+      name => try { Some(valueOf(name)) } catch { 
+        case _: IllegalArgumentException => None          
+      }
+    }
+
     Settings(
-      statsOutput       = attributes("statsOutput"),
-      traceOutputPrefix = attributes("traceOutputPrefix"),
-      numberRuns        = attributes("numberRuns").toInt,
-      numberTraces      = attributes("numberTraces").toInt,
-      numberTicks       = attributes("numberTicks").toInt,
-      spaceWidth        = attributes("spaceWidth").toInt,
-      spaceHeight       = attributes("spaceHeight").toInt,
-      numberAgents      = attributes("numberAgents").toInt,
-      numberBehaviours  = attributes("numberBehaviours").toInt,
-      numberObstacles   = attributes("numberObstacles").toInt,
-      obstacleSide      = attributes("obstacleSide").toInt,
-      numberExits       = attributes("numberExits").toInt,
-      threshold         = attributes("threshold").toDouble,
-      distanceInfluence = Influence.valueOf(attributes("distanceInfluence")),
-      netConstruction   = Networker.valueOf(attributes("netConstruction")),
-      transmission      = Transmission.valueOf(attributes("transmission")),
-      maxMove           = attributes("maxMove").toDouble,
-      randomSeed        = attributes("randomSeed").toLong
+      statsOutput       = attribute("statsOutput"),
+      traceOutputPrefix = attribute("traceOutputPrefix"),
+      numberRuns        = attribute("numberRuns", _.toIntOption),
+      numberTraces      = attribute("numberTraces", _.toIntOption),
+      numberTicks       = attribute("numberTicks", _.toIntOption),
+      spaceWidth        = attribute("spaceWidth", _.toIntOption),
+      spaceHeight       = attribute("spaceHeight", _.toIntOption),
+      numberAgents      = attribute("numberAgents", _.toIntOption),
+      numberBehaviours  = attribute("numberBehaviours", _.toIntOption),
+      numberObstacles   = attribute("numberObstacles", _.toIntOption),
+      obstacleSide      = attribute("obstacleSide", _.toIntOption),
+      numberExits       = attribute("numberExits", _.toIntOption),
+      threshold         = attribute("threshold", _.toDoubleOption),
+      distanceInfluence = attribute("distanceInfluence", enumValue(Influence.valueOf)),
+      netConstruction   = attribute("netConstruction", enumValue(Networker.valueOf)),
+      transmission      = attribute("transmission", enumValue(Transmission.valueOf)),
+      maxMove           = attribute("maxMove", _.toDoubleOption),
+      randomSeed        = attribute("randomSeed", _.toLongOption)
     )
   }
 
