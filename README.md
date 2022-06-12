@@ -1,6 +1,6 @@
 # Spatial norms agent-based model
 
-An abstract agent-based model, written in Scala 3 with visualisation using Scala.js, of how physical space design could
+An abstract agent-based model, written in [Scala](https://www.scala-lang.org/) with visualisation using [Scala.js](https://www.scala-js.org/), of how physical space design could
 affect the emergence of expected behaviour.
 
 ## Running the model
