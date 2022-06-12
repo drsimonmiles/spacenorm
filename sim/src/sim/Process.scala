@@ -8,7 +8,7 @@ import spacenorm.Position.direction
 /** Implements the model-specific process for enacting a single run of a simulation. */
 object Process:
   def runTick(state: State, random: Random): State = {
-    val step1 = interact(state, random)
+    val step1 = interactAll(state, random)
     val step2 = reviseBehaviour(step1)
     if (state.config.netConstruction == Networker.Distance && state.config.maxMove > 0.0) {
       val step3 = moveAll(step2)
@@ -19,7 +19,7 @@ object Process:
   }
 
   // 1. Each agent interacts with its neighbours
-  def interact(state: State, random: Random): State = {
+  def interactAll(state: State, random: Random): State = {
     val thisRoundSuccesses = 
       state.agents.map{ agent =>
         val outcomes: List[Double] =

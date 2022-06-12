@@ -45,7 +45,7 @@ def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random:
 
   trace.foreach(_.println(encodeSchemaVersion))
   trace.foreach(_.println(encodeConfiguration(initialState.config)))
-  val (finalState, result) =
+  val (finalState, finalResult) =
     (1 to settings.numberTicks).foldLeft((initialState, Result(run, initialState))) { 
       case ((state, result), tick) =>
         print(".")
@@ -56,5 +56,5 @@ def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random:
   trace.foreach(_.println(encodeState(finalState)))
   trace.foreach(_.close)
 
-  result
+  finalResult
 }
