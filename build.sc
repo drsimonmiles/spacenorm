@@ -13,6 +13,10 @@ object sim extends ScalaModule {
 
   def sharedSources = T.sources { os.pwd / "shared" / "src" }
   override def sources = T.sources  { super.sources() ++ sharedSources() }
+
+  object test extends Tests with TestModule.Munit {
+    def ivyDeps = Agg(ivy"org.scalameta::munit::0.7.29")
+  }
 }
 
 /* The build module to compile the JavaScript trace visualiser interface */

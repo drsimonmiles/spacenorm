@@ -1,12 +1,19 @@
 <html>
- <head><title>Space norms!</title></head>
+ <head>
+   <title>Space norms!</title>
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
  <body>
-  <button onclick="load()">Load</button>
-  <button onclick="step()">Step</button>
-  <button onclick="run()">Run/Pause</button>
-  <button onclick="restart()">Restart</button>
-  <input id="file-input" type="file" name="name" style="display: none"/>
-  <canvas id="canvas"></canvas>
+  <div class="w3-bar w3-white w3-margin">
+    <button class="w3-button w3-teal w3-margin-left" onclick="load()">Load</button>
+    <button class="w3-button w3-blue" onclick="step()">Step</button>
+    <button class="w3-button w3-teal" onclick="run()">Run/Pause</button>
+    <button class="w3-button w3-blue" onclick="restart()">Restart</button>
+  </div>
+  <div class="w3-container w3-white">
+    <input id="file-input" type="file" name="name" style="display: none"/>
+    <div class="w3-margin-left"><canvas id="canvas"></canvas></div>
+  </div>
   <script src = "out/viz/fastOpt.dest/out.js"></script>
  </body>
 </html>
