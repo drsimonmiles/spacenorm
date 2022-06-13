@@ -20,7 +20,7 @@ final case class Result(run: Int, ticks: List[TickResult]):
   def getOrderedTicks: List[TickResult] =
     tickRange.flatMap(getTick).toList
 
-  lazy val lastTick: Int = ticks.map(_.tick).max
+  lazy val lastTick: Int = ticks.map(_.tick).maxOption.getOrElse(-1)
   lazy val tickRange: Range = 0 to lastTick
 
 object Result:
