@@ -13,11 +13,19 @@ object Metrics:
   def converged(behaviourCounts: List[Int]): Boolean =
     highestPrevalence(behaviourCounts) >= convergenceRatio
 
+  /**
+   * Global diversity calculation, taken from:
+   * Achieving Coordination in Multi-Agent Systems by Stable Local Conventions under Community Networks
+   * Hu & Leung, 2007
+   */
   def diversity(behaviourCounts: List[Int]): Double = {
     val total = behaviourCounts.sum.toDouble
-    val frequencies = behaviourCounts.map(_ / total)                              // p(a)
-    def log2(x: Double): Double = log(x) /log(2)                                  // log_2
-    val entropy = -frequencies.map(frequency => frequency * log2(frequency)).sum  // H(a)
+    val frequencies = behaviourCounts.map(_ / total)         // p(a)
+    def log2(x: Double): Double = log(x) /log(2)             // log_2
+    val entropy = -frequencies.map { frequency =>            // H(a)
+      if (frequency == 0.0) 0.0                              // Required as if frequency=0 for a behaviour
+      else frequency * log2(frequency)                       // then log2(frequency) would be NaN
+    }.sum
 
     entropy / log2(behaviourCounts.size)
   }
@@ -36,6 +44,8 @@ object Metrics:
       if (neighbours.size == 0)   // Exclude any agent with no neighbours from the calculation
         None
       else
-        Some(neighbours.count(neighbour => state.behaviour(agent) == state.behaviour(neighbour)).toDouble / neighbours.size)
+        Some(neighbours.count(neighbour =>
+          state.behaviour(agent) == state.behaviour(neighbour)
+        ).toDouble / neighbours.size)
     }
-    fractions.sum / fractions.size
+    if (fractions.isEmpty) 0.0 else fractions.sum / fractions.size

@@ -3,9 +3,8 @@ package sim
 import spacenorm.Behaviour
 import sim.Prebuilt.*
 
-class ResultSuite extends munit.FunSuite {
-  val countsA             = List(10, 20)
-  def resultAt(tick: Int) = TickResult(tick, countsA, 0.0, 0.0)
+class ResultSuite extends munit.FunSuite:
+  def resultAt(tick: Int) = TickResult(tick, behaviourCountsA, 0.0, 0.0)
   val tickResultsA        = List(resultAt(2), resultAt(1), resultAt(0))
   val runResultsA         = Result(1, tickResultsA)
 
@@ -62,4 +61,3 @@ class ResultSuite extends munit.FunSuite {
     assertEquals(newRunResult.getTick(0).map(_.prevalences), Some(List(500, 500)))
     assertEquals(newRunResult.getTick(0).map(_.meanUtility), Some(0.0))
   }
-}

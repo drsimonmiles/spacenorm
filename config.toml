@@ -1,9 +1,3 @@
-# For simulation without exit/entry, set numberExits = 0
-# For simulation without obstacles, set numberObstacles = 0
-# For simulation without movement, set maxMove = 0.0
-# For simulation without distance influencing interaction chance, set distanceInfluence to "Uniform" instead of "Linear"
-# For simulation without space (threshold distance) affecting network construction or anything else, set netConstruction to "Random" instead of "Distance"
-
 [data]                               # Options for what data to output from simulations and where to
 statsOutput       = "stats.csv"      # CSV file to output stats from runs to, NOTE: appends to existing content
 traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered

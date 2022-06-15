@@ -29,3 +29,5 @@ object Prebuilt:
                      position      = positionsA,
                      goal          = goalsA,
                      recentSuccess = recentSuccessesA)
+  val behaviourCountsA = List(10, 20)
+  val behaviourCountsB = List(1, 2, 99)
