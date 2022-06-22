@@ -15,11 +15,12 @@ import spacenorm.Settings
   The command line takes an argument: the settings file.
 */
 @main def runExperiment(settingsFile: String) = {
-  val settings  = loadSettings(File(settingsFile))
-  val output    = File(File(settings.statsOutput), "out.csv")
+  val settings = loadSettings(File(settingsFile))
+  val outputDir = File(settings.statsOutput)
+  val output    = File(outputDir, s"${settings.abbreviation}.csv")
   var seed      = settings.randomSeed
 
-  output.mkdirs
+  outputDir.mkdirs
   (1 to settings.numberRuns).foreach { run => {
     val start = System.currentTimeMillis
     print(s"Run $run: ")

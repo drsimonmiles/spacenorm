@@ -63,8 +63,8 @@ object Files:
     )
   }
 
-  def saveStats(results: List[Result], statsFile: File): Unit = {
-    val runOffset: Int = 
+  def saveStats(result: Result, statsFile: File): Unit = {
+    val uniqueRunID: Int = 
       if (statsFile.exists) {
         val source = Source.fromFile(statsFile)
         val maxRun = source.getLines.map {
@@ -75,20 +75,15 @@ object Files:
               0
         }.max
         source.close
-        maxRun
-      } else 0
+        maxRun + 1
+      } else 1
 
     val out = PrintWriter(FileWriter(statsFile, true))
-    results.foreach { result =>
-      result.ticks.foreach { tick =>
-        out.println(s"${result.run + runOffset},${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood},${tick.meanUtility}")
-      }
+    result.ticks.reverse.foreach { tick =>
+      out.println(s"$uniqueRunID,${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood},${tick.meanUtility}")
     }
     out.close
   }
-
-  def saveStats(result: Result, statsFile: File): Unit =
-    saveStats(List(result), statsFile)
 
   def loadStats(statsFile: File): List[Result] = {
     val source = Source.fromFile(statsFile)
