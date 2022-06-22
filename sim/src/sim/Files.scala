@@ -87,6 +87,9 @@ object Files:
     out.close
   }
 
+  def saveStats(result: Result, statsFile: File): Unit =
+    saveStats(List(result), statsFile)
+
   def loadStats(statsFile: File): List[Result] = {
     val source = Source.fromFile(statsFile)
     val loaded =

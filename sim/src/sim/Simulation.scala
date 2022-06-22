@@ -17,7 +17,7 @@ import spacenorm.Settings
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
   var seed     = settings.randomSeed
-  val results = (1 to settings.numberRuns).map(run => {
+  (1 to settings.numberRuns).foreach { run => {
     val start = System.currentTimeMillis
     print(s"Run $run: ")
     val traceFile =
@@ -30,10 +30,8 @@ import spacenorm.Settings
     if (seed >= 0) seed += 1
     print(s" ${System.currentTimeMillis - start}ms")
     println
-    result
-  }).toList
-
-  saveStats(results, File(settings.statsOutput))
+    saveStats(result, File(settings.statsOutput))
+  }}
 }
 
 /**
