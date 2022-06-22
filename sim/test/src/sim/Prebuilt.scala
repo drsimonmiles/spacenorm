@@ -22,7 +22,7 @@ object Prebuilt:
                               network = None)
   val agentsA = (1 to 1000).map(Agent.apply).toList
   val behavioursA = ((1 to 500).map(a => (Agent(a), Behaviour(0))) ++ (501 to 1000).map(a => (Agent(a), Behaviour(1)))).toMap
-  val positionsA = (1 to 1000).map(a => (Agent(a + 1), Position(a / 50 + 11, a % 50 + 11))).toMap
+  val positionsA = (0 to 999).map(a => (Agent(a + 1), Position(a / 50 + 11, a % 50 + 11))).toMap
   val goalsA = (1 to 1000).map(a => (Agent(a), Position(0, 0))).toMap
   val recentSuccessesA = (1 to 1000).map(a => (Agent(a), 0.0)).toMap
   val stateA = State(config            = configA,
