@@ -30,8 +30,7 @@ object Decode:
         val behaviour     = agents.map(agent => (agent, agentStates(agent)._1)).toMap
         val position      = agents.map(agent => (agent, agentStates(agent)._2)).toMap
         val goal          = agents.map(agent => (agent, agentStates(agent)._3)).toMap
-        val recentSuccess = agents.map(agent => (agent, agentStates(agent)._4)).toMap
-        State(config, agents, behaviour, position, goal, recentSuccess)
+        State(config, agents, behaviour, position, goal)
     }
 
   def decodeAgent(code: String): Option[Agent] =

@@ -33,10 +33,10 @@ object Metrics:
   def highestPrevalence(behaviourCounts: List[Int]): Double =
     behaviourCounts.max.toDouble / behaviourCounts.sum
 
-  def meanUtility(state: State): Double = {
+/*  def meanUtility(state: State): Double = {
     val utilities = state.recentSuccess.values.toList
     utilities.sum / utilities.size
-  }
+  }*/
 
   def neighbourhoodCorrelation(state: State): Double =
     val fractions = state.agents.flatMap { agent =>

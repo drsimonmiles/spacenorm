@@ -10,8 +10,7 @@ final case class State(config: Configuration,
                        agents: List[Agent],
                        behaviour: Map[Agent, Behaviour],
                        position: Map[Agent, Position],
-                       goal: Map[Agent, Goal],
-                       recentSuccess: Map[Agent, Double]):
+                       goal: Map[Agent, Goal]):
 
   lazy val neighbours: Map[Agent, List[Agent]] =
     config.network.getOrElse {
@@ -30,7 +29,7 @@ final case class State(config: Configuration,
       behaviour = behaviour + (agent -> agentBehaviour),
       position = position + (agent -> agentPosition),
       goal = goal + (agent -> agentGoal),
-      recentSuccess = recentSuccess + (agent -> 0.0)
+      //recentSuccess = recentSuccess + (agent -> 0.0)
     )
 
   def distanceBetween(agent1: Agent, agent2: Agent): Double =
@@ -42,7 +41,7 @@ final case class State(config: Configuration,
       behaviour = behaviour.filter(_._1 != agent),
       position = position.filter(_._1 != agent),
       goal = goal.filter(_._1 != agent),
-      recentSuccess = recentSuccess.filter(_._1 != agent)
+      //recentSuccess = recentSuccess.filter(_._1 != agent)
     )
 
   def setPosition(agent: Agent, newPosition: Position): State =

@@ -17,7 +17,9 @@ object Process:
     } else step1and2
   }
 
-  // 1. Each agent interacts with its neighbours - OBSOLETE, now incorporated into interactAndDiffuse
+  // 1. Each agent interacts with its neighbours 
+  // OBSOLETE, now incorporated into interactAndDiffuse
+  /*
   def interactAll(state: State, random: Random): State = {
     val thisRoundSuccesses = 
       state.agents.map{ agent =>
@@ -35,9 +37,11 @@ object Process:
         (agent, successRate)
       }.toMap
     state.copy(recentSuccess = thisRoundSuccesses)
-  }
+  }*/
 
-  // 2. Revise behaviour - OBSOLETE, now incorporated into interactAndDiffuse
+  // 2. Revise behaviour
+  // OBSOLETE, now incorporated into interactAndDiffuse
+  /*
   def reviseBehaviour(state: State): State = {
     val newBehaviour = state.agents.map { agent =>
       // Find the neighbour who has recently been most successful, or itself if it has no neighbours
@@ -46,7 +50,7 @@ object Process:
       (agent, state.behaviour(bestNeighbour))
     }.toMap
     state.copy(behaviour = newBehaviour)
-  }
+  }*/
 
   // 1 & 2. Interact and diffuse
   def interactAndDiffuse(state: State, random: Random): State = {

@@ -25,6 +25,6 @@ class MetricsSuite extends munit.FunSuite:
     assertEquals(highestPrevalence(List( 95,   5)), 0.95)
   }
 
-  test("Mean utility") {
+  /*test("Mean utility") {
     assertEquals(meanUtility(stateB), 0.3)
-  }
+  }*/

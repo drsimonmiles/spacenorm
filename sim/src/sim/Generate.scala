@@ -76,9 +76,9 @@ object Generate:
     val behaviour = agents.map { agent => (agent, randomBehaviour(config, random)) }.toMap
     val position  = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
     val goal      = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
-    val successes = agents.map { agent => (agent, 0.0) }.toMap
+    //val successes = agents.map { agent => (agent, 0.0) }.toMap
     
-    State(config, agents, behaviour, position, goal, successes)
+    State(config, agents, behaviour, position, goal)
   }
 
   def randomAgent(state: State, random: Random): Agent =

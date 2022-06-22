@@ -1,10 +1,10 @@
 package sim
 
-import sim.Metrics.{behaviourCounts, meanUtility, neighbourhoodCorrelation}
+import sim.Metrics.{behaviourCounts, neighbourhoodCorrelation}
 import spacenorm.State
 
 /** A summary of key data about the state at the end of a given simulation tick. */
-final case class TickResult(tick: Int, prevalences: List[Int], neighbourhood: Double, meanUtility: Double)
+final case class TickResult(tick: Int, prevalences: List[Int], neighbourhood: Double)
 
 /** A summary of key data about the states across a simulation run. */
 final case class Result(run: Int, ticks: List[TickResult]):
@@ -12,7 +12,7 @@ final case class Result(run: Int, ticks: List[TickResult]):
     copy(ticks = tickResult :: ticks)
 
   def addTick(tick: Int, state: State): Result =
-    addTick(TickResult(tick, behaviourCounts(state), neighbourhoodCorrelation(state), meanUtility(state)))
+    addTick(TickResult(tick, behaviourCounts(state), neighbourhoodCorrelation(state)))
 
   def getTick(tick: Int): Option[TickResult] =
     ticks.find(_.tick == tick)

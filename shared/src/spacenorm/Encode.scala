@@ -19,11 +19,11 @@ object Encode:
   }
 
   def encodeState(state: State): String =
-    encodeMap(encodeAgent, encode4Tuple(encodeBehaviour, encodePosition, encodePosition, encodeReal, ';'), collateAgents(state))
+    encodeMap(encodeAgent, encode3Tuple(encodeBehaviour, encodePosition, encodePosition, ';'), collateAgents(state))
 
-  def collateAgents(state: State): Map[Agent, (Behaviour, Position, Position, Double)] =
+  def collateAgents(state: State): Map[Agent, (Behaviour, Position, Position)] =
     state.agents.map(agent =>
-      (agent, (state.behaviour(agent), state.position(agent), state.goal(agent), state.recentSuccess(agent)))
+      (agent, (state.behaviour(agent), state.position(agent), state.goal(agent)))
     ).toMap
 
   def encodeAgent(agent: Agent): String =
