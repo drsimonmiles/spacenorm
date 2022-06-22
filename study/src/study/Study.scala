@@ -19,7 +19,6 @@ import org.jfree.chart.plot.PlotOrientation
   val stats      = averageRuns(results)
 
   plotTimeSeries("prevalence",    _.highestPrevalence, stats, "Highest prevalence norm")
-  plotTimeSeries("utility",       _.meanUtility,       stats, "Average agent utility")
   plotTimeSeries("diversity",     _.diversity,         stats, "Global norm diversity ")
   plotTimeSeries("neighbourhood", _.neighbourhood,     stats, "Neighbourhood correlation")
 }

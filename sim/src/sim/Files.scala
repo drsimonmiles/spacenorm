@@ -81,7 +81,7 @@ object Files:
 
     val out = PrintWriter(FileWriter(statsFile, true))
     result.ticks.reverse.foreach { tick =>
-      out.println(s"$uniqueRunID,${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood},${tick.meanUtility}")
+      out.println(s"$uniqueRunID,${tick.tick},${tick.prevalences.mkString(";")},${tick.neighbourhood}")
     }
     out.close
   }
@@ -96,8 +96,7 @@ object Files:
           val tick = fields(1).toInt
           val prevalences = fields(2).split(";").map(_.toInt).toList
           val neighbourhood = fields(3).toDouble
-          val meanUtility = fields(4).toDouble
-          val tickResult = TickResult(tick, prevalences, neighbourhood, meanUtility)
+          val tickResult = TickResult(tick, prevalences, neighbourhood)
           val runResult = results.find(_.run == run).getOrElse(Result(run)).addTick(tickResult)
           runResult :: results.filterNot(_.run == run)
       }

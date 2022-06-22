@@ -4,7 +4,7 @@ import sim.Metrics.{highestPrevalence, diversity}
 import sim.{Result, TickResult}
 import sim.Result.tickRange
 
-final case class TickStatistics(highestPrevalence: Double, diversity: Double, neighbourhood: Double, meanUtility: Double)
+final case class TickStatistics(highestPrevalence: Double, diversity: Double, neighbourhood: Double)
 
 type RunStatistics = List[TickStatistics]
 
@@ -13,8 +13,7 @@ object RunStatistics:
     TickStatistics(
       highestPrevalence = highestPrevalence(tickResult.prevalences),
       diversity         = diversity(tickResult.prevalences),
-      neighbourhood     = tickResult.neighbourhood,
-      meanUtility       = tickResult.meanUtility
+      neighbourhood     = tickResult.neighbourhood
     )
 
   def analyseRun(result: Result): RunStatistics = 
@@ -27,8 +26,7 @@ object RunStatistics:
     TickStatistics(
       highestPrevalence = average(tickStatistics.map(_.highestPrevalence)),
       diversity         = average(tickStatistics.map(_.diversity)),
-      neighbourhood     = average(tickStatistics.map(_.neighbourhood)),
-      meanUtility       = average(tickStatistics.map(_.meanUtility))
+      neighbourhood     = average(tickStatistics.map(_.neighbourhood))
     )
 
   def averageRuns(results: List[Result]): RunStatistics =
