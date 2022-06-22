@@ -13,11 +13,12 @@ final case class Settings(statsOutput: String,
                           numberObstacles: Int,
                           obstacleSide: Int,
                           numberExits: Int,
-                          threshold: Double,
+                          distanceThreshold: Double,
+                          linearThreshold: Double,
                           distanceInfluence: Influence,
                           netConstruction: Networker,
                           transmission: Transmission,
                           maxMove: Double,
                           randomSeed: Long):
   lazy val abbreviation: String =
-    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$threshold-$distanceInfluence-$netConstruction-$transmission-$maxMove"
+    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$distanceThreshold-$linearThreshold-$distanceInfluence-$netConstruction-$transmission-$maxMove"

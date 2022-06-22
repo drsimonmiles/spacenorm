@@ -10,16 +10,16 @@ object Decode:
   def decodeConfiguration(code: String): Option[Configuration] =
     decodeStructure(
       decodeList5Tuple(decodeInt),
-      decodeList2Tuple(decodeReal),
+      decodeList3Tuple(decodeReal),
       decode3Tuple(decodeInfluence, decodeNetworker, decodeTransmission, ' '),
       decodeList(decodePosition),
       decodeList(decodePosition), 
       decodeOption(decodeMap(decodeAgent, decodeList(decodeAgent))), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-              (threshold, maxMove),
+              (distanceThreshold, linearThreshold, maxMove),
               (distanceInfluence, netConstruction, transmission),
               obstacleTopLefts, exits, network) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, network)
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, distanceThreshold, linearThreshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, network)
       }
     )(code)
 
@@ -227,6 +227,9 @@ object Decode:
 
   def decodeList2Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item)] =
     decodeList(decodeItem, Some(2))(code).map(list => (list(0), list(1)))
+
+  def decodeList3Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item, Item)] =
+    decodeList(decodeItem, Some(3))(code).map(list => (list(0), list(1), list(2)))
 
   def decodeList5Tuple[Item](decodeItem: String => Option[Item])(code: String): Option[(Item, Item, Item, Item, Item)] =
     decodeList(decodeItem, Some(5))(code).map(list => (list(0), list(1), list(2), list(3), list(4)))

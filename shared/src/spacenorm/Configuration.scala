@@ -8,7 +8,8 @@ final case class Configuration(spaceWidth: Int,
                                numberAgents: Int,
                                numberBehaviours: Int,
                                obstacleSide: Int, 
-                               threshold: Double,
+                               distanceThreshold: Double,
+                               linearThreshold: Double,
                                distanceInfluence: Influence,
                                netConstruction: Networker, 
                                transmission: Transmission,
@@ -42,8 +43,8 @@ final case class Configuration(spaceWidth: Int,
   val validExits = exits.filter(validAgentPosition)
 
   def accessible(from: Position, to: Position): Boolean =
-    transmission.accessible(from, to, threshold, obstructed.contains)
+    transmission.accessible(from, to, distanceThreshold, obstructed.contains)
 
   /** The influence factor at a given distance. */
   def influenceFactor(distance: Double): Double =
-    distanceInfluence.influenceFactor(distance, threshold)
+    distanceInfluence.influenceFactor(distance, distanceThreshold)

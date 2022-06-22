@@ -10,7 +10,7 @@ object Encode:
     import config.*
     encodeStructure(
       encodeAll(encodeInt, spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
-      encodeAll(encodeReal, threshold, maxMove),
+      encodeAll(encodeReal, distanceThreshold, linearThreshold, maxMove),
       encode3Tuple(encodeInfluence, encodeNetworker, encodeTransmission, ' ')(distanceInfluence, netConstruction, transmission),
       encodeList(encodePosition, obstacleTopLefts),
       encodeList(encodePosition, exits),

@@ -50,7 +50,7 @@ object Generate:
     }
 
     val distanced =
-      Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, threshold,
+      Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, distanceThreshold, linearThreshold, 
                     distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, None)
 
     netConstruction match {
