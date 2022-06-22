@@ -8,17 +8,16 @@ import spacenorm.Position.direction
 /** Implements the model-specific process for enacting a single run of a simulation. */
 object Process:
   def runTick(state: State, random: Random): State = {
-    val step1 = interactAll(state, random)
-    val step2 = reviseBehaviour(step1)
+    val step1and2 = interactAndDiffuse(state, random)
     if (state.config.netConstruction == Networker.Distance && state.config.maxMove > 0.0) {
-      val step3 = moveAll(step2)
+      val step3 = moveAll(step1and2)
       val step4 = leave(step3)
       val step5 = chooseGoals(step4, random)
       agentsJoin(step5, random)
-    } else step2
+    } else step1and2
   }
 
-  // 1. Each agent interacts with its neighbours
+  // 1. Each agent interacts with its neighbours - OBSOLETE, now incorporated into interactAndDiffuse
   def interactAll(state: State, random: Random): State = {
     val thisRoundSuccesses = 
       state.agents.map{ agent =>
@@ -38,11 +37,37 @@ object Process:
     state.copy(recentSuccess = thisRoundSuccesses)
   }
 
-  // 2. Revise behaviour
+  // 2. Revise behaviour - OBSOLETE, now incorporated into interactAndDiffuse
   def reviseBehaviour(state: State): State = {
     val newBehaviour = state.agents.map { agent =>
       // Find the neighbour who has recently been most successful, or itself if it has no neighbours
       val bestNeighbour: Agent = state.neighbours(agent).maxByOption(neighbour => state.recentSuccess(neighbour)).getOrElse(agent)
+      // Return the behaviour of that most successful neighbour
+      (agent, state.behaviour(bestNeighbour))
+    }.toMap
+    state.copy(behaviour = newBehaviour)
+  }
+
+  // 1 & 2. Interact and diffuse
+  def interactAndDiffuse(state: State, random: Random): State = {
+    val thisRoundSuccesses = 
+      state.agents.map{ agent =>
+        val outcomes: List[Double] =
+          state.neighbours(agent).toList.flatMap{ neighbour =>
+            if (random.nextDouble < state.config.influenceFactor(state.distanceBetween(agent, neighbour)))
+              if (state.behaviour(agent) == state.behaviour(neighbour))
+                Some(1.0)
+              else
+                Some(-1.0)
+            else
+              None
+        }
+        val successRate = if (outcomes.size == 0) 0.0 else outcomes.sum / outcomes.size
+        (agent, successRate)
+      }.toMap
+    val newBehaviour = state.agents.map { agent =>
+      // Find the neighbour who has recently been most successful, or itself if it has no neighbours
+      val bestNeighbour: Agent = state.neighbours(agent).maxByOption(neighbour => thisRoundSuccesses(neighbour)).getOrElse(agent)
       // Return the behaviour of that most successful neighbour
       (agent, state.behaviour(bestNeighbour))
     }.toMap
