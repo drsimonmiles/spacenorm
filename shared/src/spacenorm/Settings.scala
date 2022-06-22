@@ -22,4 +22,4 @@ final case class Settings(statsOutput: String,
                           maxMove: Double,
                           randomSeed: Long):
   lazy val abbreviation: String =
-    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$distanceThreshold-$linearThreshold-$distanceInfluence-$netConstruction-$transmission-$maxMove"
+    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$distanceThreshold-$linearThreshold-$distanceInfluence-$diffusion-$netConstruction-$transmission-$maxMove"
