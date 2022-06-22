@@ -29,5 +29,16 @@ object Prebuilt:
                      position      = positionsA,
                      goal          = goalsA,
                      recentSuccess = recentSuccessesA)
+  val agentsB = (1 to 3).map(Agent.apply).toList
+  val behavioursB = Map(Agent(1) -> Behaviour(0), Agent(2) -> Behaviour(1), Agent(3) -> Behaviour(0))
+  val positionsB = Map(Agent(1) -> Position(20, 20), Agent(2) -> Position(21, 21), Agent(3) -> Position(22, 22))
+  val goalsB = Map(Agent(1) -> Position(21, 21), Agent(2) -> Position(22, 22), Agent(3) -> Position(20, 20))
+  val recentSuccessesB = Map(Agent(1) -> 0.2, Agent(2) -> 0.3, Agent(3) -> 0.4)
+  val stateB = State(config        = configA,
+                     agents        = agentsB,
+                     behaviour     = behavioursB,
+                     position      = positionsB,
+                     goal          = goalsB,
+                     recentSuccess = recentSuccessesB)
   val behaviourCountsA = List(10, 20)
   val behaviourCountsB = List(1, 2, 99)
