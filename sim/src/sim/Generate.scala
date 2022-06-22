@@ -2,7 +2,6 @@ package sim
 
 import scala.util.Random
 import spacenorm.*
-import spacenorm.Behaviour.impossibleBehaviour
 
 /** Functionality to randomly generate or select elements of the model as required. */
 object Generate:

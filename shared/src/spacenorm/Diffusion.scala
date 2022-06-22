@@ -21,7 +21,7 @@ enum Diffusion:
         if (outcomes.size == 0) 0.0 else outcomes.sum / outcomes.size
       case Threshold => 1.0
       case Cascade =>
-        if (previous.exists(_.behaviour(agent) == state.behaviour(agent))) 0.0 else 1.0
+        if (previous.flatMap(_.behaviour.get(agent)).exists(_ == state.behaviour(agent))) 0.0 else 1.0
     }
 
   def linkPower(fromAgent: Agent, toAgent: Agent, state: State, random: Random): Double =

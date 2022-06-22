@@ -1,7 +1,5 @@
 package spacenorm
 
-import spacenorm.Behaviour.impossibleBehaviour
-
 /** Functionality to decode from Strings simulation traces recorded for visulisation, specifically the static configuration and
  * each tick's state.
  */
