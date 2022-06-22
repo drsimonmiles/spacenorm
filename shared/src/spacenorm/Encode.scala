@@ -4,7 +4,7 @@ package spacenorm
  * each tick's state.
  */
 object Encode:
-  def encodeSchemaVersion = "1.1"
+  def encodeSchemaVersion = "1.2"
 
   def encodeConfiguration(config: Configuration): String = {
     import config.*

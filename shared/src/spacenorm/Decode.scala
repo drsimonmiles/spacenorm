@@ -26,7 +26,7 @@ object Decode:
     )(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
-    decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
+    decodeMap(decodeAgent, decode3Tuple(decodeBehaviour, decodePosition, decodePosition, ';'))(code).map {
       agentStates =>
         val agents    = agentStates.keys.toList
         val behaviour = agents.map(agent => (agent, agentStates(agent)._1)).toMap
