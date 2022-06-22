@@ -1,5 +1,7 @@
 package spacenorm
 
+import spacenorm.Behaviour.impossibleBehaviour
+
 /** Functionality to decode from Strings simulation traces recorded for visulisation, specifically the static configuration and
  * each tick's state.
  */
@@ -11,25 +13,25 @@ object Decode:
     decodeStructure(
       decodeList5Tuple(decodeInt),
       decodeList3Tuple(decodeReal),
-      decode3Tuple(decodeInfluence, decodeNetworker, decodeTransmission, ' '),
+      decode4Tuple(decodeInfluence, decodeDiffusion, decodeNetworker, decodeTransmission, ' '),
       decodeList(decodePosition),
       decodeList(decodePosition), 
       decodeOption(decodeMap(decodeAgent, decodeList(decodeAgent))), {
         case ((spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
               (distanceThreshold, linearThreshold, maxMove),
-              (distanceInfluence, netConstruction, transmission),
+              (distanceInfluence, diffusion, netConstruction, transmission),
               obstacleTopLefts, exits, network) =>
-          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, distanceThreshold, linearThreshold, distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, network)
+          Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, distanceThreshold, linearThreshold, distanceInfluence, diffusion, netConstruction, transmission, maxMove, obstacleTopLefts, exits, network)
       }
     )(code)
 
   def decodeState(code: String, config: Configuration): Option[State] =
     decodeMap(decodeAgent, decode4Tuple(decodeBehaviour, decodePosition, decodePosition, decodeReal, ';'))(code).map {
       agentStates =>
-        val agents        = agentStates.keys.toList
-        val behaviour     = agents.map(agent => (agent, agentStates(agent)._1)).toMap
-        val position      = agents.map(agent => (agent, agentStates(agent)._2)).toMap
-        val goal          = agents.map(agent => (agent, agentStates(agent)._3)).toMap
+        val agents    = agentStates.keys.toList
+        val behaviour = agents.map(agent => (agent, agentStates(agent)._1)).toMap
+        val position  = agents.map(agent => (agent, agentStates(agent)._2)).toMap
+        val goal      = agents.map(agent => (agent, agentStates(agent)._3)).toMap
         State(config, agents, behaviour, position, goal)
     }
 
@@ -38,6 +40,9 @@ object Decode:
 
   def decodeBehaviour(code: String): Option[Behaviour] =
     Decode.decodeInt(code).map(Behaviour.apply)
+
+  def decodeDiffusion(code: String): Option[Diffusion] = 
+    Some(Diffusion.valueOf(code))
 
   def decodeInfluence(code: String): Option[Influence] = 
     Some(Influence.valueOf(code))

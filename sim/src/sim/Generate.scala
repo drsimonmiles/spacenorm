@@ -2,6 +2,7 @@ package sim
 
 import scala.util.Random
 import spacenorm.*
+import spacenorm.Behaviour.impossibleBehaviour
 
 /** Functionality to randomly generate or select elements of the model as required. */
 object Generate:
@@ -51,7 +52,7 @@ object Generate:
 
     val distanced =
       Configuration(spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide, distanceThreshold, linearThreshold, 
-                    distanceInfluence, netConstruction, transmission, maxMove, obstacleTopLefts, exits, None)
+                    distanceInfluence, diffusion, netConstruction, transmission, maxMove, obstacleTopLefts, exits, None)
 
     netConstruction match {
       case Networker.Distance => distanced
@@ -76,7 +77,6 @@ object Generate:
     val behaviour = agents.map { agent => (agent, randomBehaviour(config, random)) }.toMap
     val position  = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
     val goal      = agents.map { agent => (agent, randomValidPosition(config, random)) }.toMap
-    //val successes = agents.map { agent => (agent, 0.0) }.toMap
     
     State(config, agents, behaviour, position, goal)
   }

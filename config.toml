@@ -17,6 +17,7 @@ numberExits       = 50               # The number of exit/entry points around th
 distanceThreshold = 10.0             # Threshold distance beyond which agents do not interact
 linearThreshold   = 3.0              # Weighted linear threshold for copying behaviour in linear threshold diffusion
 distanceInfluence = "Linear"         # How distance influences interaction: either "Linear" for influence decreasing linearly by distance or "Uniform" for no effect of distance
+diffusion         = "Coordination"   # How behaviour is diffused: "Coordination" (coordination game), "Threshold" (linear threshold) or "Cascade" (independent cascade)
 netConstruction   = "Distance"       # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
 transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight while "Air" does not
 maxMove           = 1.5              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal

@@ -7,8 +7,8 @@ import spacenorm.Position.direction
 
 /** Implements the model-specific process for enacting a single run of a simulation. */
 object Process:
-  def runTick(state: State, random: Random): State = {
-    val step1and2 = interactAndDiffuse(state, random)
+  def runTick(state: State, previous: Option[State], random: Random): State = {
+    val step1and2 = interactAndDiffuse(state, previous, random)
     if (state.config.netConstruction == Networker.Distance && state.config.maxMove > 0.0) {
       val step3 = moveAll(step1and2)
       val step4 = leave(step3)
@@ -53,28 +53,26 @@ object Process:
   }*/
 
   // 1 & 2. Interact and diffuse
-  def interactAndDiffuse(state: State, random: Random): State = {
-    val thisRoundSuccesses = 
-      state.agents.map{ agent =>
-        val outcomes: List[Double] =
-          state.neighbours(agent).toList.flatMap{ neighbour =>
-            if (random.nextDouble < state.config.influenceFactor(state.distanceBetween(agent, neighbour)))
-              if (state.behaviour(agent) == state.behaviour(neighbour))
-                Some(1.0)
-              else
-                Some(-1.0)
-            else
-              None
-        }
-        val successRate = if (outcomes.size == 0) 0.0 else outcomes.sum / outcomes.size
-        (agent, successRate)
-      }.toMap
+  def interactAndDiffuse(state: State, previous: Option[State], random: Random): State = {
+    import state.config.diffusion
+
+    // Calculate the link-indepdenent power of each agent on others to copy its behaviour
+    val linkIndependentPower = state.agents.map { agent => (agent, diffusion.ownPower(agent, state, previous, random)) }.toMap
     val newBehaviour = state.agents.map { agent =>
-      // Find the neighbour who has recently been most successful, or itself if it has no neighbours
-      val bestNeighbour: Agent = state.neighbours(agent).maxByOption(neighbour => thisRoundSuccesses(neighbour)).getOrElse(agent)
-      // Return the behaviour of that most successful neighbour
-      (agent, state.behaviour(bestNeighbour))
+      // Calculate the link-dependent pressure of each neighbour on the agent to copy its behaviour
+      val agentPressure = state.neighbours(agent).map { neighbour =>
+        (neighbour, diffusion.linkPower(neighbour, agent, state, random) * linkIndependentPower(neighbour))
+      }
+      // Calculate the pressure per each behaviour on the agent to adopt that behaviour
+      val behaviourPressure = state.config.allBehaviours.map { behaviour =>
+        (behaviour, agentPressure.filter(p => state.behaviour(p._1) == behaviour).map(_._2).sum)
+      }
+      // Filter the behaviours to only those with sufficient pressure
+      val filteredPressure = behaviourPressure.filter(_._2 >= diffusion.threshold(state))
+      // Select the new behaviour as the one with highest pressure, or keep the current behaviour if none are pressuring
+      (agent, filteredPressure.maxByOption(_._2).map(_._1).getOrElse(state.behaviour(agent)))
     }.toMap
+
     state.copy(behaviour = newBehaviour)
   }
 

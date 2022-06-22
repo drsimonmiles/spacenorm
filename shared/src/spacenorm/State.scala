@@ -28,20 +28,21 @@ final case class State(config: Configuration,
       agents = agent :: agents,
       behaviour = behaviour + (agent -> agentBehaviour),
       position = position + (agent -> agentPosition),
-      goal = goal + (agent -> agentGoal),
-      //recentSuccess = recentSuccess + (agent -> 0.0)
+      goal = goal + (agent -> agentGoal)
     )
 
   def distanceBetween(agent1: Agent, agent2: Agent): Double =
     distance(position(agent1), position(agent2))
+
+  def influence(agent1: Agent, agent2: Agent): Double =
+    config.influenceFactor(distanceBetween(agent1, agent2))
 
   def removeAgent(agent: Agent): State =
     copy(
       agents = agents.filter(_ != agent),
       behaviour = behaviour.filter(_._1 != agent),
       position = position.filter(_._1 != agent),
-      goal = goal.filter(_._1 != agent),
-      //recentSuccess = recentSuccess.filter(_._1 != agent)
+      goal = goal.filter(_._1 != agent)
     )
 
   def setPosition(agent: Agent, newPosition: Position): State =

@@ -11,7 +11,7 @@ object Encode:
     encodeStructure(
       encodeAll(encodeInt, spaceWidth, spaceHeight, numberAgents, numberBehaviours, obstacleSide),
       encodeAll(encodeReal, distanceThreshold, linearThreshold, maxMove),
-      encode3Tuple(encodeInfluence, encodeNetworker, encodeTransmission, ' ')(distanceInfluence, netConstruction, transmission),
+      encode4Tuple(encodeInfluence, encodeDiffusion, encodeNetworker, encodeTransmission, ' ')(distanceInfluence, diffusion, netConstruction, transmission),
       encodeList(encodePosition, obstacleTopLefts),
       encodeList(encodePosition, exits),
       encodeOption(encodeMapToList[Agent, Agent](encodeAgent, encodeAgent, _), network)
@@ -31,6 +31,9 @@ object Encode:
 
   def encodeBehaviour(behaviour: Behaviour): String =
     Encode.encodeInt(behaviour.choice)
+
+  def encodeDiffusion(diffusion: Diffusion): String =
+    diffusion.toString
 
   def encodeInfluence(influence: Influence): String =
     influence.toString

@@ -2,7 +2,7 @@ package sim
 
 import java.io.File
 import scala.io.Source
-import spacenorm.{Influence, Networker, Settings, Transmission}
+import spacenorm.{Diffusion, Influence, Networker, Settings, Transmission}
 import java.io.PrintWriter
 import java.io.FileWriter
 
@@ -57,6 +57,7 @@ object Files:
       linearThreshold   = attribute("linearThreshold", _.toDoubleOption),
       distanceThreshold = attribute("distanceThreshold", _.toDoubleOption),
       distanceInfluence = attribute("distanceInfluence", enumValue(Influence.valueOf)),
+      diffusion         = attribute("diffusion", enumValue(Diffusion.valueOf)),
       netConstruction   = attribute("netConstruction", enumValue(Networker.valueOf)),
       transmission      = attribute("transmission", enumValue(Transmission.valueOf)),
       maxMove           = attribute("maxMove", _.toDoubleOption),
