@@ -55,8 +55,8 @@ def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStat
 
   //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 
-  saveChartAsPNG(File(s"plots/$name.png"), chart, 1000, 1000)
-  println(s"Saving to $name.png")
+  saveChartAsPNG(File(s"plots/$filePrefix-$name.png"), chart, 1000, 1000)
+  println(s"Saving to $filePrefix-$name.png")
 }
 
 def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: PlottableSetting, plotTitle: String): Unit = {
