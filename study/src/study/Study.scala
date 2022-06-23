@@ -56,6 +56,7 @@ def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStat
 
   //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 
+  File("plots").mkdir
   saveChartAsPNG(File(s"plots/$filePrefix-$name.png"), chart, 1000, 1000)
   println(s"Saving to $filePrefix-$name.png")
 }
@@ -66,7 +67,7 @@ def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: Setting
 
   stats.foreach { stat =>
     stat.averaged.firstConverged.foreach { convergence =>
-      series.add(parameter.extractFrom(stat.settings), convergence.toDouble)
+      series.add(parameter.extractAsDouble(stat.settings), convergence.toDouble)
     }
   }
   val chart = createScatterPlot(plotTitle, parameter.toString, "time to converge", collection, PlotOrientation.VERTICAL, true, true, false)
@@ -82,6 +83,7 @@ def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: Setting
 
   //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 
+  File("plots").mkdir
   saveChartAsPNG(File(s"plots/$name.png"), chart, 1000, 1000)
   println(s"Saving to $name.png")
 }

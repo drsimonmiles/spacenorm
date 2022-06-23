@@ -2,7 +2,7 @@ package sim
 
 import java.io.File
 import scala.io.Source
-import spacenorm.{Diffusion, Influence, Networker, Settings, SettingName, SettingsSpace, Transmission}
+import spacenorm.*
 import java.io.PrintWriter
 import java.io.FileWriter
 
@@ -49,14 +49,14 @@ object Files:
       else
         None
     }
-    def varyValues(setting: SettingName, base: Settings, values: List[String]): SettingsSpace = {
+    def varyValues(setting: SettingName, base: Settings, values: List[String]): VariedSettings = {
       def toInt(value: String) = 
         convertOrComplain(setting.lowercase, value, _.toIntOption)
       def toDouble(value: String) = 
         convertOrComplain(setting.lowercase, value, _.toDoubleOption)
       def toEnum[EnumType](value: String, valueOf: String => EnumType) = 
         convertOrComplain(setting.lowercase, value, enumValue(valueOf))
-      values.map { value =>
+      val space = values.map { value =>
         setting match {
           case SettingName.SpaceWidth        => base.copy(spaceWidth        = toInt(value))
           case SettingName.SpaceHeight       => base.copy(spaceHeight       = toInt(value))
@@ -74,6 +74,7 @@ object Files:
           case SettingName.MaxMove           => base.copy(maxMove           = toDouble(value))
         }
       }
+      VariedSettings(setting, space)
   }
 
     val base = Settings(
@@ -100,7 +101,7 @@ object Files:
     )
     attributeOption("vary", enumValue(SettingName.valueOf)).map { setting =>
       varyValues(setting, base, attribute("values", listValue))
-    }.getOrElse(List(base))
+    }.getOrElse(SingleSettings(base))
   }
 
   def statsFilePrefix(settings: Settings): String = {

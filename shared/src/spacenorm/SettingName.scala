@@ -6,7 +6,7 @@ enum SettingName:
 
   lazy val lowercase = toString.head.toLower + toString.tail
 
-  def extractFrom(settings: Settings): Double = this match {
+  def extractAsDouble(settings: Settings): Double = this match {
     case SpaceWidth        => settings.spaceWidth
     case SpaceHeight       => settings.spaceHeight
     case NumberAgents      => settings.numberAgents
@@ -21,6 +21,23 @@ enum SettingName:
     case NetConstruction   => settings.netConstruction.ordinal
     case Transmission      => settings.transmission.ordinal
     case MaxMove           => settings.maxMove
+  }
+
+  def extractAsString(settings: Settings): String = this match {
+    case SpaceWidth        => settings.spaceWidth.toString
+    case SpaceHeight       => settings.spaceHeight.toString
+    case NumberAgents      => settings.numberAgents.toString
+    case NumberBehaviours  => settings.numberBehaviours.toString
+    case NumberObstacles   => settings.numberObstacles.toString
+    case ObstacleSide      => settings.obstacleSide.toString
+    case NumberExits       => settings.numberExits.toString
+    case DistanceThreshold => settings.distanceThreshold.toString
+    case LinearThreshold   => settings.linearThreshold.toString
+    case DistanceInfluence => settings.distanceInfluence.toString
+    case Diffusion         => settings.diffusion.toString
+    case NetConstruction   => settings.netConstruction.toString
+    case Transmission      => settings.transmission.toString
+    case MaxMove           => settings.maxMove.toString
   }
 
   def ignoredIn(settings: Settings): Settings = this match {

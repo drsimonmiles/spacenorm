@@ -21,3 +21,8 @@ diffusion         = "Coordination"   # How behaviour is diffused: "Coordination"
 netConstruction   = "Distance"       # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
 transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight while "Air" does not
 maxMove           = 1.5              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal
+
+[variation]                          # If present, this specifies which parameter will be varied running the simulation for each value
+vary   = "numberBehaviours"          # The name of the parameter to be varied, one of those from the [run] section above
+                                     # The values that the varied parameter will take in simulations
+values = [ 2, 3, 5 ]

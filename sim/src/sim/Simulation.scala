@@ -6,7 +6,7 @@ import sim.Files.{loadSettings, saveStats, statsFilePrefix}
 import sim.Generate.{newState, newRunConfiguration}
 import sim.Process.runTick
 import spacenorm.Encode.{encodeConfiguration, encodeSchemaVersion, encodeState}
-import spacenorm.{Settings, SettingsSpace, State}
+import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
 
 // This file contains the model-independent logic that initiates the simulation.
 
@@ -16,20 +16,26 @@ import spacenorm.{Settings, SettingsSpace, State}
   The settings file defines a space of settings, for each which a batch of simulations are run.
 */
 @main def runExperiment(settingsFile: String) =
-  loadSettings(File(settingsFile)).foreach(runSimulationSet)
+  loadSettings(File(settingsFile)) match {
+    case SingleSettings(settings) => 
+      runSimulationSet(settings, None)
+    case VariedSettings(variedParameter, settingsList) =>
+      settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter)))
+  }
 
 /** Runs a batch of simulations with the same settings. */
-def runSimulationSet(settings: Settings): Unit = {
-  val outputDir = File(settings.statsOutput)
-  val output    = File(outputDir, s"${statsFilePrefix(settings)}.csv")
-  var seed      = settings.randomSeed
+def runSimulationSet(settings: Settings, variedParameter: Option[SettingName]): Unit = {
+  val outputDir  = File(settings.statsOutput)
+  val output     = File(outputDir, s"${statsFilePrefix(settings)}.csv")
+  val paramValue = variedParameter.map(_.extractAsString(settings)).map(s => s"-$s").getOrElse("")
+  var seed       = settings.randomSeed
 
   outputDir.mkdirs
   (1 to settings.numberRuns).foreach { run => {
     val start = System.currentTimeMillis
     val traceFile =
       if (run <= settings.numberTraces)
-        Some(File(s"${settings.traceOutputPrefix}$run.trace"))
+        Some(File(s"${settings.traceOutputPrefix}$paramValue-$run.trace"))
       else
         None
     val random = if (seed >= 0) Random(seed) else Random()
