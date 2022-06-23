@@ -6,16 +6,20 @@ import sim.Files.{loadSettings, saveStats, statsFilePrefix}
 import sim.Generate.{newState, newRunConfiguration}
 import sim.Process.runTick
 import spacenorm.Encode.{encodeConfiguration, encodeSchemaVersion, encodeState}
-import spacenorm.{Settings, State}
+import spacenorm.{Settings, SettingsSpace, State}
 
 // This file contains the model-independent logic that initiates the simulation.
 
 /**
   The main method to run the simulation.
   The command line takes an argument: the settings file.
+  The settings file defines a space of settings, for each which a batch of simulations are run.
 */
-@main def runExperiment(settingsFile: String) = {
-  val settings = loadSettings(File(settingsFile))
+@main def runExperiment(settingsFile: String) =
+  loadSettings(File(settingsFile)).foreach(runSimulationSet)
+
+/** Runs a batch of simulations with the same settings. */
+def runSimulationSet(settings: Settings): Unit = {
   val outputDir = File(settings.statsOutput)
   val output    = File(outputDir, s"${statsFilePrefix(settings)}.csv")
   var seed      = settings.randomSeed
@@ -23,7 +27,6 @@ import spacenorm.{Settings, State}
   outputDir.mkdirs
   (1 to settings.numberRuns).foreach { run => {
     val start = System.currentTimeMillis
-    print(s"Run $run: ")
     val traceFile =
       if (run <= settings.numberTraces)
         Some(File(s"${settings.traceOutputPrefix}$run.trace"))

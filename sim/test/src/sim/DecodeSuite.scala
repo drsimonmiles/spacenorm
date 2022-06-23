@@ -10,7 +10,7 @@ import spacenorm.Encode.*
 class DecodeSuite extends munit.FunSuite:
   val settings   = loadSettings(File("sim/test/src/sim/test-config.toml"))
   val random     = Random()
-  val config     = newRunConfiguration(settings, random)
+  val config     = newRunConfiguration(settings.head, random)
   val state      = newState(config, random)
   val configCode = encodeConfiguration(config)
   val stateCode  = encodeState(state)

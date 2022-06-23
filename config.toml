@@ -2,11 +2,11 @@
 statsOutput       = "stats"          # Folder fo CSV files to output stats from runs to, NOTE: appends to existing content
 traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered
 numberRuns        = 1                # Number of simulation runs to perform
-numberTraces      = 1                # Number of of those simulation runs to trace for visualisation
+numberTraces      = 1                # Number of those simulation runs to trace for visualisation
+numberTicks       = 200              # Number of simulation ticks/time steps
 randomSeed        = -1               # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
 
 [run]                                # Options for the simulation model
-numberTicks       = 200              # Number of simulation ticks/time steps
 spaceWidth        = 100              # Spatial width of the area in which agents interact
 spaceHeight       = 100              # Spatial height of the area in which agents interact
 numberAgents      = 1000             # Number of agents in initial state

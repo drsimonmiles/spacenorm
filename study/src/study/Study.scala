@@ -5,6 +5,7 @@ import org.jfree.chart.ChartFactory.createScatterPlot
 import org.jfree.chart.ChartUtils.saveChartAsPNG
 import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
 import sim.Result
+import spacenorm.SettingName
 import study.PlottableSetting.allComparableGroups
 import study.RunStatistics.{analyseRun, averageRuns}
 import study.ResultsFile.loadStatsCollection
@@ -18,7 +19,7 @@ import org.jfree.chart.plot.PlotOrientation
 @main def analyse(statsFolder: String): Unit = {
   val folder: File = File(statsFolder)
   val collection: List[ResultsFile] = loadStatsCollection(folder)
-  val groups: Map[PlottableSetting, List[List[ResultsFile]]] = allComparableGroups(collection)
+  val groups: Map[SettingName, List[List[ResultsFile]]] = allComparableGroups(collection)
 
   for (file <- collection) {
     val averaged = averageRuns(file.results)
@@ -29,7 +30,7 @@ import org.jfree.chart.plot.PlotOrientation
   groups.foreach {
     case (setting, comparisons) =>
       comparisons.foreach { comparison =>
-        plotEmergenceTime(setting.wildcardedPrefix(comparison.head), comparison, setting, s"Convergence time as $setting varies")
+        plotEmergenceTime(setting.wildcardedPrefix(comparison.head.prefix), comparison, setting, s"Convergence time as $setting varies")
       }
   }
 }
@@ -59,7 +60,7 @@ def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStat
   println(s"Saving to $filePrefix-$name.png")
 }
 
-def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: PlottableSetting, plotTitle: String): Unit = {
+def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: SettingName, plotTitle: String): Unit = {
   val series     = XYSeries(name)
   val collection = XYSeriesCollection(series)
 

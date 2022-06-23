@@ -2,7 +2,7 @@ package sim
 
 import java.io.File
 import scala.io.Source
-import spacenorm.{Diffusion, Influence, Networker, Settings, Transmission}
+import spacenorm.{Diffusion, Influence, Networker, Settings, SettingName, SettingsSpace, Transmission}
 import java.io.PrintWriter
 import java.io.FileWriter
 
@@ -26,22 +26,57 @@ object Files:
     }.toMap
   }
 
-  def loadSettings(file: File): Settings = {
+  def loadSettings(file: File): SettingsSpace = {
     val attributes: Map[String, String] = loadTOML(file)
  
-    def attribute[ItemType](name: String, convert: String => Option[ItemType] = s => Some(s)): ItemType =
-      convert(attributes.get(name).getOrElse {
-        throw new SettingException(s"Settings file ${file.getName} is missing $name attribute")
-      }).getOrElse {
+    def convertOrComplain[ItemType](name: String, value: String, convert: String => Option[ItemType] = s => Some(s)): ItemType =
+      convert(value).getOrElse {
         throw new SettingException(s"Attribute $name in settings file ${file.getName} has an invalid value")
       }
-    def enumValue[EnumType](valueOf: String => EnumType): String => Option[EnumType] = {
-      name => try { Some(valueOf(name)) } catch { 
+    def attributeOption[ItemType](name: String, convert: String => Option[ItemType] = s => Some(s)): Option[ItemType] =
+      attributes.get(name).map(convertOrComplain(name, _, convert))
+    def attribute[ItemType](name: String, convert: String => Option[ItemType] = s => Some(s)): ItemType =
+      attributeOption(name, convert).getOrElse {
+        throw new SettingException(s"Settings file ${file.getName} is missing $name attribute")
+      }
+    def enumValue[EnumType](valueOf: String => EnumType): String => Option[EnumType] =
+      name => try { Some(valueOf(name.capitalize)) } catch { 
         case _: IllegalArgumentException => None          
       }
+    def listValue(value: String): Option[List[String]] = {
+      if (value.head == '[' && value.last == ']')
+        Some(value.drop(1).dropRight(1).split(",").map(_.trim).toList)
+      else
+        None
     }
+    def varyValues(setting: SettingName, base: Settings, values: List[String]): SettingsSpace = {
+      def toInt(value: String) = 
+        convertOrComplain(setting.lowercase, value, _.toIntOption)
+      def toDouble(value: String) = 
+        convertOrComplain(setting.lowercase, value, _.toDoubleOption)
+      def toEnum[EnumType](value: String, valueOf: String => EnumType) = 
+        convertOrComplain(setting.lowercase, value, enumValue(valueOf))
+      values.map { value =>
+        setting match {
+          case SettingName.SpaceWidth        => base.copy(spaceWidth        = toInt(value))
+          case SettingName.SpaceHeight       => base.copy(spaceHeight       = toInt(value))
+          case SettingName.NumberAgents      => base.copy(numberAgents      = toInt(value))
+          case SettingName.NumberBehaviours  => base.copy(numberBehaviours  = toInt(value))
+          case SettingName.NumberObstacles   => base.copy(numberObstacles   = toInt(value))
+          case SettingName.ObstacleSide      => base.copy(obstacleSide      = toInt(value))
+          case SettingName.NumberExits       => base.copy(numberExits       = toInt(value))
+          case SettingName.DistanceThreshold => base.copy(distanceThreshold = toDouble(value))
+          case SettingName.LinearThreshold   => base.copy(linearThreshold   = toDouble(value))
+          case SettingName.DistanceInfluence => base.copy(distanceInfluence = toEnum(value, Influence.valueOf))
+          case SettingName.Diffusion         => base.copy(diffusion         = toEnum(value, Diffusion.valueOf))
+          case SettingName.NetConstruction   => base.copy(netConstruction   = toEnum(value, Networker.valueOf))
+          case SettingName.Transmission      => base.copy(transmission      = toEnum(value, Transmission.valueOf))
+          case SettingName.MaxMove           => base.copy(maxMove           = toDouble(value))
+        }
+      }
+  }
 
-    Settings(
+    val base = Settings(
       statsOutput       = attribute("statsOutput"),
       traceOutputPrefix = attribute("traceOutputPrefix"),
       numberRuns        = attribute("numberRuns", _.toIntOption),
@@ -63,6 +98,9 @@ object Files:
       maxMove           = attribute("maxMove", _.toDoubleOption),
       randomSeed        = attribute("randomSeed", _.toLongOption)
     )
+    attributeOption("vary", enumValue(SettingName.valueOf)).map { setting =>
+      varyValues(setting, base, attribute("values", listValue))
+    }.getOrElse(List(base))
   }
 
   def statsFilePrefix(settings: Settings): String = {

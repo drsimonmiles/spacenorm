@@ -21,3 +21,5 @@ final case class Settings(statsOutput: String,
                           transmission: Transmission,
                           maxMove: Double,
                           randomSeed: Long)
+
+type SettingsSpace = List[Settings]

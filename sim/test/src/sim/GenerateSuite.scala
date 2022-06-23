@@ -10,12 +10,12 @@ class GenerateSuite extends munit.FunSuite:
   val random   = Random()
 
   test("Configuration created") {
-    newRunConfiguration(settings, random)
+    newRunConfiguration(settings.head, random)
     assert(true)
   }
 
   test("State created") {
-    val config = newRunConfiguration(settings, random)
+    val config = newRunConfiguration(settings.head, random)
     newState(config, random)
     assert(true)
   }
