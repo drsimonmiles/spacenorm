@@ -2,7 +2,7 @@ package sim
 
 import java.io.{File, FileWriter, PrintWriter}
 import scala.util.Random
-import sim.Files.{loadSettings, saveStats}
+import sim.Files.{loadSettings, saveStats, statsFilePrefix}
 import sim.Generate.{newState, newRunConfiguration}
 import sim.Process.runTick
 import spacenorm.Encode.{encodeConfiguration, encodeSchemaVersion, encodeState}
@@ -17,7 +17,7 @@ import spacenorm.{Settings, State}
 @main def runExperiment(settingsFile: String) = {
   val settings = loadSettings(File(settingsFile))
   val outputDir = File(settings.statsOutput)
-  val output    = File(outputDir, s"${settings.abbreviation}.csv")
+  val output    = File(outputDir, s"${statsFilePrefix(settings)}.csv")
   var seed      = settings.randomSeed
 
   outputDir.mkdirs

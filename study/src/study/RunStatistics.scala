@@ -1,12 +1,13 @@
 package study
 
-import sim.Metrics.{highestPrevalence, diversity}
+import sim.Metrics.{convergenceRatio, highestPrevalence, diversity}
 import sim.{Result, TickResult}
 import sim.Result.tickRange
 
 final case class TickStatistics(highestPrevalence: Double, diversity: Double, neighbourhood: Double)
 
-type RunStatistics = List[TickStatistics]
+final case class RunStatistics(ticks: List[TickStatistics]):
+  lazy val firstConverged: Option[Int] = ticks.zipWithIndex.find(_._1.highestPrevalence >= convergenceRatio).map(_._2)
 
 object RunStatistics:
   def analyseTick(tickResult: TickResult): TickStatistics =
@@ -16,8 +17,8 @@ object RunStatistics:
       neighbourhood     = tickResult.neighbourhood
     )
 
-  def analyseRun(result: Result): RunStatistics = 
-    result.getOrderedTicks.map(analyseTick)
+  def analyseRun(result: Result): RunStatistics =
+    RunStatistics(result.getOrderedTicks.map(analyseTick))
 
   def average(values: List[Double]): Double =
     values.sum / values.size
@@ -30,6 +31,8 @@ object RunStatistics:
     )
 
   def averageRuns(results: List[Result]): RunStatistics =
-    tickRange(results).map { tick =>
-      averageStats(results.flatMap(_.getTick(tick)).map(analyseTick))
-    }.toList
+    RunStatistics(
+      tickRange(results).map { tick =>
+        averageStats(results.flatMap(_.getTick(tick)).map(analyseTick))
+      }.toList
+    )

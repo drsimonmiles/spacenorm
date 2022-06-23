@@ -65,6 +65,37 @@ object Files:
     )
   }
 
+  def statsFilePrefix(settings: Settings): String = {
+    import settings.*
+    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$distanceThreshold-$linearThreshold-$distanceInfluence-$diffusion-$netConstruction-$transmission-$maxMove"
+  }
+
+  def decodeFilename(statsFile: File): Settings = {
+    val fields = statsFile.getName.dropRight(4).split("-")
+    Settings(
+      statsOutput       = statsFile.getParent,
+      traceOutputPrefix = "",
+      numberRuns        = 0,
+      numberTraces      = 0,
+      numberTicks       = 0,
+      spaceWidth        = fields(0).toInt,
+      spaceHeight       = fields(1).toInt,
+      numberAgents      = fields(2).toInt,
+      numberBehaviours  = fields(3).toInt,
+      numberObstacles   = fields(4).toInt,
+      obstacleSide      = fields(5).toInt,
+      numberExits       = fields(6).toInt,
+      distanceThreshold = fields(7).toDouble,
+      linearThreshold   = fields(8).toDouble,
+      distanceInfluence = Influence.valueOf(fields(9)),
+      diffusion         = Diffusion.valueOf(fields(10)),
+      netConstruction   = Networker.valueOf(fields(11)),
+      transmission      = Transmission.valueOf(fields(12)),
+      maxMove           = fields(13).toDouble,
+      randomSeed        = -1
+    )
+  }
+
   def saveStats(result: Result, statsFile: File): Unit = {
     val uniqueRunID: Int = 
       if (statsFile.exists) {

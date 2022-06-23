@@ -20,6 +20,4 @@ final case class Settings(statsOutput: String,
                           netConstruction: Networker,
                           transmission: Transmission,
                           maxMove: Double,
-                          randomSeed: Long):
-  lazy val abbreviation: String =
-    s"$spaceWidth-$spaceHeight-$numberAgents-$numberBehaviours-$numberObstacles-$obstacleSide-$numberExits-$distanceThreshold-$linearThreshold-$distanceInfluence-$diffusion-$netConstruction-$transmission-$maxMove"
+                          randomSeed: Long)

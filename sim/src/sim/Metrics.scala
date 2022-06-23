@@ -5,7 +5,7 @@ import spacenorm.State
 
 /** Functionality to analyse simulation states to determine key aggregate metrics. */
 object Metrics:
-  val convergenceRatio = 0.95
+  val convergenceRatio = 0.90   // Lower than normal convergence due to entry/exit dynamics
 
   def behaviourCounts(state: State): List[Int] =
     state.config.allBehaviours.map(behaviour => state.behaviour.values.count(_ == behaviour))

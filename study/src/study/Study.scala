@@ -4,9 +4,10 @@ import java.io.File
 import org.jfree.chart.ChartFactory.createScatterPlot
 import org.jfree.chart.ChartUtils.saveChartAsPNG
 import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
-import sim.Files.loadStats
 import sim.Result
-import study.RunStatistics.averageRuns
+import study.PlottableSetting.allComparableGroups
+import study.RunStatistics.{analyseRun, averageRuns}
+import study.ResultsFile.loadStatsCollection
 import org.jfree.chart.ChartRenderingInfo
 import java.awt.geom.Rectangle2D
 import org.jfree.chart.plot.XYPlot
@@ -14,33 +15,69 @@ import org.jfree.chart.axis.NumberAxis
 import org.jfree.chart.axis.NumberTickUnit
 import org.jfree.chart.plot.PlotOrientation
 
-@main def analyse(statsFile: String): Unit = {
-  val results    = loadStats(File(statsFile))
-  val stats      = averageRuns(results)
+@main def analyse(statsFolder: String): Unit = {
+  val folder: File = File(statsFolder)
+  val collection: List[ResultsFile] = loadStatsCollection(folder)
+  val groups: Map[PlottableSetting, List[List[ResultsFile]]] = allComparableGroups(collection)
 
-  plotTimeSeries("prevalence",    _.highestPrevalence, stats, "Highest prevalence norm")
-  plotTimeSeries("diversity",     _.diversity,         stats, "Global norm diversity ")
-  plotTimeSeries("neighbourhood", _.neighbourhood,     stats, "Neighbourhood correlation")
+  for (file <- collection) {
+    val averaged = averageRuns(file.results)
+    plotTimeSeries("prevalence",    _.highestPrevalence, averaged, "Highest prevalence norm",   file.prefix)
+    plotTimeSeries("diversity",     _.diversity,         averaged, "Global norm diversity ",    file.prefix)
+    plotTimeSeries("neighbourhood", _.neighbourhood,     averaged, "Neighbourhood correlation", file.prefix)
+  }
+  groups.foreach {
+    case (setting, comparisons) =>
+      comparisons.foreach { comparison =>
+        plotEmergenceTime(setting.wildcardedPrefix(comparison.head), comparison, setting, s"Convergence time as $setting varies")
+      }
+  }
 }
 
-def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStatistics, plotTitle: String): Unit = {
+def plotTimeSeries(name: String, field: TickStatistics => Double, stats: RunStatistics, plotTitle: String, filePrefix: String): Unit = {
   val series     = XYSeries(name)
   val collection = XYSeriesCollection(series)
   //val render     = ChartRenderingInfo()
 
-  stats.zipWithIndex.foreach { si =>
+  stats.ticks.zipWithIndex.foreach { si =>
     series.add(si._2.toDouble, field(si._1))
   }
   val chart = createScatterPlot(plotTitle, "time", name, collection, PlotOrientation.VERTICAL, true, true, false)
   val plot  = chart.getPlot.asInstanceOf[XYPlot]
   val xAxis = plot.getDomainAxis.asInstanceOf[NumberAxis]
-  xAxis.setRange(0, stats.size)
+  xAxis.setRange(0, stats.ticks.size)
   xAxis.setTickUnit(new NumberTickUnit(0.1))
   xAxis.setVerticalTickLabels(true)
   val yAxis = plot.getRangeAxis.asInstanceOf[NumberAxis]
   yAxis.setRange(0.00, 1.00)
   yAxis.setTickUnit(new NumberTickUnit(0.1))
   yAxis.setVerticalTickLabels(true)
+
+  //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
+
+  saveChartAsPNG(File(s"plots/$name.png"), chart, 1000, 1000)
+  println(s"Saving to $name.png")
+}
+
+def plotEmergenceTime(name: String, stats: List[ResultsFile], parameter: PlottableSetting, plotTitle: String): Unit = {
+  val series     = XYSeries(name)
+  val collection = XYSeriesCollection(series)
+
+  stats.foreach { stat =>
+    stat.averaged.firstConverged.foreach { convergence =>
+      series.add(parameter.extractFrom(stat.settings), convergence.toDouble)
+    }
+  }
+  val chart = createScatterPlot(plotTitle, parameter.toString, "time to converge", collection, PlotOrientation.VERTICAL, true, true, false)
+  val plot  = chart.getPlot.asInstanceOf[XYPlot]
+  val xAxis = plot.getDomainAxis.asInstanceOf[NumberAxis]
+  //xAxis.setRange(0, stats.size)
+  //xAxis.setTickUnit(new NumberTickUnit(0.1))
+  //xAxis.setVerticalTickLabels(true)
+  val yAxis = plot.getRangeAxis.asInstanceOf[NumberAxis]
+  //yAxis.setRange(0.00, 1.00)
+  //yAxis.setTickUnit(new NumberTickUnit(0.1))
+  //yAxis.setVerticalTickLabels(true)
 
   //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 

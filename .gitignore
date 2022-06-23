@@ -5,4 +5,5 @@ out
 .DS_Store
 /experiment*
 /stats*
-plots*
+/plots*
+config-local.toml
