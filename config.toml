@@ -23,6 +23,7 @@ transmission      = "Air"            # Determines how interaction is blocked by 
 maxMove           = 1.5              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal
 
 [variation]                          # If present, this specifies which parameter will be varied running the simulation for each value
+                                     # To remove this variation, you can just comment out the line with the 'vary' parameter
 vary   = "numberBehaviours"          # The name of the parameter to be varied, one of those from the [run] section above
                                      # The values that the varied parameter will take in simulations
 values = [ 2, 3, 5 ]
