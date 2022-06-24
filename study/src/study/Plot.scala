@@ -8,16 +8,17 @@ import org.jfree.chart.plot.{PlotOrientation, XYPlot}
 import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
 import spacenorm.SettingName
 import study.ResultsFile.lastTick
+import study.SystemCategory.{determineCategory, determineCategoryCode}
 
 object Plot:
   def plotTimeSeries(name: String, field: TickStatistics => Double, stats: List[ResultsFile],
-                   setting: Option[SettingName], plotTitle: String, filePrefix: String): Unit = {
+                   setting: Option[SettingName], plotTitle: String, filePrefix: String, plotsFolder: File): Unit = {
     val collection = XYSeriesCollection()
     stats.foreach { stat =>
       val series =
         setting.map { variable =>
           XYSeries(s"${variable.lowercase}=${variable.extractAsString(stat.settings)}")
-        }.getOrElse(XYSeries(name))
+        }.getOrElse(XYSeries(determineCategory(stat.settings)))
       stat.averaged.ticks.zipWithIndex.foreach { si =>
         series.add(si._2.toDouble, field(si._1))
       }
@@ -37,18 +38,23 @@ object Plot:
 
     //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 
-    File("plots").mkdir
-    saveChartAsPNG(File(s"plots/$name-$filePrefix.png"), chart, 1000, 1000)
+    saveChartAsPNG(File(plotsFolder, s"$name-$filePrefix.png"), chart, 1000, 1000)
     println(s"Saving to $name-$filePrefix.png")
   }
 
-  def plotConvergenceTime(name: String, stats: List[ResultsFile], parameter: SettingName, plotTitle: String): Unit = {
+  def plotConvergenceTime(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val series     = XYSeries(name)
     val collection = XYSeriesCollection(series)
 
     stats.foreach { stat =>
       stat.averaged.firstConverged.foreach { convergence =>
-        series.add(parameter.extractAsDouble(stat.settings), convergence.toDouble)
+        parameter match {
+          case Some(setting) =>
+            series.add(setting.extractAsDouble(stat.settings), convergence.toDouble)
+          case None =>
+            series.add(determineCategoryCode(stat.settings), convergence.toDouble)
+        }
+
       }
     }
     val chart = createScatterPlot(plotTitle, parameter.toString, "time to converge", collection, PlotOrientation.VERTICAL, true, true, false)
@@ -64,7 +70,6 @@ object Plot:
 
     //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
 
-    File("plots").mkdir
-    saveChartAsPNG(File(s"plots/convergence-$name.png"), chart, 1000, 1000)
+    saveChartAsPNG(File(plotsFolder, s"convergence-$name.png"), chart, 1000, 1000)
     println(s"Saving to convergence-$name.png")
   }
