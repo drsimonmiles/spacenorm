@@ -15,3 +15,6 @@ object ResultsFile:
     statsFolder.listFiles.map { statsFile =>
       ResultsFile(statsFile, decodeFilename(statsFile), loadStats(statsFile))
     }.toList
+
+  def lastTick(files: List[ResultsFile]): Int =
+    files.flatMap(_.results).map(_.lastTick).max

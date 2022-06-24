@@ -37,7 +37,6 @@ object RunStatistics:
       tickRange(results).flatMap { tick =>
         averageStats(results.flatMap(_.getTick(tick)).map(analyseTick))
       }.toList
-    println(s"${results.map(analyseRun).flatMap(_.firstConverged).size}")
     val convergence = average(results.map(analyseRun).flatMap(_.firstConverged))
     RunStatistics(ticks, convergence)
   }
