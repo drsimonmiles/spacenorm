@@ -4,18 +4,19 @@ import sim.Files.loadSettings
 import sim.Generate.*
 import java.io.File
 import scala.util.Random
+import spacenorm.SingleSettings
 
 class GenerateSuite extends munit.FunSuite:
-  val settings   = loadSettings(File("sim/test/src/sim/test-config.toml"))
+  val settings = loadSettings(File("sim/test/src/sim/test-config.toml")).asInstanceOf[SingleSettings]
   val random   = Random()
 
   test("Configuration created") {
-    newRunConfiguration(settings.head, random)
+    newRunConfiguration(settings.settings, random)
     assert(true)
   }
 
   test("State created") {
-    val config = newRunConfiguration(settings.head, random)
+    val config = newRunConfiguration(settings.settings, random)
     newState(config, random)
     assert(true)
   }
