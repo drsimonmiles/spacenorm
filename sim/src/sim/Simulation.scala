@@ -12,15 +12,25 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
 
 /**
   The main method to run the simulation.
-  The command line takes an argument: the settings file.
+  The command line takes an argument: a settings file or a folder containing settings files (possibly in subfolders).
   The settings file defines a space of settings, for each which a batch of simulations are run.
 */
 @main def runExperiment(settingsFile: String) =
-  loadSettings(File(settingsFile)) match {
-    case SingleSettings(settings) => 
-      runSimulationSet(settings, None)
-    case VariedSettings(variedParameter, settingsList) =>
-      settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter)))
+  runExperimentsForSettings(File(settingsFile))
+
+/**
+ * Runs simulation experiments for the settings in the given file or, if the file is a folder, all settings
+ * files in the directory tree.
+ */
+def runExperimentsForSettings(settingsFile: File): Unit =
+  if (settingsFile.isDirectory) {
+    settingsFile.listFiles.foreach(runExperimentsForSettings)
+  } else
+    loadSettings(settingsFile) match {
+      case SingleSettings(settings) => 
+        runSimulationSet(settings, None)
+      case VariedSettings(variedParameter, settingsList) =>
+        settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter)))
   }
 
 /** Runs a batch of simulations with the same settings. */

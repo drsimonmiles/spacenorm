@@ -7,4 +7,4 @@ trait SettingsSpace:
 case class SingleSettings(settings: Settings) extends SettingsSpace:
   val settingsList = List(settings)
 
-case class VariedSettings(vary: SettingName, settingsList: List[Settings]) extends SettingsSpace
+case class VariedSettings(variedParameter: SettingName, settingsList: List[Settings]) extends SettingsSpace
