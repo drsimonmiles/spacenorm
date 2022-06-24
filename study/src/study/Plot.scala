@@ -1,7 +1,7 @@
 package study
 
 import java.io.File
-import org.jfree.chart.ChartFactory.createScatterPlot
+import org.jfree.chart.ChartFactory.{createBarChart, createScatterPlot}
 import org.jfree.chart.ChartUtils.saveChartAsPNG
 import org.jfree.chart.axis.{NumberAxis, NumberTickUnit}
 import org.jfree.chart.plot.{PlotOrientation, XYPlot}
@@ -9,6 +9,7 @@ import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
 import spacenorm.SettingName
 import study.ResultsFile.lastTick
 import study.SystemCategory.{determineCategory, determineCategoryCode}
+import org.jfree.data.category.DefaultCategoryDataset
 
 object Plot:
   def plotTimeSeries(name: String, field: TickStatistics => Double, stats: List[ResultsFile],
@@ -69,6 +70,31 @@ object Plot:
     //yAxis.setVerticalTickLabels(true)
 
     //render.setChartArea(Rectangle2D.Double(0.0, 0.0, 1.0, 1.0))
+
+    saveChartAsPNG(File(plotsFolder, s"convergence-$name.png"), chart, 1000, 1000)
+    println(s"Saving to convergence-$name.png")
+  }
+
+  def plotConvergenceTimeBarChart(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
+    val data = DefaultCategoryDataset()
+
+    stats.sortBy { result =>
+      parameter match {
+        case Some(setting) => setting.extractAsDouble(result.settings)
+        case None => determineCategoryCode(result.settings)
+      }
+    }.foreach { stat =>
+      stat.averaged.firstConverged.foreach { convergence =>
+        parameter match {
+          case Some(setting) =>
+            data.addValue(convergence, setting.extractAsString(stat.settings), "convergence time")
+          case None =>
+            data.addValue(convergence, determineCategory(stat.settings), "convergence time")
+        }
+
+      }
+    }
+    val chart = createBarChart("Time to convergence", "System category", "", data)
 
     saveChartAsPNG(File(plotsFolder, s"convergence-$name.png"), chart, 1000, 1000)
     println(s"Saving to convergence-$name.png")

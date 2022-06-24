@@ -4,7 +4,7 @@ import java.io.File
 import spacenorm.SettingName
 import study.PlottableSetting.{allComparableGroups, notInGroups}
 import study.ResultsFile.loadStatsCollection
-import study.Plot.{plotTimeSeries, plotConvergenceTime}
+import study.Plot.*
 
 @main def analyse(statsFolder: String, arguments: String*): Unit = {
   // The collection of all results file in the given output data folder
@@ -19,7 +19,7 @@ import study.Plot.{plotTimeSeries, plotConvergenceTime}
     plotTimeSeries("prevalence",    _.highestPrevalence, collection, None, "Highest prevalence norm",   "systems", plotsFolder)
     plotTimeSeries("diversity",     _.diversity,         collection, None, "Global norm diversity ",    "systems", plotsFolder)
     plotTimeSeries("neighbourhood", _.neighbourhood,     collection, None, "Neighbourhood correlation", "systems", plotsFolder)
-    plotConvergenceTime("system", collection, None, "Convergence time as system type varies", plotsFolder)
+    plotConvergenceTimeBarChart("system", collection, None, "Convergence time as system type varies", plotsFolder)
   } else {
     // The groups of results giving a comparison across values of a setting
     val groups: Map[SettingName, List[List[ResultsFile]]] = allComparableGroups(collection)
@@ -33,7 +33,7 @@ import study.Plot.{plotTimeSeries, plotConvergenceTime}
           plotTimeSeries("prevalence",    _.highestPrevalence, comparison, Some(setting), "Highest prevalence norm",   prefix, plotsFolder)
           plotTimeSeries("diversity",     _.diversity,         comparison, Some(setting), "Global norm diversity ",    prefix, plotsFolder)
           plotTimeSeries("neighbourhood", _.neighbourhood,     comparison, Some(setting), "Neighbourhood correlation", prefix, plotsFolder)
-          plotConvergenceTime(prefix, comparison, Some(setting), s"Convergence time as $setting varies", plotsFolder)
+          plotConvergenceTimeBarChart(prefix, comparison, Some(setting), s"Convergence time as $setting varies", plotsFolder)
         }
     }
     singles.foreach { result =>
