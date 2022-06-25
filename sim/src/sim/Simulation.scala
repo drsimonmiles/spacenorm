@@ -15,37 +15,53 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
   The command line takes an argument: a settings file or a folder containing settings files (possibly in subfolders).
   The settings file defines a space of settings, for each which a batch of simulations are run.
 */
-@main def runExperiment(settingsFile: String) =
-  runExperimentsForSettings(File(settingsFile))
+@main def runExperiment(settingsFile: String) = {
+  val inputFile    = File(settingsFile)
+  val outputFolder =
+    if (inputFile.isDirectory) File(inputFile.getPath + "-out")
+    else File(inputFile.getPath.dropRight(5) + "-out")
+  val start = System.currentTimeMillis
+  val tracesFolder = File(s"traces-$start")
+  
+  runExperimentsForSettings(File(settingsFile), outputFolder, tracesFolder)
+  print(s"Total time: ${System.currentTimeMillis - start}ms")
+
+  println(s"Output stats written to ${outputFolder.getPath}")
+  println(s"Traces (if any) written to ${tracesFolder.getPath}")
+}
 
 /**
  * Runs simulation experiments for the settings in the given file or, if the file is a folder, all settings
  * files in the directory tree.
  */
-def runExperimentsForSettings(settingsFile: File): Unit =
+def runExperimentsForSettings(settingsFile: File, outputFolder: File, tracesFolder: File): Unit =
   if (settingsFile.isDirectory) {
-    settingsFile.listFiles.foreach(runExperimentsForSettings)
+    settingsFile.listFiles.foreach { subfile =>
+      if (subfile.isDirectory)
+        runExperimentsForSettings(subfile, File(outputFolder, subfile.getName), File(tracesFolder, subfile.getName))
+      else
+        runExperimentsForSettings(subfile, outputFolder, tracesFolder)
+    }
   } else
     loadSettings(settingsFile) match {
       case SingleSettings(settings) => 
-        runSimulationSet(settings, None)
+        runSimulationSet(settings, None, settingsFile.getName.dropRight(5), outputFolder, tracesFolder)
       case VariedSettings(variedParameter, settingsList) =>
-        settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter)))
+        settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter), settingsFile.getName.dropRight(5), outputFolder, tracesFolder))
   }
 
 /** Runs a batch of simulations with the same settings. */
-def runSimulationSet(settings: Settings, variedParameter: Option[SettingName]): Unit = {
-  val outputDir  = File(settings.statsOutput)
-  val output     = File(outputDir, s"${statsFilePrefix(settings)}.csv")
-  val paramValue = variedParameter.map(_.extractAsString(settings)).map(s => s"-$s").getOrElse("")
+def runSimulationSet(settings: Settings, variedParameter: Option[SettingName], settingsFilename: String, outputFolder: File, tracesFolder: File): Unit = {
+  val output     = File(outputFolder, s"${statsFilePrefix(settings)}.csv")
+  val paramValue = variedParameter.map(setting => s"-$setting=${setting.extractAsString(settings)}").getOrElse("")
   var seed       = settings.randomSeed
 
-  outputDir.mkdirs
+  outputFolder.mkdirs
   (1 to settings.numberRuns).foreach { run => {
     val start = System.currentTimeMillis
     val traceFile =
       if (run <= settings.numberTraces)
-        Some(File(s"${settings.traceOutputPrefix}$paramValue-$run.trace"))
+        Some(File(tracesFolder, s"$settingsFilename$paramValue-$run.trace"))
       else
         None
     val random = if (seed >= 0) Random(seed) else Random()
@@ -62,7 +78,10 @@ def runSimulationSet(settings: Settings, variedParameter: Option[SettingName]): 
  */
 def runSimulation(run: Int, settings: Settings, traceFile: Option[File], random: Random): Result = {
   val initialState = newState(newRunConfiguration(settings, random), random)
-  val trace = traceFile.map(file => PrintWriter(FileWriter(file)))
+  val trace = traceFile.map { file =>
+    file.getParentFile.mkdirs
+    PrintWriter(FileWriter(file))
+  }
 
   trace.foreach(_.println(encodeSchemaVersion))
   trace.foreach(_.println(encodeConfiguration(initialState.config)))

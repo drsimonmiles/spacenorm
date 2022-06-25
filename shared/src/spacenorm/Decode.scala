@@ -55,7 +55,10 @@ object Decode:
     Some(Transmission.valueOf(code))
 
   def decodeList[Item](decodeItem: String => Option[Item], required: Option[Int] = None, separator: String = " ")(code: String): Option[List[Item]] =
-    failOnAnyFail(code.split(separator).toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
+    if (code.isEmpty)
+      Some(Nil)
+    else
+      failOnAnyFail(code.split(separator).toList.map(decodeItem)).filterNot(list => required.exists(_ != list.size))
 
   def decodeMap[Key, Value](decodeKey: String => Option[Key], decodeValue: String => Option[Value])(code: String): Option[Map[Key, Value]] =
     decodeList(decode2Tuple(decodeKey, decodeValue, ':'), None, "~")(code).map(_.toMap)

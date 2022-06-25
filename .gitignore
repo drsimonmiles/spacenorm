@@ -7,4 +7,5 @@ out
 /stats*
 /plots*
 config-local.toml
-/configs
+/configs*
+/traces*

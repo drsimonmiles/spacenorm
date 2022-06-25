@@ -78,8 +78,6 @@ object Files:
   }
 
     val base = Settings(
-      statsOutput       = attribute("statsOutput"),
-      traceOutputPrefix = attribute("traceOutputPrefix"),
       numberRuns        = attribute("numberRuns", _.toIntOption),
       numberTraces      = attribute("numberTraces", _.toIntOption),
       numberTicks       = attribute("numberTicks", _.toIntOption),
@@ -112,8 +110,6 @@ object Files:
   def decodeFilename(statsFile: File): Settings = {
     val fields = statsFile.getName.dropRight(4).split("-")
     Settings(
-      statsOutput       = statsFile.getParent,
-      traceOutputPrefix = "",
       numberRuns        = 0,
       numberTraces      = 0,
       numberTicks       = 0,

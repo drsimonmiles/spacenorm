@@ -1,6 +1,6 @@
+# This is a sample config file to show the settings and format
+
 [data]                               # Options for what data to output from simulations and where to
-statsOutput       = "stats"          # Folder fo CSV files to output stats from runs to, NOTE: appends to existing content
-traceOutputPrefix = "experiment"     # Prefix of filenames to output full run traces for visualisation, each run numbered
 numberRuns        = 1                # Number of simulation runs to perform
 numberTraces      = 1                # Number of those simulation runs to trace for visualisation
 numberTicks       = 200              # Number of simulation ticks/time steps

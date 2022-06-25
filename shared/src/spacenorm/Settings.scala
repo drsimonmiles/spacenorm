@@ -1,9 +1,7 @@
 package spacenorm
 
 /** Settings loaded from the model configuration file. */
-final case class Settings(statsOutput: String,
-                          traceOutputPrefix: String,
-                          numberRuns: Int,
+final case class Settings(numberRuns: Int,
                           numberTraces: Int,
                           numberTicks: Int,
                           spaceWidth: Int,
