@@ -7,19 +7,18 @@ import org.jfree.chart.axis.{NumberAxis, NumberTickUnit}
 import org.jfree.chart.plot.{PlotOrientation, XYPlot}
 import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
 import spacenorm.SettingName
-import study.ResultsFile.lastTick
-import study.SystemCategory.{determineCategory, determineCategoryCode}
+import study.SystemCategory.determineCategory
 import org.jfree.data.category.DefaultCategoryDataset
 
 object Plot:
-  def plotTimeSeries(name: String, field: TickStatistics => Double, stats: List[ResultsFile],
-                   setting: Option[SettingName], plotTitle: String, filePrefix: String, plotsFolder: File): Unit = {
+  def plotTimeSeries(name: String, field: TickStatistics => Double, stats: ResultsComparison,
+                     setting: Option[SettingName], plotTitle: String, filePrefix: String, plotsFolder: File): Unit = {
     val collection = XYSeriesCollection()
-    stats.foreach { stat =>
+    stats.files.foreach { stat =>
       val series =
         setting.map { variable =>
           XYSeries(s"${variable.lowercase}=${variable.extractAsString(stat.settings)}")
-        }.getOrElse(XYSeries(determineCategory(stat.settings)))
+        }.getOrElse(XYSeries(determineCategory(stat.settings).toString))
       stat.averaged.ticks.zipWithIndex.foreach { si =>
         series.add(si._2.toDouble, field(si._1))
       }
@@ -29,7 +28,7 @@ object Plot:
     val chart = createScatterPlot(plotTitle, "time", name, collection, PlotOrientation.VERTICAL, true, true, false)
     val plot  = chart.getPlot.asInstanceOf[XYPlot]
     val xAxis = plot.getDomainAxis.asInstanceOf[NumberAxis]
-    xAxis.setRange(0, lastTick(stats))
+    xAxis.setRange(0, stats.lastTick)
     xAxis.setTickUnit(new NumberTickUnit(0.1))
     xAxis.setVerticalTickLabels(true)
     val yAxis = plot.getRangeAxis.asInstanceOf[NumberAxis]
@@ -43,17 +42,17 @@ object Plot:
     println(s"Saving to $name-$filePrefix.png")
   }
 
-  def plotConvergenceTime(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
+  def plotConvergenceTime(name: String, stats: ResultsComparison, parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val series     = XYSeries(name)
     val collection = XYSeriesCollection(series)
 
-    stats.foreach { stat =>
+    stats.files.foreach { stat =>
       stat.averaged.firstConverged.foreach { convergence =>
         parameter match {
           case Some(setting) =>
             series.add(setting.extractAsDouble(stat.settings), convergence.toDouble)
           case None =>
-            series.add(determineCategoryCode(stat.settings), convergence.toDouble)
+            series.add(determineCategory(stat.settings).ordinal, convergence.toDouble)
         }
 
       }
@@ -75,13 +74,13 @@ object Plot:
     println(s"Saving to convergence-$name.png")
   }
 
-  def plotConvergenceTimeBarChart(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
+  def plotConvergenceTimeBarChart(name: String, stats: ResultsComparison, parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val data = DefaultCategoryDataset()
 
-    stats.sortBy { result =>
+    stats.files.sortBy { result =>
       parameter match {
         case Some(setting) => setting.extractAsDouble(result.settings)
-        case None => determineCategoryCode(result.settings)
+        case None => determineCategory(result.settings).ordinal.toDouble
       }
     }.foreach { stat =>
       stat.averaged.firstConverged.foreach { convergence =>
@@ -89,7 +88,7 @@ object Plot:
           case Some(setting) =>
             data.addValue(convergence, setting.extractAsString(stat.settings), "convergence time")
           case None =>
-            data.addValue(convergence, determineCategory(stat.settings), "convergence time")
+            data.addValue(convergence, determineCategory(stat.settings).toString, "convergence time")
         }
 
       }
@@ -100,13 +99,13 @@ object Plot:
     println(s"Saving to convergence-$name.png")
   }
 
-  def plotConvergenceChanceBarChart(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
+  def plotConvergenceChanceBarChart(name: String, stats: ResultsComparison, parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val data = DefaultCategoryDataset()
 
-    stats.sortBy { result =>
+    stats.files.sortBy { result =>
       parameter match {
         case Some(setting) => setting.extractAsDouble(result.settings)
-        case None => determineCategoryCode(result.settings)
+        case None => determineCategory(result.settings).ordinal.toDouble
       }
     }.foreach { stat =>
       val fraction = stat.fractionConverged
@@ -114,7 +113,7 @@ object Plot:
         case Some(setting) =>
           data.addValue(fraction, setting.extractAsString(stat.settings), "convergence time")
         case None =>
-          data.addValue(fraction, determineCategory(stat.settings), "convergence time")
+          data.addValue(fraction, determineCategory(stat.settings).toString, "convergence time")
       }
     }
     val chart = createBarChart("Proportion of runs converging", "System category", "", data)

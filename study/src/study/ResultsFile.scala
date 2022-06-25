@@ -12,10 +12,5 @@ final case class ResultsFile(file: File, settings: Settings, results: List[Resul
   lazy val fractionConverged: Double = results.map(analyseRun).count(_.firstConverged.nonEmpty) / results.size.toDouble
 
 object ResultsFile:
-  def loadStatsCollection(statsFolder: File): List[ResultsFile] =
-    statsFolder.listFiles.map { statsFile =>
-      ResultsFile(statsFile, decodeFilename(statsFile), loadStats(statsFile))
-    }.toList
-
-  def lastTick(files: List[ResultsFile]): Int =
-    files.flatMap(_.results).map(_.lastTick).max
+  def apply(statsFile: File): ResultsFile =
+    ResultsFile(statsFile, decodeFilename(statsFile), loadStats(statsFile))
