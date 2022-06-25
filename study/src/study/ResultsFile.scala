@@ -4,11 +4,12 @@ import java.io.File
 import sim.Files.{decodeFilename, loadStats}
 import sim.Result
 import spacenorm.Settings
-import study.RunStatistics.averageRuns
+import study.RunStatistics.{analyseRun, averageRuns}
 
 final case class ResultsFile(file: File, settings: Settings, results: List[Result]):
-  lazy val prefix: String          = file.getName.dropRight(4)
-  lazy val averaged: RunStatistics = averageRuns(results)
+  lazy val prefix: String            = file.getName.dropRight(4)
+  lazy val averaged: RunStatistics   = averageRuns(results)
+  lazy val fractionConverged: Double = results.map(analyseRun).count(_.firstConverged.nonEmpty) / results.size.toDouble
 
 object ResultsFile:
   def loadStatsCollection(statsFolder: File): List[ResultsFile] =

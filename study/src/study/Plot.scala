@@ -99,3 +99,26 @@ object Plot:
     saveChartAsPNG(File(plotsFolder, s"convergence-$name.png"), chart, 1000, 1000)
     println(s"Saving to convergence-$name.png")
   }
+
+  def plotConvergenceChanceBarChart(name: String, stats: List[ResultsFile], parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
+    val data = DefaultCategoryDataset()
+
+    stats.sortBy { result =>
+      parameter match {
+        case Some(setting) => setting.extractAsDouble(result.settings)
+        case None => determineCategoryCode(result.settings)
+      }
+    }.foreach { stat =>
+      val fraction = stat.fractionConverged
+      parameter match {
+        case Some(setting) =>
+          data.addValue(fraction, setting.extractAsString(stat.settings), "convergence time")
+        case None =>
+          data.addValue(fraction, determineCategory(stat.settings), "convergence time")
+      }
+    }
+    val chart = createBarChart("Proportion of runs converging", "System category", "", data)
+
+    saveChartAsPNG(File(plotsFolder, s"fraction-$name.png"), chart, 1000, 1000)
+    println(s"Saving to fraction-$name.png")
+  }

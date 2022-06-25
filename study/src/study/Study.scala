@@ -20,6 +20,7 @@ import study.Plot.*
     plotTimeSeries("diversity",     _.diversity,         collection, None, "Global norm diversity ",    "systems", plotsFolder)
     plotTimeSeries("neighbourhood", _.neighbourhood,     collection, None, "Neighbourhood correlation", "systems", plotsFolder)
     plotConvergenceTimeBarChart("system", collection, None, "Convergence time as system type varies", plotsFolder)
+    plotConvergenceChanceBarChart("system", collection, None, "Chance to converge as system type varies", plotsFolder)
   } else {
     // The groups of results giving a comparison across values of a setting
     val groups: Map[SettingName, List[List[ResultsFile]]] = allComparableGroups(collection)
@@ -34,6 +35,7 @@ import study.Plot.*
           plotTimeSeries("diversity",     _.diversity,         comparison, Some(setting), "Global norm diversity ",    prefix, plotsFolder)
           plotTimeSeries("neighbourhood", _.neighbourhood,     comparison, Some(setting), "Neighbourhood correlation", prefix, plotsFolder)
           plotConvergenceTimeBarChart(prefix, comparison, Some(setting), s"Convergence time as $setting varies", plotsFolder)
+          plotConvergenceChanceBarChart(prefix, comparison, Some(setting), s"Change to converge time as $setting varies", plotsFolder)
         }
     }
     singles.foreach { result =>
