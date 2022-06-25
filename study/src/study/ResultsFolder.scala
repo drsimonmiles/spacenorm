@@ -4,7 +4,9 @@ import java.io.File
 import spacenorm.SettingName
 import study.SystemCategory.{determineCategory, ignoreSystemDistinguishers}
 
-final case class ResultsFolder(folder: File, files: List[ResultsFile]):
+final case class ResultsFolder(folder: File):
+  lazy val files = folder.listFiles.filterNot(_.isDirectory).map(ResultsFile.apply).toList
+
   /** The groups of results giving a comparison across system types */
   lazy val systemComparisons: List[ResultsComparison] =
     files
@@ -31,7 +33,3 @@ final case class ResultsFolder(folder: File, files: List[ResultsFile]):
     val names = (settingComparisons.values.flatten ++ systemComparisons).flatMap(_.names).toSet
     files.filterNot { result => names.contains(result.file.getName) }
   }
-
-object ResultsFolder:
-  def apply(statsFolder: File): ResultsFolder =
-    ResultsFolder(statsFolder, statsFolder.listFiles.map(ResultsFile.apply).toList)

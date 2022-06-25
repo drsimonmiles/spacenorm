@@ -76,6 +76,7 @@ object Plot:
 
   def plotConvergenceTimeBarChart(name: String, stats: ResultsComparison, parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val data = DefaultCategoryDataset()
+    val category = parameter.map(_.toString).getOrElse("System type")
 
     stats.files.sortBy { result =>
       parameter match {
@@ -93,7 +94,7 @@ object Plot:
 
       }
     }
-    val chart = createBarChart("Time to convergence", "System category", "", data)
+    val chart = createBarChart("Time to convergence", category, "", data)
 
     saveChartAsPNG(File(plotsFolder, s"convergence-$name.png"), chart, 1000, 1000)
     println(s"Saving to convergence-$name.png")
@@ -101,6 +102,7 @@ object Plot:
 
   def plotConvergenceChanceBarChart(name: String, stats: ResultsComparison, parameter: Option[SettingName], plotTitle: String, plotsFolder: File): Unit = {
     val data = DefaultCategoryDataset()
+    val category = parameter.map(_.toString).getOrElse("System type")
 
     stats.files.sortBy { result =>
       parameter match {
@@ -116,7 +118,7 @@ object Plot:
           data.addValue(fraction, determineCategory(stat.settings).toString, "convergence time")
       }
     }
-    val chart = createBarChart("Proportion of runs converging", "System category", "", data)
+    val chart = createBarChart("Proportion of runs converging", category, "", data)
 
     saveChartAsPNG(File(plotsFolder, s"fraction-$name.png"), chart, 1000, 1000)
     println(s"Saving to fraction-$name.png")

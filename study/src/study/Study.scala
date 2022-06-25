@@ -4,13 +4,25 @@ import java.io.File
 import spacenorm.SettingName
 import study.Plot.*
 
-@main def analyse(statsFolder: String, arguments: String*): Unit = {
-  // The collection of all results file in the given output data folder
-  val collection: ResultsFolder = ResultsFolder(File(statsFolder))
+@main def analyse(statsFolder: String): Unit = {
   // The folder for the plot images to be output to
   val plotsFolder = File(s"plots-${System.currentTimeMillis}")
+  analyseFolder(File(statsFolder), plotsFolder)
+}
 
-  plotsFolder.mkdir
+def analyseFolder(statsFolder: File, plotsFolder: File): Unit = {
+  statsFolder.listFiles.filter(_.isDirectory).foreach { subfolder =>
+    analyseFolder(subfolder, File(plotsFolder, subfolder.getName))
+  }
+  if (statsFolder.listFiles.exists(!_.isDirectory))
+    analyseStatsSet(statsFolder, plotsFolder)
+}
+
+def analyseStatsSet(statsFolder: File, plotsFolder: File): Unit = {
+  // The collection of all results file in the given output data folder
+  val collection: ResultsFolder = ResultsFolder(statsFolder)
+
+  plotsFolder.mkdirs
   collection.systemComparisons.foreach { comparison =>
     plotTimeSeries("prevalence",    _.highestPrevalence, comparison, None, "Highest prevalence norm",   "systems", plotsFolder)
     plotTimeSeries("diversity",     _.diversity,         comparison, None, "Global norm diversity ",    "systems", plotsFolder)
@@ -35,5 +47,5 @@ import study.Plot.*
     plotTimeSeries("neighbourhood", _.neighbourhood,     ResultsComparison(result), None, "Neighbourhood correlation", result.prefix, plotsFolder)
   }
   
-  println(s"Saved all plots to ${plotsFolder.getName}")
+  println(s"Saved all plots to ${plotsFolder.getPath}")
 }
