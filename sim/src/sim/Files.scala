@@ -31,7 +31,7 @@ object Files:
  
     def convertOrComplain[ItemType](name: String, value: String, convert: String => Option[ItemType] = s => Some(s)): ItemType =
       convert(value).getOrElse {
-        throw new SettingException(s"Attribute $name in settings file ${file.getName} has an invalid value")
+        throw new SettingException(s"Attribute $name in settings file ${file.getName} has an invalid value: $value")
       }
     def attributeOption[ItemType](name: String, convert: String => Option[ItemType] = s => Some(s)): Option[ItemType] =
       attributes.get(name).map(convertOrComplain(name, _, convert))
@@ -45,7 +45,7 @@ object Files:
       }
     def listValue(value: String): Option[List[String]] = {
       if (value.head == '[' && value.last == ']')
-        Some(value.drop(1).dropRight(1).split(",").map(_.trim).toList)
+        Some(value.drop(1).dropRight(1).split(",").map(_.trim.replaceAll("^\"|\"$", "")).toList)
       else
         None
     }
