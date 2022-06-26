@@ -18,7 +18,7 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
 @main def runExperiment(settingsFile: String) = {
   val inputFile    = File(settingsFile)
   val outputFolder =
-    if (inputFile.isDirectory) File(inputFile.getPath + "-out")
+    if (inputFile.isDirectory) File(inputFile.getName + "-out")
     else File(inputFile.getPath.dropRight(5) + "-out")
   val start = System.currentTimeMillis
   val tracesFolder = File(s"traces-$start")
