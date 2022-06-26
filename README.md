@@ -15,7 +15,8 @@ The code is divided into four packages:
 - **spacenorm** is the code for the specific model, required for both simulation and visualisation (found in the **shared** directory)
 - **study** is the code for analysing (plotting) aggregate simulation output
 
-On running a simulation(s), a configuration file must be given. One is provided in the repository, **config.toml**.
+On running a simulation(s), a configuration file or a folder containing configuration files must be given.
+One is provided in the repository, **config.toml**.
 It has comments on each option which should be read after understanding what the model does from the description below.
 Run simulations by doing:
 
