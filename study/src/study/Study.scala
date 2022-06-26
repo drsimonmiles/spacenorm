@@ -33,7 +33,7 @@ def analyseStatsSet(statsFolder: File, plotsFolder: File): Unit = {
   collection.settingComparisons.foreach {
     case (setting, comparisons) =>
       comparisons.foreach { comparison =>
-        val prefix = setting.wildcardedPrefix(comparison.files.head.prefix)
+        val prefix = setting.wildcardedPrefix(comparison.files.head.prefix, "varied")
         plotTimeSeries("prevalence",    _.highestPrevalence, comparison, Some(setting), "Highest prevalence norm",   prefix, plotsFolder)
         plotTimeSeries("diversity",     _.diversity,         comparison, Some(setting), "Global norm diversity ",    prefix, plotsFolder)
         plotTimeSeries("neighbourhood", _.neighbourhood,     comparison, Some(setting), "Neighbourhood correlation", prefix, plotsFolder)

@@ -57,5 +57,5 @@ enum SettingName:
     case MaxMove           => settings.copy(maxMove = 0.0)
   }
 
-  def wildcardedPrefix(prefix: String): String =
-    prefix.split("-").updated(ordinal, "*").mkString("-")
+  def wildcardedPrefix(prefix: String, wildcard: String): String =
+    prefix.split("-").updated(ordinal, wildcard).mkString("-")
