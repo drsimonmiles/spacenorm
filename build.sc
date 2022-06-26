@@ -22,7 +22,7 @@ object sim extends ScalaModule {
 /* The build module to compile the JavaScript trace visualiser interface */
 object viz extends ScalaJSModule {
   def scalaVersion = projectScalaVersion
-  def scalaJSVersion = "1.10.0"
+  def scalaJSVersion = "1.10.1"
 
   def sharedSources = T.sources { os.pwd / "shared" / "src" }
   override def sources = T.sources  { super.sources() ++ sharedSources() }
