@@ -1,0 +1,21 @@
+[data]                               # Options for what data to output from simulations and where to
+numberRuns        = 30               # Number of simulation runs to perform (if varying, this is runs per varied parameter)
+numberTraces      = 1                # Number of those simulation runs to trace for visualisation (if varying, this is traces per varied parameter)
+numberTicks       = 200              # Number of simulation ticks/time steps per run
+randomSeed        = -1               # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
+
+[run]                                # Options for the simulation model
+spaceWidth        = 100              # Spatial width of the area in which agents interact
+spaceHeight       = 100              # Spatial height of the area in which agents interact
+numberAgents      = 1000             # Number of agents in initial state
+numberBehaviours  = 2                # Number of different behaviours agents can adopt
+numberObstacles   = 0                # Number of square obstacles placed in the area
+obstacleSide      = 20               # The length of each side of a square obstacle
+numberExits       = 0                # The number of exit/entry points around the space
+distanceThreshold = 10.0             # Threshold distance beyond which agents do not interact
+linearThreshold   = 3.0              # Weighted linear threshold for copying behaviour in linear threshold diffusion
+distanceInfluence = "Uniform"        # How distance influences interaction: either "Linear" for influence decreasing linearly by distance or "Uniform" for no effect of distance
+diffusion         = "Coordination"   # How behaviour is diffused: "Coordination" (coordination game), "Threshold" (linear threshold) or "Cascade" (independent cascade)
+netConstruction   = "Random"         # How the network is generated: either "Distance" for by spatial distance threshold or "Random" if random network of same expected degree as geometric network
+transmission      = "Air"            # Determines how interaction is blocked by obstacles: "Light" requires line of sight while "Air" does not
+maxMove           = 0.0              # Maximum distance an agent can move per time step, e.g. 0.0 for no movement, 1.0 for vertical/horiztonal, 1.5 for also diagonal

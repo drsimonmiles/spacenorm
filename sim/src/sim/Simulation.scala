@@ -24,8 +24,7 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
   val tracesFolder = File(s"traces-$start")
   
   runExperimentsForSettings(File(settingsFile), outputFolder, tracesFolder)
-  print(s"Total time: ${System.currentTimeMillis - start}ms")
-
+  println(s"Total time: ${System.currentTimeMillis - start}ms")
   println(s"Output stats written to ${outputFolder.getPath}")
   println(s"Traces (if any) written to ${tracesFolder.getPath}")
 }

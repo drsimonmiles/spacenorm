@@ -1,13 +1,13 @@
 package study
 
 import spacenorm.{Influence, Networker, Settings}
-import spacenorm.SettingName.{NetConstruction, DistanceInfluence, MaxMove, NumberObstacles, NumberExits}
+import spacenorm.SettingName.{NetConstruction, DistanceInfluence, MaxMove, NumberObstacles, ObstacleSide, NumberExits}
 
 enum SystemCategory:
   case Base, SpatiallyDistributed, Distanced, Movement, Obstructed, Permeable
 
 object SystemCategory:
-  val systemRelevantSettings = Set(NetConstruction, DistanceInfluence, MaxMove, NumberObstacles, NumberExits)
+  val systemRelevantSettings = Set(NetConstruction, DistanceInfluence, MaxMove, NumberObstacles, ObstacleSide, NumberExits)
 
   def determineCategory(settings: Settings): SystemCategory =
     if (settings.netConstruction == Networker.Random) Base
