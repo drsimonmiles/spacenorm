@@ -15,7 +15,9 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
   The command line takes an argument: a settings file or a folder containing settings files (possibly in subfolders).
   The settings file defines a space of settings, for each which a batch of simulations are run.
 */
-@main def runExperiment(settingsFile: String) = {
+@main def runExperiment(arguments: String*) = {
+  val settingsFile = arguments.head
+  val subfolders   = if (arguments.size > 1) Some(arguments.tail.toList) else None
   val inputFile    = File(settingsFile)
   val outputFolder =
     if (inputFile.isDirectory) File(inputFile.getName + "-out")
@@ -23,7 +25,7 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
   val start = System.currentTimeMillis
   val tracesFolder = File(s"traces-$start")
   
-  runExperimentsForSettings(File(settingsFile), outputFolder, tracesFolder)
+  runExperimentsForSettings(File(settingsFile), subfolders, outputFolder, tracesFolder)
   println(s"Total time: ${System.currentTimeMillis - start}ms")
   println(s"Output stats written to ${outputFolder.getPath}")
   println(s"Traces (if any) written to ${tracesFolder.getPath}")
@@ -33,13 +35,16 @@ import spacenorm.{Settings, SettingName, SingleSettings, State, VariedSettings}
  * Runs simulation experiments for the settings in the given file or, if the file is a folder, all settings
  * files in the directory tree.
  */
-def runExperimentsForSettings(settingsFile: File, outputFolder: File, tracesFolder: File): Unit =
+def runExperimentsForSettings(settingsFile: File,
+                              subfoldersAllowed: Option[List[String]],
+                              outputFolder: File,
+                              tracesFolder: File): Unit =
   if (settingsFile.isDirectory) {
     settingsFile.listFiles.foreach { subfile =>
-      if (subfile.isDirectory)
-        runExperimentsForSettings(subfile, File(outputFolder, subfile.getName), File(tracesFolder, subfile.getName))
+      if (subfile.isDirectory && subfoldersAllowed.map(_.contains(subfile.getName)).getOrElse(true))
+        runExperimentsForSettings(subfile, subfoldersAllowed, File(outputFolder, subfile.getName), File(tracesFolder, subfile.getName))
       else
-        runExperimentsForSettings(subfile, outputFolder, tracesFolder)
+        runExperimentsForSettings(subfile, subfoldersAllowed, outputFolder, tracesFolder)
     }
   } else
     loadSettings(settingsFile) match {
