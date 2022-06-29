@@ -3,6 +3,7 @@ package study
 import java.io.File
 import spacenorm.SettingName
 import study.Plot.*
+import study.PlotData.*
 
 @main def analyse(statsFolder: String): Unit = {
   // The folder for the plot images to be output to
@@ -19,6 +20,27 @@ def analyseFolder(statsFolder: File, plotsFolder: File): Unit = {
 }
 
 def analyseStatsSet(statsFolder: File, plotsFolder: File): Unit = {
+  // The collection of all results file in the given output data folder
+  val collection: ResultsFolder = ResultsFolder(statsFolder)
+
+  plotsFolder.mkdirs
+  collection.comparisons.foreach { comparison =>
+    exportTimeSeries(_.highestPrevalence, comparison, File(plotsFolder, s"prevalance-${comparison.suffix}.csv"))
+    exportTimeSeries(_.diversity,         comparison, File(plotsFolder, s"diversity-${comparison.suffix}.csv"))
+    exportTimeSeries(_.neighbourhood,     comparison, File(plotsFolder, s"neighbourhood-${comparison.suffix}.csv"))
+    exportConvergenceChart(comparison, File(plotsFolder, s"converge-${comparison.suffix}.csv"))
+    exportConvergenceTable(comparison, File(plotsFolder, s"converge-${comparison.suffix}.tex"))
+  }
+  collection.singletons.foreach { result =>
+    exportTimeSeries(_.highestPrevalence, ResultsComparison(result), File(plotsFolder, s"prevalence-${result.prefix}.csv"))
+    exportTimeSeries(_.diversity,         ResultsComparison(result), File(plotsFolder, s"diversity-${result.prefix}.csv"))
+    exportTimeSeries(_.neighbourhood,     ResultsComparison(result), File(plotsFolder, s"neighbourhood-${result.prefix}.csv"))
+  }
+  
+  println(s"Saved all plots to ${plotsFolder.getPath}")
+}
+/*
+def plotStatsSet(statsFolder: File, plotsFolder: File): Unit = {
   // The collection of all results file in the given output data folder
   val collection: ResultsFolder = ResultsFolder(statsFolder)
 
@@ -48,4 +70,4 @@ def analyseStatsSet(statsFolder: File, plotsFolder: File): Unit = {
   }
   
   println(s"Saved all plots to ${plotsFolder.getPath}")
-}
+}*/

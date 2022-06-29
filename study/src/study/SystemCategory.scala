@@ -6,6 +6,9 @@ import spacenorm.SettingName.{NetConstruction, DistanceInfluence, MaxMove, Numbe
 enum SystemCategory:
   case Base, SpatiallyDistributed, Distanced, Movement, Obstructed, Permeable
 
+  def presentableName: String =
+    if (this == SpatiallyDistributed) "Spatially distributed" else toString
+
 object SystemCategory:
   val systemRelevantSettings = Set(NetConstruction, DistanceInfluence, MaxMove, NumberObstacles, ObstacleSide, NumberExits)
 

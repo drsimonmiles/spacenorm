@@ -6,11 +6,11 @@ import sim.Result.tickRange
 
 final case class TickStatistics(highestPrevalence: Double, diversity: Double, neighbourhood: Double)
 
-final case class RunStatistics(ticks: List[TickStatistics], firstConverged: Option[Double])
+final case class RunStatistics(ticks: List[TickStatistics], firstConverged: Option[Int])
 
 object RunStatistics:
   def apply(ticks: List[TickStatistics]): RunStatistics =
-    RunStatistics(ticks, ticks.zipWithIndex.find(_._1.highestPrevalence >= convergenceRatio).map(_._2.toDouble))
+    RunStatistics(ticks, ticks.zipWithIndex.find(_._1.highestPrevalence >= convergenceRatio).map(_._2))
 
   def analyseTick(tickResult: TickResult): TickStatistics =
     TickStatistics(
@@ -37,6 +37,7 @@ object RunStatistics:
       tickRange(results).flatMap { tick =>
         averageStats(results.flatMap(_.getTick(tick)).map(analyseTick))
       }.toList
-    val convergence = average(results.map(analyseRun).flatMap(_.firstConverged))
+    val convergence: Option[Int] =
+      average(results.map(analyseRun).flatMap(_.firstConverged).map(_.toDouble)).map(_.toInt)
     RunStatistics(ticks, convergence)
   }

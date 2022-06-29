@@ -1,7 +1,7 @@
 package study
 
 import java.io.File
-import org.jfree.chart.ChartFactory.{createBarChart, createScatterPlot}
+import org.jfree.chart.ChartFactory.*
 import org.jfree.chart.ChartUtils.saveChartAsPNG
 import org.jfree.chart.axis.{NumberAxis, NumberTickUnit}
 import org.jfree.chart.plot.{PlotOrientation, XYPlot}
@@ -9,6 +9,7 @@ import org.jfree.data.xy.{XYSeries, XYSeriesCollection}
 import spacenorm.SettingName
 import study.SystemCategory.determineCategory
 import org.jfree.data.category.DefaultCategoryDataset
+import java.awt.Color
 
 object Plot:
   def plotTimeSeries(name: String, field: TickStatistics => Double, stats: ResultsComparison,
@@ -25,14 +26,16 @@ object Plot:
       collection.addSeries(series)
     }
   
-    val chart = createScatterPlot(plotTitle, "time", name, collection, PlotOrientation.VERTICAL, true, true, false)
+    //val chart = createScatterPlot(plotTitle, "time", name, collection, PlotOrientation.VERTICAL, true, true, false)
+    val chart = createXYLineChart(plotTitle, "time", name, collection)
+    chart.getPlot.setBackgroundPaint(Color.WHITE)
     val plot  = chart.getPlot.asInstanceOf[XYPlot]
     val xAxis = plot.getDomainAxis.asInstanceOf[NumberAxis]
     xAxis.setRange(0, stats.lastTick)
     xAxis.setTickUnit(new NumberTickUnit(0.1))
     xAxis.setVerticalTickLabels(true)
     val yAxis = plot.getRangeAxis.asInstanceOf[NumberAxis]
-    yAxis.setRange(0.00, 1.00)
+    yAxis.setRange(0.5, 1.0)
     yAxis.setTickUnit(new NumberTickUnit(0.1))
     yAxis.setVerticalTickLabels(true)
 

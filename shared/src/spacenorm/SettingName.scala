@@ -33,10 +33,10 @@ enum SettingName:
     case NumberExits       => settings.numberExits.toString
     case DistanceThreshold => settings.distanceThreshold.toString
     case LinearThreshold   => settings.linearThreshold.toString
-    case DistanceInfluence => settings.distanceInfluence.toString
-    case Diffusion         => settings.diffusion.toString
-    case NetConstruction   => settings.netConstruction.toString
-    case Transmission      => settings.transmission.toString
+    case DistanceInfluence => settings.distanceInfluence.presentableName
+    case Diffusion         => settings.diffusion.presentableName
+    case NetConstruction   => settings.netConstruction.presentableName
+    case Transmission      => settings.transmission.presentableName
     case MaxMove           => settings.maxMove.toString
   }
 

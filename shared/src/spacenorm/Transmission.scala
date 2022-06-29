@@ -13,3 +13,9 @@ enum Transmission:
       case Light =>
         distance(from, to) <= threshold && !lineJoining(from, to).pointsAlong(from).exists(obstructed)
     }
+
+  def presentableName: String =
+    this match {
+      case Air => "Air transmission"
+      case Light => "Light transmission"
+    }

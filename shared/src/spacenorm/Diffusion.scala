@@ -37,3 +37,10 @@ enum Diffusion:
       case Threshold => state.config.linearThreshold
       case Cascade => 0.0
     }
+
+  def presentableName: String =
+    this match {
+      case Coordination => "Coordination game"
+      case Threshold => "Linear threshold"
+      case Cascade => "Independent cascade"
+    }
