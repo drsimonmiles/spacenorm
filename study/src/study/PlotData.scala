@@ -31,6 +31,42 @@ object PlotData:
     out.close
   }
 
+  def exportRangedSeries(kind: PlotKind, stats: ResultsFile, dataFolder: File): Unit = {
+    val file = File(dataFolder, kind.dataFileName(stats))
+    val out = PrintWriter(FileWriter(file))
+    val averages = stats.analyses.averages.map(kind.extract)
+    val stddevs = stats.analyses.stddevs.map(kind.extract)
+    out.println(s"time,average,min,max")
+    for (tick <- 0 until stats.numberTicks) {
+      out.print(s"$tick,")
+      out.print(averages(tick).toString)
+      out.print(",")
+      out.println(stddevs(tick).toString)
+    }
+    out.close
+  }
+
+  def exportPlotHeader(out: PrintWriter): Unit = {
+    out.println("set term png size 600, 400")
+    out.println("set datafile separator \",\"")
+    out.println("set grid")
+    out.println("set autoscale")
+    out.println("set xlabel \"Time\"")
+    out.println
+  }
+
+  def exportPlotScript(stats: ResultsComparison, plotFolder: File, kind: PlotKind, out: PrintWriter): Unit = {
+    out.println(s"set output \"${kind.plotFile(plotFolder, stats).getAbsolutePath}\"")
+    out.println(s"set yrange ${kind.yRange}")
+    out.println(s"set ylabel \"${kind.yLabel}\"")
+    val commands = stats.files
+      .map(results => (kind.dataFileName(results), seriesName(results.settings, stats.comparator)))
+      .map{ case (file, title) => s"\"$file\" skip 1 using 1:2 title \"$title\" with lines" }
+      .mkString(",")
+    out.println(s"plot $commands")
+    out.println
+  }
+
   val tickBlockSize = 10
 
   def exportConvergenceChart(stats: ResultsComparison, file: File): Unit = {
@@ -66,3 +102,14 @@ object PlotData:
     }
     out.close
   }
+
+/*  def exportRawData(stat: TickStatistics => Double, file: ResultsFile, outFile: File): Unit = {
+    val out = PrintWriter(FileWriter(outFile))
+    out.print("Time,")
+    out.println(file.analyses.indices.map(r => s"Run $r").mkString(","))
+    for (tick <- 0 until file.numberTicks) {
+      out.print(s"$tick,")
+      out.println(file.analyses.map { analysis => stat(analysis.ticks(tick)) }.map(x => f"$x%1.2f").mkString(","))
+    }
+    out.close
+  }*/

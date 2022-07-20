@@ -18,7 +18,7 @@ final case class ResultsComparison(files: List[ResultsFile], comparator: Option[
   lazy val lastTick: Int =
     files.flatMap(_.results).map(_.lastTick).max
 
-  lazy val suffix = comparator.map(_.wildcardedPrefix(files.head.prefix, "varied")).getOrElse("system")
+  lazy val prefix = comparator.map(_.wildcardedPrefix(files.head.prefix, "varied")).getOrElse("system")
 
   def subsetOf(other: ResultsComparison): Boolean =
     names.subsetOf(other.names)

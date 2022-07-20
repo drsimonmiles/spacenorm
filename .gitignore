@@ -9,4 +9,4 @@ out
 config-local.toml
 /configs*
 /traces*
-/paper-experiments-out
+/paper-experiments-out*

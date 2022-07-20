@@ -48,10 +48,11 @@ def runExperimentsForSettings(settingsFile: File,
     }
   } else
     loadSettings(settingsFile) match {
-      case SingleSettings(settings) => 
+      case Some(SingleSettings(settings)) => 
         runSimulationSet(settings, None, settingsFile.getName.dropRight(5), outputFolder, tracesFolder)
-      case VariedSettings(variedParameter, settingsList) =>
+      case Some(VariedSettings(variedParameter, settingsList)) =>
         settingsList.foreach(settings => runSimulationSet(settings, Some(variedParameter), settingsFile.getName.dropRight(5), outputFolder, tracesFolder))
+      case None =>
   }
 
 /** Runs a batch of simulations with the same settings. */

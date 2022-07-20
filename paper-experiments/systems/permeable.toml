@@ -1,7 +1,7 @@
 [data]                               # Options for what data to output from simulations and where to
-numberRuns        = 20               # Number of simulation runs to perform (if varying, this is runs per varied parameter)
+numberRuns        = 0                # Number of simulation runs to perform (if varying, this is runs per varied parameter)
 numberTraces      = 1                # Number of those simulation runs to trace for visualisation (if varying, this is traces per varied parameter)
-numberTicks       = 200              # Number of simulation ticks/time steps per run
+numberTicks       = 1000             # Number of simulation ticks/time steps per run
 randomSeed        = -1               # Random seed to use for 1st run, incremented for each subsequent run: use -1 for no fixed seed (time-based randomness)
 
 [run]                                # Options for the simulation model
