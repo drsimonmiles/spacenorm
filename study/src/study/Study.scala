@@ -48,6 +48,9 @@ def analyseStatsSet(statsFolder: File, plotsFolder: File, dataFolder: File, scri
     exportConvergenceTable(comparison, File(plotsFolder, s"converge-${comparison.prefix}.tex"))
   }
   collection.singletons.foreach { result =>
+    PlotKind.values.foreach { kind => 
+      exportPlotScript(ResultsComparison(result), plotsFolder, kind, scriptOut)
+    }
     //exportTimeSeries(_.highestPrevalence, ResultsComparison(result), File(plotsFolder, s"prevalence-${result.prefix}.csv"))
     //exportTimeSeries(_.diversity,         ResultsComparison(result), File(plotsFolder, s"diversity-${result.prefix}.csv"))
     //exportTimeSeries(_.neighbourhood,     ResultsComparison(result), File(plotsFolder, s"neighbourhood-${result.prefix}.csv"))
